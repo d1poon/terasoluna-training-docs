@@ -23,6 +23,26 @@ export function Sidebar({
 
       <nav className="p-4">
         <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2 px-2">
+          Overview
+        </div>
+        <ul className="mb-4 space-y-0.5">
+          <li>
+            <Link
+              href="/architecture"
+              className={
+                "flex items-baseline gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
+                (currentSlug === "__architecture__"
+                  ? "bg-brand text-white font-semibold"
+                  : "text-slate-700 hover:bg-slate-100")
+              }
+            >
+              <span className="text-base leading-none">🏛</span>
+              <span className="leading-tight">アーキテクチャ全体図</span>
+            </Link>
+          </li>
+        </ul>
+
+        <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2 px-2">
           Steps
         </div>
         <ul className="space-y-0.5">
