@@ -9,13 +9,13 @@ export function Sidebar({
   currentSlug?: string;
 }) {
   return (
-    <aside className="w-full md:w-72 md:min-h-screen bg-white border-r border-slate-200 md:sticky md:top-0">
-      <div className="p-6 border-b border-slate-200">
+    <aside className="w-full md:w-64 md:shrink-0 md:h-screen md:sticky md:top-0 md:overflow-y-auto bg-white border-r border-slate-200">
+      <div className="p-5 border-b border-slate-200">
         <Link href="/" className="block">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
             TERASOLUNA 研修
           </div>
-          <div className="text-lg font-bold mt-1 text-slate-900 leading-tight">
+          <div className="text-base font-bold mt-1 text-slate-900 leading-tight">
             役職編集アプリ<br />組立ガイド
           </div>
         </Link>

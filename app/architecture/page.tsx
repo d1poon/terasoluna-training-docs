@@ -65,10 +65,10 @@ export default function ArchitecturePage() {
   const steps = getAllSteps();
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="max-w-7xl mx-auto flex flex-col md:flex-row">
       <Sidebar steps={steps} />
 
-      <main className="flex-1 p-6 md:p-12 max-w-5xl">
+      <main className="flex-1 min-w-0 p-6 md:p-12">
         <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
             Architecture Overview

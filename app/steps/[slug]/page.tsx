@@ -25,10 +25,10 @@ export default async function StepPage({
   const next = idx < steps.length - 1 ? steps[idx + 1] : null;
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="max-w-7xl mx-auto flex flex-col md:flex-row">
       <Sidebar steps={steps} currentSlug={slug} />
 
-      <main className="flex-1 p-6 md:p-12 max-w-4xl">
+      <main className="flex-1 min-w-0 p-6 md:p-12">
         <div className="mb-8">
           <div className="text-sm text-brand font-mono">
             Step {String(step.number).padStart(2, "0")}
