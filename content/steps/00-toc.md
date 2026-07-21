@@ -7,10 +7,10 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 
 # 役職編集アプリ 組立ガイド (ガンプラ式)
 
-> 12ステップで「役職編集アプリ」を組み立てる手順書。
-> 部品ひとつずつ、順番通りに置いていけば必ず完成する。
+> **これは私 (ダンダン) 自身が「教えるために理解しておく」ためのガイド**。後輩に配る資料ではなく、自分が腹落ちさせるための教材。
+> Java・JSP の基本文法から入り、部品ひとつずつ、順番通りに置いていけば必ず完成する。
 > 各ステップは前のステップに依存する。飛ばさないこと。
-> **公開版 (外部公開中)**: https://terasoluna-training-docs.vercel.app
+> **公開版 (どこからでも見られる)**: https://terasoluna-training-docs.vercel.app
 
 ---
 

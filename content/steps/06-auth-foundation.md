@@ -21,12 +21,12 @@ step: 06
 
 ## 追加するファイル (3つ、一括で書く)
 
-### 1. `src/main/java/com/training/rolemgr/security/CustomUserDetailsService.java`
+### 1. `src/main/java/com/example/rolemgr/security/CustomUserDetailsService.java`
 
 Spring Security が「ユーザ ID から DB を引いてくれ」と依頼する係。
 
 ```java
-package com.training.rolemgr.security;
+package com.example.rolemgr.security;
 
 import java.util.Collections;
 
@@ -37,7 +37,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import com.training.rolemgr.repository.UserMapper;
+import com.example.rolemgr.repository.UserMapper;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -50,7 +50,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        com.training.rolemgr.domain.User u = userMapper.findById(id);
+        com.example.rolemgr.domain.User u = userMapper.findById(id);
         if (u == null) {
             throw new UsernameNotFoundException("ユーザが存在しません: " + id);
         }
@@ -63,14 +63,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 }
 ```
 
-**注意**: `import` に `org.springframework.security.core.userdetails.User` (Spring 側) と `com.training.rolemgr.domain.User` (自作) が両方登場する。同名だが**完全に別クラス**。
+**注意**: `import` に `org.springframework.security.core.userdetails.User` (Spring 側) と `com.example.rolemgr.domain.User` (自作) が両方登場する。同名だが**完全に別クラス**。
 
-### 2. `src/main/java/com/training/rolemgr/config/SecurityConfig.java`
+### 2. `src/main/java/com/example/rolemgr/config/SecurityConfig.java`
 
 Spring Security の**設定本体**。認可ルール、ログインパス、ハッシュ器を宣言。
 
 ```java
-package com.training.rolemgr.config;
+package com.example.rolemgr.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -127,12 +127,12 @@ Spring Security 6 は **JSP への内部 forward も filter chain を再走**す
 
 詳細: 01_Knowledge/spring-security-6-jsp-forward-loop
 
-### 3. `src/main/java/com/training/rolemgr/config/DataInitializer.java`
+### 3. `src/main/java/com/example/rolemgr/config/DataInitializer.java`
 
 起動時にサンプルユーザ 5 名を投入する係。パスワードは**その場で BCrypt でハッシュ化**。
 
 ```java
-package com.training.rolemgr.config;
+package com.example.rolemgr.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -177,7 +177,7 @@ public class DataInitializer implements CommandLineRunner {
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/java/com/training/rolemgr/
+reference-app/src/main/java/com/example/rolemgr/
 ├── RolemgrApplication.java
 ├── config/
 │   ├── SecurityConfig.java                ← 追加

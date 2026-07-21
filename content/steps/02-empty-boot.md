@@ -21,12 +21,12 @@ step: 02
 
 ## 追加するファイル (2つ)
 
-### 1. `src/main/java/com/training/rolemgr/RolemgrApplication.java`
+### 1. `src/main/java/com/example/rolemgr/RolemgrApplication.java`
 
 **アプリのエントリポイント**。ここから起動する。
 
 ```java
-package com.training.rolemgr;
+package com.example.rolemgr;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,7 +44,7 @@ public class RolemgrApplication {
 - **`@SpringBootApplication`**: 3つの機能をまとめた便利アノテーション
   - `@Configuration`: このクラスを Bean 定義の起点にする
   - `@EnableAutoConfiguration`: Spring Boot が pom.xml の依存を見て自動で設定してくれる (Tomcat 起動、DataSource 準備、etc)
-  - `@ComponentScan`: このクラスと同じパッケージ (`com.training.rolemgr`) 以下を全部スキャンして `@Controller` / `@Service` / `@Repository` を Bean 登録
+  - `@ComponentScan`: このクラスと同じパッケージ (`com.example.rolemgr`) 以下を全部スキャンして `@Controller` / `@Service` / `@Repository` を Bean 登録
 - **`SpringApplication.run(...)`**: 起動して、埋め込み Tomcat が上がる。それだけ
 
 ### 2. `src/main/resources/schema.sql`
@@ -73,7 +73,7 @@ CREATE TABLE users (
 reference-app/
 ├── pom.xml
 └── src/main/
-    ├── java/com/training/rolemgr/
+    ├── java/com/example/rolemgr/
     │   └── RolemgrApplication.java        ← 追加
     └── resources/
         ├── application.properties

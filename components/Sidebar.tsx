@@ -40,6 +40,20 @@ export function Sidebar({
               <span className="leading-tight">アーキテクチャ全体図</span>
             </Link>
           </li>
+          <li>
+            <Link
+              href="/playground"
+              className={
+                "flex items-baseline gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
+                (currentSlug === "__playground__"
+                  ? "bg-brand text-white font-semibold"
+                  : "text-slate-700 hover:bg-slate-100")
+              }
+            >
+              <span className="text-base leading-none">🕹</span>
+              <span className="leading-tight">触ってみるデモ</span>
+            </Link>
+          </li>
         </ul>
 
         <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2 px-2">

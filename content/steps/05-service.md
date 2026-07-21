@@ -19,18 +19,18 @@ step: 05
 
 ## 追加するファイル (1つ)
 
-### `src/main/java/com/training/rolemgr/service/UserService.java`
+### `src/main/java/com/example/rolemgr/service/UserService.java`
 
 ```java
-package com.training.rolemgr.service;
+package com.example.rolemgr.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.training.rolemgr.domain.User;
-import com.training.rolemgr.repository.UserMapper;
+import com.example.rolemgr.domain.User;
+import com.example.rolemgr.repository.UserMapper;
 
 @Service
 @Transactional
@@ -98,7 +98,7 @@ public UserService(UserMapper userMapper) {
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/java/com/training/rolemgr/
+reference-app/src/main/java/com/example/rolemgr/
 ├── RolemgrApplication.java
 ├── domain/User.java
 ├── repository/UserMapper.java

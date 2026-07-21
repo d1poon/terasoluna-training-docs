@@ -40,7 +40,7 @@ Maven の心臓部。**どの依存ライブラリを使うか**、**どの Java
         <relativePath/>
     </parent>
 
-    <groupId>com.training</groupId>
+    <groupId>com.example</groupId>
     <artifactId>rolemgr</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
@@ -129,7 +129,7 @@ mybatis.mapper-locations=classpath:mapper/*.xml
 mybatis.configuration.map-underscore-to-camel-case=true
 
 # ログ
-logging.level.com.training.rolemgr=DEBUG
+logging.level.com.example.rolemgr=DEBUG
 logging.level.org.springframework.security=INFO
 ```
 

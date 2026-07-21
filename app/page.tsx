@@ -11,20 +11,25 @@ export default function HomePage() {
       <main className="flex-1 p-6 md:p-12 max-w-4xl">
         <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
-            TERASOLUNA 5 相当 リファレンス実装
+            教える立場のあなたが理解しておくためのメモ
           </div>
           <h1 className="text-4xl font-bold mt-2 text-slate-900">
             役職編集アプリを 12 ステップで組み立てる
           </h1>
           <p className="mt-4 text-slate-700 text-lg leading-relaxed">
-            Spring Boot + JSP + MyBatis + H2 で、ログイン → メニュー → 検索 → ユーザ情報 → 変更 の
-            5 画面アプリをガンプラのように部品ごとに組み立てるガイドです。
+            <strong>これは後輩に配る資料ではなく、教える側 (あなた) が「後輩に何を聞かれても答えられる」状態を作るためのガイド</strong>。
+            Java・JSP の基本文法から入り、Spring Boot + JSP + MyBatis + H2 で
+            ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリをガンプラのように部品ごとに組み立てます。
           </p>
         </div>
 
         <section className="bg-white rounded-lg border border-slate-200 p-6 mb-8">
           <h2 className="text-lg font-bold mb-3 text-slate-900">このガイドの特徴</h2>
           <ul className="space-y-2 text-slate-700">
+            <li className="flex gap-2">
+              <span className="text-brand font-bold">✓</span>
+              <span><strong>Java・JSP の基本文法から</strong>始まる。初見でも読める粒度</span>
+            </li>
             <li className="flex gap-2">
               <span className="text-brand font-bold">✓</span>
               <span>各ステップは <strong>5〜15分</strong>。順番通りに進めれば必ず動く</span>
@@ -35,11 +40,11 @@ export default function HomePage() {
             </li>
             <li className="flex gap-2">
               <span className="text-brand font-bold">✓</span>
-              <span>各ステップに「<strong>なぜこう書くか</strong>」の解説付き — 後輩に説明できる状態を目指す</span>
+              <span>各ステップに「<strong>なぜこう書くか</strong>」の解説付き — 後輩の想定質問に即答できる状態を目指す</span>
             </li>
             <li className="flex gap-2">
               <span className="text-brand font-bold">✓</span>
-              <span>「<strong>動作確認</strong>」で次のステップ前に何ができるかを明示</span>
+              <span><strong>プレイグラウンド付き</strong>: 実物と同じ画面を触って動きを確かめられる (STS 起動不要)</span>
             </li>
           </ul>
         </section>
@@ -53,24 +58,43 @@ export default function HomePage() {
           </ul>
         </section>
 
-        <section className="bg-gradient-to-br from-brand to-brand-dark text-white rounded-lg p-6 mb-8">
-          <div className="flex items-start gap-4">
-            <span className="text-4xl leading-none">🏛</span>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold mb-2">まず全体像を見る</h2>
-              <p className="text-white/90 mb-3 leading-relaxed">
-                domain / service / controller / repository … どのファイルがどの層で、どの Step で作るかを一枚で見られる図があります。
-                最初にざっと目を通しておくと、各 Step の位置づけが掴みやすい。
-              </p>
-              <Link
-                href="/architecture"
-                className="inline-block bg-white text-brand-dark font-semibold px-4 py-2 rounded-md hover:bg-slate-100 transition-colors"
-              >
-                アーキテクチャ全体図を見る →
-              </Link>
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <section className="bg-gradient-to-br from-brand to-brand-dark text-white rounded-lg p-6">
+            <div className="flex items-start gap-3">
+              <span className="text-3xl leading-none">🏛</span>
+              <div className="flex-1">
+                <h2 className="text-lg font-bold mb-2">まず全体像を見る</h2>
+                <p className="text-white/90 mb-3 text-sm leading-relaxed">
+                  domain / service / controller / repository … どのファイルがどの層で、どの Step で作るかを一枚で。
+                </p>
+                <Link
+                  href="/architecture"
+                  className="inline-block bg-white text-brand-dark text-sm font-semibold px-3 py-1.5 rounded hover:bg-slate-100 transition-colors"
+                >
+                  アーキテクチャを見る →
+                </Link>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-lg p-6">
+            <div className="flex items-start gap-3">
+              <span className="text-3xl leading-none">🕹</span>
+              <div className="flex-1">
+                <h2 className="text-lg font-bold mb-2">触って動きを確かめる</h2>
+                <p className="text-white/90 mb-3 text-sm leading-relaxed">
+                  STS を立ち上げなくても、ログイン・検索・変更の実物と同じ挙動をこのページで試せます。
+                </p>
+                <Link
+                  href="/playground"
+                  className="inline-block bg-white text-orange-700 text-sm font-semibold px-3 py-1.5 rounded hover:bg-slate-100 transition-colors"
+                >
+                  Playground を開く →
+                </Link>
+              </div>
+            </div>
+          </section>
+        </div>
 
         <section>
           <h2 className="text-2xl font-bold mb-4 text-slate-900">ステップ一覧</h2>

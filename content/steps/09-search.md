@@ -18,10 +18,10 @@ step: 09
 
 ## 追加するファイル (2つ)
 
-### 1. `src/main/java/com/training/rolemgr/controller/SearchController.java`
+### 1. `src/main/java/com/example/rolemgr/controller/SearchController.java`
 
 ```java
-package com.training.rolemgr.controller;
+package com.example.rolemgr.controller;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,8 +31,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.training.rolemgr.domain.User;
-import com.training.rolemgr.service.UserService;
+import com.example.rolemgr.domain.User;
+import com.example.rolemgr.service.UserService;
 
 @Controller
 public class SearchController {
@@ -147,7 +147,7 @@ WHERE role LIKE '%' || #{role} || '%'
 
 ```
 reference-app/src/main/
-├── java/com/training/rolemgr/controller/
+├── java/com/example/rolemgr/controller/
 │   └── SearchController.java              ← 追加
 └── webapp/WEB-INF/views/
     └── search.jsp                         ← 追加

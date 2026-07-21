@@ -26,7 +26,7 @@ reference-app/
 ├── run.ps1
 ├── README.md
 └── src/main/
-    ├── java/com/training/rolemgr/
+    ├── java/com/example/rolemgr/
     │   ├── RolemgrApplication.java
     │   ├── config/
     │   │   ├── SecurityConfig.java

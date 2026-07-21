@@ -19,18 +19,18 @@ step: 04
 
 ## 追加するファイル (2つ、ペアで動く)
 
-### 1. `src/main/java/com/training/rolemgr/repository/UserMapper.java`
+### 1. `src/main/java/com/example/rolemgr/repository/UserMapper.java`
 
 **インターフェース**。Java 側からは「このメソッドを呼ぶ」という契約だけ。
 
 ```java
-package com.training.rolemgr.repository;
+package com.example.rolemgr.repository;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.training.rolemgr.domain.User;
+import com.example.rolemgr.domain.User;
 
 @Mapper
 public interface UserMapper {
@@ -55,15 +55,15 @@ public interface UserMapper {
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.training.rolemgr.repository.UserMapper">
+<mapper namespace="com.example.rolemgr.repository.UserMapper">
 
-    <select id="findById" resultType="com.training.rolemgr.domain.User">
+    <select id="findById" resultType="com.example.rolemgr.domain.User">
         SELECT id, password, role
           FROM users
          WHERE id = #{id}
     </select>
 
-    <select id="findByRole" resultType="com.training.rolemgr.domain.User">
+    <select id="findByRole" resultType="com.example.rolemgr.domain.User">
         SELECT id, password, role
           FROM users
          WHERE role LIKE '%' || #{role} || '%'
@@ -107,7 +107,7 @@ public interface UserMapper {
 
 ```
 reference-app/src/main/
-├── java/com/training/rolemgr/
+├── java/com/example/rolemgr/
 │   ├── RolemgrApplication.java
 │   ├── domain/User.java
 │   └── repository/

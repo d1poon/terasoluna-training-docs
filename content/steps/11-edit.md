@@ -24,7 +24,7 @@ step: 11
 Step 10 のファイルを開いて、`editForm` と `edit` を追加:
 
 ```java
-package com.training.rolemgr.controller;
+package com.example.rolemgr.controller;
 
 import java.security.Principal;
 
@@ -34,8 +34,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.training.rolemgr.domain.User;
-import com.training.rolemgr.service.UserService;
+import com.example.rolemgr.domain.User;
+import com.example.rolemgr.service.UserService;
 
 @Controller
 public class UserInfoController {
@@ -146,7 +146,7 @@ Spring MVC 独自の記法。View名の代わりに書くと、内部で `HttpSe
 
 ```
 reference-app/src/main/
-├── java/com/training/rolemgr/controller/
+├── java/com/example/rolemgr/controller/
 │   └── UserInfoController.java            ← 3メソッドに (view + editForm + edit)
 └── webapp/WEB-INF/views/
     └── userInfoEdit.jsp                   ← 追加
