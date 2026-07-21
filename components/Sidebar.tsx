@@ -107,6 +107,16 @@ export function Sidebar({
           </li>
           <li>
             <Link
+              href="/build-order"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span className="text-base">✅</span>
+              <span>作成順チェックリスト</span>
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/glossary"
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"

@@ -55,6 +55,31 @@ export default function HomePage() {
             </div>
           </Link>
 
+          {/* Build order checklist banner (secondary hero) */}
+          <Link
+            href="/build-order"
+            className="block bg-white border-2 border-brand rounded-xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-3xl md:text-4xl leading-none">✅</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs uppercase tracking-wider text-brand font-semibold">
+                  File-by-file Checklist
+                </div>
+                <div className="text-lg md:text-xl font-bold mt-1 text-slate-900">
+                  作成順チェックリスト (全 23 項目)
+                </div>
+                <p className="mt-2 text-sm md:text-base text-slate-700 leading-relaxed">
+                  <strong className="text-brand-dark">「1. pom.xml → 2. application.properties → … → 22. userInfoEdit.jsp」</strong>
+                  と通し番号で並んだリスト。1 番から順に作れば必ず動く。進捗チェック機能付き。
+                </p>
+                <span className="inline-block mt-3 text-sm bg-brand text-white font-semibold px-3 py-1.5 rounded">
+                  チェックリストを開く →
+                </span>
+              </div>
+            </div>
+          </Link>
+
           {/* Secondary entry cards */}
           <div className="grid gap-3 md:gap-4 md:grid-cols-3 mb-10">
             <Link
