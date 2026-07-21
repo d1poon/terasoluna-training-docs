@@ -125,6 +125,16 @@ export function Sidebar({
               <span>用語集</span>
             </Link>
           </li>
+          <li>
+            <Link
+              href="/spring-vs-terasoluna"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span className="text-base">⚖️</span>
+              <span>Boot vs TERASOLUNA</span>
+            </Link>
+          </li>
         </ul>
 
         {/* Overview */}
