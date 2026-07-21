@@ -30,35 +30,62 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 3 big entry cards */}
+          {/* Big "Start here" banner */}
+          <Link
+            href="/preface"
+            className="block bg-gradient-to-br from-brand to-brand-dark text-white rounded-2xl p-6 md:p-8 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-4xl md:text-5xl leading-none">📗</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                  まず最初に読む
+                </div>
+                <div className="text-xl md:text-2xl font-bold mt-1">
+                  Web アプリって何をしてるの?
+                </div>
+                <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
+                  「Controller → どこに行くの?」レベルからでも読めるように、レストランに例えて全体像を掴む。
+                  <strong className="text-white">先にこれを読んでから Step 01 に進むと理解が早い。</strong>
+                </p>
+                <span className="inline-block mt-3 text-sm bg-white text-brand-dark font-semibold px-3 py-1.5 rounded">
+                  はじめにを読む →
+                </span>
+              </div>
+            </div>
+          </Link>
+
+          {/* Secondary entry cards */}
           <div className="grid gap-3 md:gap-4 md:grid-cols-3 mb-10">
             <Link
               href="/steps/01-project-skeleton"
-              className="block bg-brand text-white rounded-xl p-5 hover:bg-brand-dark transition-colors"
+              className="block bg-white border border-slate-200 rounded-xl p-5 hover:border-brand hover:shadow-sm transition-all"
             >
               <div className="text-3xl">🚀</div>
-              <div className="mt-2 text-xs uppercase tracking-wider opacity-80">
+              <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                 Start
               </div>
-              <div className="text-lg font-bold mt-1">Step 01 から始める</div>
-              <div className="text-sm opacity-90 mt-1 leading-snug">
+              <div className="text-lg font-bold mt-1 text-slate-900">
+                Step 01 から始める
+              </div>
+              <div className="text-sm text-slate-600 mt-1 leading-snug">
                 順番に組み立てるガイド
               </div>
             </Link>
 
             <Link
-              href="/architecture"
+              href="/glossary"
               className="block bg-white border border-slate-200 rounded-xl p-5 hover:border-brand hover:shadow-sm transition-all"
             >
-              <div className="text-3xl">🏛</div>
-              <div className="mt-2 text-xs uppercase tracking-wider text-slate-500">
-                Overview
+              <div className="text-3xl">📖</div>
+              <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                Glossary
               </div>
               <div className="text-lg font-bold mt-1 text-slate-900">
-                アーキテクチャ全体図
+                用語集
               </div>
               <div className="text-sm text-slate-600 mt-1 leading-snug">
-                どの層に何があるかを一枚で
+                Bean / DI / CSRF … 40 用語
               </div>
             </Link>
 
@@ -67,7 +94,7 @@ export default function HomePage() {
               className="block bg-white border border-slate-200 rounded-xl p-5 hover:border-brand hover:shadow-sm transition-all"
             >
               <div className="text-3xl">🕹</div>
-              <div className="mt-2 text-xs uppercase tracking-wider text-slate-500">
+              <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                 Try
               </div>
               <div className="text-lg font-bold mt-1 text-slate-900">

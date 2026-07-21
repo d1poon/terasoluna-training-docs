@@ -90,6 +90,33 @@ export function Sidebar({
       <div className="p-5 border-b border-slate-200">{brandBlock}</div>
 
       <nav className="p-3">
+        {/* First-time visitor */}
+        <div className="text-[10px] uppercase tracking-wider text-brand font-semibold mb-1 px-2">
+          はじめに
+        </div>
+        <ul className="mb-4 space-y-0.5">
+          <li>
+            <Link
+              href="/preface"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-brand/10 text-brand-dark font-semibold hover:bg-brand/20"
+            >
+              <span className="text-base">📗</span>
+              <span>まず最初に読む</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/glossary"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span className="text-base">📖</span>
+              <span>用語集</span>
+            </Link>
+          </li>
+        </ul>
+
         {/* Overview */}
         <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
           Overview
