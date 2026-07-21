@@ -1,0 +1,40 @@
+@import 'highlight.js/styles/github-dark.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+}
+
+/* Markdown 記事本文の見た目 */
+.prose h1 { @apply text-3xl font-bold mt-8 mb-4 text-slate-900; }
+.prose h2 { @apply text-2xl font-bold mt-10 mb-3 text-slate-900 border-b border-slate-200 pb-1; }
+.prose h3 { @apply text-xl font-semibold mt-8 mb-2 text-slate-900; }
+.prose h4 { @apply text-lg font-semibold mt-6 mb-2 text-slate-800; }
+.prose p  { @apply my-3 leading-relaxed text-slate-800; }
+.prose ul { @apply list-disc pl-6 my-3 space-y-1; }
+.prose ol { @apply list-decimal pl-6 my-3 space-y-1; }
+.prose a  { @apply text-brand hover:underline; }
+.prose strong { @apply font-semibold text-slate-900; }
+.prose blockquote { @apply border-l-4 border-brand pl-4 italic text-slate-700 my-4; }
+.prose table { @apply w-full my-4 border-collapse text-sm; }
+.prose th { @apply bg-slate-100 text-left px-3 py-2 border border-slate-300 font-semibold; }
+.prose td { @apply px-3 py-2 border border-slate-300; }
+.prose code:not(pre code) {
+  @apply bg-slate-100 text-brand-dark rounded px-1.5 py-0.5 text-[0.9em] font-mono;
+}
+.prose pre {
+  @apply bg-slate-900 text-slate-100 rounded-lg p-4 my-4 overflow-x-auto text-sm;
+}
+.prose pre code {
+  @apply bg-transparent p-0 text-slate-100;
+}
+.prose hr { @apply my-8 border-slate-200; }
