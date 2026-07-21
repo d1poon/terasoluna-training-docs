@@ -10,3 +10,5 @@ build/
 next-env.d.ts.bak
 .DS_Store
 Thumbs.db
+
+.vercel

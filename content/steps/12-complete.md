@@ -125,7 +125,7 @@ reference-app/
 - TERASOLUNA archetype との対応: 上記ガイドの Section 8
 - 落とし穴・トラブル: 01_Knowledge/spring-security-6-jsp-forward-loop
 - 動作リファレンス: `C:\Users\donpa\Workspace\terasoluna-training\reference-app\`
-- **公開版ホームページ (外から見える)**: https://terasoluna-training.vercel.app (ダンダンがデプロイ後に有効化)
+- **公開版ホームページ (外から見える)**: https://terasoluna-training-docs.vercel.app
 
 ## おめでとう
 

@@ -10,7 +10,7 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 > 12ステップで「役職編集アプリ」を組み立てる手順書。
 > 部品ひとつずつ、順番通りに置いていけば必ず完成する。
 > 各ステップは前のステップに依存する。飛ばさないこと。
-> **公開版**: https://terasoluna-training.vercel.app (ダンダンがデプロイ後に有効化)
+> **公開版 (外部公開中)**: https://terasoluna-training-docs.vercel.app
 
 ---
 
