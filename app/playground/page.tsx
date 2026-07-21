@@ -5,10 +5,11 @@ import { getAllSteps } from "@/lib/steps";
 export default function PlaygroundIndex() {
   const steps = getAllSteps();
   return (
-    <div className="max-w-7xl mx-auto flex flex-col md:flex-row">
+    <div className="md:flex md:max-w-[80rem] md:mx-auto">
       <Sidebar steps={steps} />
 
-      <main className="flex-1 min-w-0 p-6 md:p-12">
+      <div className="flex-1 min-w-0">
+        <main className="mx-auto max-w-4xl px-4 py-6 md:px-12 md:py-12">
         <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
             Playground
@@ -43,7 +44,8 @@ export default function PlaygroundIndex() {
             desc="役職を書き換えて送信 → 更新後に URL バーが /user-info に変わる (PRG) の動きを可視化"
           />
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

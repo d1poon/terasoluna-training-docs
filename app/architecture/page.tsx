@@ -65,10 +65,11 @@ export default function ArchitecturePage() {
   const steps = getAllSteps();
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col md:flex-row">
+    <div className="md:flex md:max-w-[80rem] md:mx-auto">
       <Sidebar steps={steps} />
 
-      <main className="flex-1 min-w-0 p-6 md:p-12">
+      <div className="flex-1 min-w-0">
+        <main className="mx-auto max-w-5xl px-4 py-6 md:px-12 md:py-12">
         <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
             Architecture Overview
@@ -270,7 +271,8 @@ export default function ArchitecturePage() {
             </Link>
           </div>
         </section>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
