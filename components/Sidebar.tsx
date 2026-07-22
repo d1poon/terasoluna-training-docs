@@ -273,7 +273,7 @@ export function Sidebar({
   return (
     <>
       {/* Mobile header bar */}
-      <div className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 shadow-sm">
+      <div className="lg:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 shadow-sm">
         <div className="min-w-0">{brandBlock}</div>
         <button
           type="button"
@@ -289,10 +289,10 @@ export function Sidebar({
       {mobileOpen && (
         <>
           <div
-            className="md:hidden fixed inset-0 z-40 bg-black/50"
+            className="lg:hidden fixed inset-0 z-40 bg-black/50"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="md:hidden fixed top-0 left-0 z-50 w-72 max-w-[85vw] h-screen bg-white overflow-y-auto shadow-2xl">
+          <aside className="lg:hidden fixed top-0 left-0 z-50 w-72 max-w-[85vw] h-screen bg-white overflow-y-auto shadow-2xl">
             <div className="flex justify-end p-2">
               <button
                 type="button"
@@ -308,8 +308,8 @@ export function Sidebar({
         </>
       )}
 
-      {/* Desktop sidebar (fixed, always visible on md+) */}
-      <aside className="hidden md:block md:w-64 md:shrink-0 md:h-screen md:sticky md:top-0 md:overflow-y-auto bg-white border-r border-slate-200">
+      {/* Desktop sidebar (fixed, always visible on lg+; hidden on tablets to give main more room) */}
+      <aside className="hidden lg:block lg:w-64 xl:w-72 lg:shrink-0 lg:h-screen lg:sticky lg:top-0 lg:overflow-y-auto bg-white border-r border-slate-200">
         {sidebarBody}
       </aside>
     </>

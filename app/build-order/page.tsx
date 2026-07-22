@@ -171,11 +171,11 @@ export default function BuildOrderPage() {
   const pct = Math.round((completedCount / TOTAL_ITEMS) * 100);
 
   return (
-    <div className="md:flex md:max-w-[80rem] md:mx-auto">
+    <div className="lg:flex mx-auto max-w-[80rem] xl:max-w-[88rem] 2xl:max-w-[96rem]">
       <Sidebar steps={DUMMY_STEPS} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 md:px-12 md:py-12">
+        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-6 md:mb-8">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">

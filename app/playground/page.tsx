@@ -5,11 +5,11 @@ import { getAllSteps } from "@/lib/steps";
 export default function PlaygroundIndex() {
   const steps = getAllSteps();
   return (
-    <div className="md:flex md:max-w-[80rem] md:mx-auto">
+    <div className="lg:flex mx-auto max-w-[80rem] xl:max-w-[88rem] 2xl:max-w-[96rem]">
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 md:px-12 md:py-12">
+        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
         <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
             Playground
