@@ -55,6 +55,32 @@ export default function HomePage() {
             </div>
           </Link>
 
+          {/* How-to recipe book banner */}
+          <Link
+            href="/how-to"
+            className="block bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-2xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-3xl md:text-4xl leading-none">🍳</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                  How-to Recipe Book
+                </div>
+                <div className="text-lg md:text-xl font-bold mt-1">
+                  「〜するには?」レシピ集 (全 20 レシピ)
+                </div>
+                <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
+                  <strong>後輩から「これどうやるの?」と聞かれた時に開くページ</strong>。
+                  「画面遷移させるには?」「リンクボタン作るには?」「Service の作り方は?」
+                  を <strong>1 行の答え + 実物コード</strong> で。
+                </p>
+                <span className="inline-block mt-3 text-sm bg-white text-orange-700 font-semibold px-3 py-1.5 rounded">
+                  レシピ集を開く →
+                </span>
+              </div>
+            </div>
+          </Link>
+
           {/* Build order checklist banner (secondary hero) */}
           <Link
             href="/build-order"

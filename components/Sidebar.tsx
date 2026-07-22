@@ -117,6 +117,16 @@ export function Sidebar({
           </li>
           <li>
             <Link
+              href="/how-to"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-orange-50 text-orange-900 font-semibold hover:bg-orange-100"
+            >
+              <span className="text-base">🍳</span>
+              <span>「〜するには?」レシピ集</span>
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/glossary"
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
