@@ -207,17 +207,20 @@ $CATALINA_HOME/bin/startup.sh`,
 spring init --dependencies=web,security,mybatis rolemgr`,
     },
     tera: {
-      label: "Maven archetype",
+      label: "Maven multi-project archetype",
       lang: "bash",
-      code: `mvn archetype:generate \\
+      code: `mvn archetype:generate -B \\
   -DarchetypeGroupId=org.terasoluna.gfw.blank \\
-  -DarchetypeArtifactId=terasoluna-gfw-web-blank-jsp-mybatis3 \\
-  -DarchetypeVersion=5.7.1.RELEASE
+  -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype \\
+  -DarchetypeVersion=5.11.0.RELEASE \\
+  -DgroupId=com.example.rolemgr \\
+  -DartifactId=rolemgr \\
+  -Dversion=1.0.0-SNAPSHOT
 
-# → 認証・Validation・共通例外ハンドラ入りの
-#    完全動作 blank プロジェクトが生成される`,
+# → 5 モジュール構成 (-web / -domain / -env / -initdb / -selenium)
+#    認証・Validation・共通エラーページ・env プロファイル入り`,
     },
-    note: "TERASOLUNA archetype は日本SIer案件でよく使う構成が全部入り",
+    note: "研修で使うのは multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE (公式)。詳細は /terasoluna-multi-project を参照",
   },
 ];
 
@@ -259,6 +262,32 @@ export default function SpringVsTerasolunaPage() {
               このリファレンス実装は Spring Boot で組んでいますが、会社の研修課題は TERASOLUNA。
               「何が変わって、何が変わらないのか」を実物コードのサイドバイサイドで整理します。
             </p>
+          </div>
+
+          {/* Callout: multi-project pointer */}
+          <div className="mb-8 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl leading-none">🧱</span>
+              <div className="flex-1">
+                <div className="font-bold text-amber-900 mb-1">
+                  実プロジェクトは 5 モジュールの multi-project 構成
+                </div>
+                <p className="text-sm text-amber-900 leading-relaxed">
+                  研修で使う TERASOLUNA archetype は{" "}
+                  <code className="text-xs bg-white px-1.5 py-0.5 rounded">
+                    terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE
+                  </code>
+                  。<code>-web</code> / <code>-domain</code> / <code>-env</code> /{" "}
+                  <code>-initdb</code> / <code>-selenium</code> の 5 つに物理分割される。
+                </p>
+                <Link
+                  href="/terasoluna-multi-project"
+                  className="inline-block mt-3 text-sm bg-amber-900 text-white font-semibold px-3 py-1.5 rounded hover:bg-amber-800"
+                >
+                  マルチプロジェクト構造の詳細 →
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Section 1: 一言まとめ */}

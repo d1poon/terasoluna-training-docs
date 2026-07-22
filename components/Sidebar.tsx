@@ -135,6 +135,16 @@ export function Sidebar({
               <span>Boot vs TERASOLUNA</span>
             </Link>
           </li>
+          <li>
+            <Link
+              href="/terasoluna-multi-project"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span className="text-base">🧱</span>
+              <span>TERASOLUNA マルチプロジェクト</span>
+            </Link>
+          </li>
         </ul>
 
         {/* Overview */}
