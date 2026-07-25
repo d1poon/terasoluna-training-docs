@@ -242,4 +242,88 @@ export const TERMS: Record<string, TermInfo> = {
     detail: "同じ値の行が 2 つあってはいけない。users なら id カラム。",
     href: "/textbook#ch-db",
   },
+
+  // Build / Maven
+  maven: {
+    term: "Maven",
+    short: "Java 用のビルドツール + 依存管理システム",
+    detail: "コンパイル・テスト・jar 作成・依存ライブラリ取得を自動化する。pom.xml に「使うライブラリ」を書くだけで、Maven Central から自動 DL してくれる。TERASOLUNA / Spring Boot どちらも Maven ベース。",
+    href: "/glossary#cat-build",
+  },
+  pom: {
+    term: "pom.xml",
+    short: "Maven プロジェクトの設計書",
+    detail: "「このプロジェクトが使うライブラリ (dependencies)」「Java のバージョン」「作る jar/war の名前」を書く。Maven はこれを読んで動く。build-order の 1 番目のファイル。",
+    href: "/glossary#cat-build",
+    color: "amber",
+  },
+  applicationProperties: {
+    term: "application.properties",
+    short: "Spring Boot アプリの設定ファイル",
+    detail: "server.port=8080 / spring.datasource.url=jdbc:h2:mem:xxx など、実行時のパラメータを書く。application-dev.properties / application-prod.properties でプロファイル別に切替可能。",
+    href: "/glossary#cat-build",
+  },
+
+  // Spring
+  springBoot: {
+    term: "Spring Boot",
+    short: "Spring を「設定ほぼ無しで」使えるようにしたもの",
+    detail: "生の Spring は XML 設定が大量に必要だったが、Spring Boot は「デフォルトで動く」構成を最初から持っている。start.spring.io で雛形生成 → 起動すれば動く。このガイドは Spring Boot 3.4。",
+    href: "/glossary#cat-spring",
+  },
+  springBootApp: {
+    term: "@SpringBootApplication",
+    short: "「ここがアプリの入口」の目印 + 自動設定 ON",
+    detail: "main メソッドを持つクラスに付ける。実質「@Configuration + @EnableAutoConfiguration + @ComponentScan」の合体。このアノテーションが付いた class があるパッケージ配下を Spring が全部走査する。",
+    href: "/glossary#cat-spring",
+  },
+
+  // Spring MVC (追加)
+  getMapping: {
+    term: "@GetMapping",
+    short: "GET リクエストを受け付ける URL の宣言",
+    detail: "@GetMapping(\"/users\") と Controller のメソッドに付けると、GET /users がこのメソッドに来る。画面表示・検索・データ取得に使う。",
+    href: "/glossary#cat-spring-mvc",
+    color: "blue",
+  },
+  postMapping: {
+    term: "@PostMapping",
+    short: "POST リクエストを受け付ける URL の宣言",
+    detail: "@PostMapping(\"/users/update\") で POST /users/update を担当。フォーム送信・登録・更新に使う。処理後は redirect:/xxx を返す (PRG パターン)。",
+    href: "/glossary#cat-spring-mvc",
+    color: "blue",
+  },
+  modelAttribute: {
+    term: "@ModelAttribute",
+    short: "フォーム送信された値をオブジェクトにまとめて受け取る",
+    detail: "@PostMapping のメソッド引数に @ModelAttribute UserForm form と書くと、フォームの name=id / name=role が form.id / form.role に自動で入る。1 つ 1 つ @RequestParam で受けなくて済む (フォームバインディング)。",
+    href: "/glossary#cat-spring-mvc",
+  },
+  validation: {
+    term: "Validation (@Valid + BindingResult)",
+    short: "フォーム入力チェックの3点セット",
+    detail: "Form クラスに @NotBlank @Size 等 → Controller で @Valid @ModelAttribute Form form, BindingResult result と書く → result.hasErrors() でエラー時分岐、JSP は <form:errors path=\"xxx\"/> で表示。",
+    href: "/glossary#cat-spring-mvc",
+  },
+  controllerAdvice: {
+    term: "@ControllerAdvice",
+    short: "全 Controller 共通の例外処理を1箇所に集める",
+    detail: "@ControllerAdvice public class GlobalErrorHandler { @ExceptionHandler(...) } と書くと、どの Controller から出た例外もここに集まる。エラーページに飛ばす・ログ出す・共通処理を書く場所。",
+    href: "/glossary#cat-spring-mvc",
+    color: "rose",
+  },
+
+  // Java (追加)
+  exception: {
+    term: "Exception (例外)",
+    short: "処理途中で起きたエラーを表すオブジェクト",
+    detail: "NullPointerException / IOException / RuntimeException など。「異常事態が起きた」ことを呼び出し元に伝える仕組み。何もしないとスタックトレースが出て止まる。",
+    href: "/glossary#cat-java",
+  },
+  tryCatch: {
+    term: "try-catch",
+    short: "例外を捕まえて処理する構文",
+    detail: "try { 危険な処理 } catch (SomeException e) { エラー時の処理 } の形。DB 接続や File I/O のように「失敗しうる処理」を包む。Spring の場合、Web レイヤでは @ControllerAdvice で一括処理する方が多い。",
+    href: "/glossary#cat-java",
+  },
 };

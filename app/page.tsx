@@ -30,16 +30,21 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Big "Start here" banner */}
+          {/* Primary CTA — "Start here" recommended route */}
+          <div className="mb-3">
+            <div className="inline-block text-[10px] uppercase tracking-wider font-bold bg-brand text-white px-2 py-0.5 rounded">
+              👉 初めての方はこちら
+            </div>
+          </div>
           <Link
             href="/preface"
-            className="block bg-gradient-to-br from-brand to-brand-dark text-white rounded-2xl p-6 md:p-8 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
+            className="block bg-gradient-to-br from-brand to-brand-dark text-white rounded-2xl p-6 md:p-8 mb-10 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start gap-4">
               <div className="text-4xl md:text-5xl leading-none">📗</div>
               <div className="flex-1 min-w-0">
                 <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-                  まず最初に読む
+                  まず最初に読む · 推奨ルート
                 </div>
                 <div className="text-xl md:text-2xl font-bold mt-1">
                   Web アプリって何をしてるの?
@@ -55,109 +60,61 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Textbook banner for trainees */}
-          <Link
-            href="/textbook"
-            className="block bg-gradient-to-br from-indigo-600 to-indigo-800 text-white rounded-2xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-start gap-4">
-              <div className="text-3xl md:text-4xl leading-none">📚</div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-                  For Trainees · 別ルート
-                </div>
-                <div className="text-lg md:text-xl font-bold mt-1">
-                  後輩 (研修生) 向け 教科書 (完全ゼロから)
-                </div>
-                <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
-                  「カラムって何?」「タグって?」レベルからでも読めるチャプター 1-6 の教科書。
-                  <strong>後輩に「まずこれ読んで」と渡せる</strong>ページ。
-                </p>
-                <span className="inline-block mt-3 text-sm bg-white text-indigo-900 font-semibold px-3 py-1.5 rounded">
-                  教科書を開く →
-                </span>
-              </div>
-            </div>
-          </Link>
+          {/* Secondary — Other routes (2×2 grid) */}
+          <div className="mb-3">
+            <h2 className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
+              別ルート · 用途で選ぶ
+            </h2>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 mb-10">
+            <SecondaryCard
+              href="/textbook"
+              emoji="📚"
+              tag="For Trainees"
+              tagBg="bg-indigo-100"
+              tagText="text-indigo-900"
+              title="後輩向け 教科書 (ゼロから)"
+              desc="「カラムって何?」「タグって?」レベルからでも読めるチャプター 1-6。後輩に渡せるページ。"
+              accent="border-indigo-200 hover:border-indigo-500"
+            />
+            <SecondaryCard
+              href="/how-to"
+              emoji="🍳"
+              tag="How-to Recipe"
+              tagBg="bg-orange-100"
+              tagText="text-orange-900"
+              title="「〜するには?」レシピ集 (20 個)"
+              desc="「画面遷移するには?」「Service の作り方は?」を 1 行の答え + 実物コードで。"
+              accent="border-orange-200 hover:border-orange-500"
+            />
+            <SecondaryCard
+              href="/build-order"
+              emoji="✅"
+              tag="Checklist"
+              tagBg="bg-brand/10"
+              tagText="text-brand-dark"
+              title="作成順チェックリスト (全 23 項目)"
+              desc="1. pom.xml → 22. userInfoEdit.jsp まで通し番号で並んだリスト。進捗保存機能付き。"
+              accent="border-slate-200 hover:border-brand"
+            />
+            <SecondaryCard
+              href="/db-connection"
+              emoji="🔌"
+              tag="Deep Dive"
+              tagBg="bg-cyan-100"
+              tagText="text-cyan-900"
+              title="DB 接続の仕組み (TERASOLUNA -env)"
+              desc="jdbc.properties → -env.xml → -infra.xml の連鎖、Connection Pool、エラー診断まで。"
+              accent="border-cyan-200 hover:border-cyan-500"
+            />
+          </div>
 
-          {/* How-to recipe book banner */}
-          <Link
-            href="/how-to"
-            className="block bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-2xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-start gap-4">
-              <div className="text-3xl md:text-4xl leading-none">🍳</div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-                  How-to Recipe Book
-                </div>
-                <div className="text-lg md:text-xl font-bold mt-1">
-                  「〜するには?」レシピ集 (全 20 レシピ)
-                </div>
-                <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
-                  <strong>後輩から「これどうやるの?」と聞かれた時に開くページ</strong>。
-                  「画面遷移させるには?」「リンクボタン作るには?」「Service の作り方は?」
-                  を <strong>1 行の答え + 実物コード</strong> で。
-                </p>
-                <span className="inline-block mt-3 text-sm bg-white text-orange-700 font-semibold px-3 py-1.5 rounded">
-                  レシピ集を開く →
-                </span>
-              </div>
-            </div>
-          </Link>
-
-          {/* Build order checklist banner (secondary hero) */}
-          <Link
-            href="/build-order"
-            className="block bg-white border-2 border-brand rounded-xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-start gap-4">
-              <div className="text-3xl md:text-4xl leading-none">✅</div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs uppercase tracking-wider text-brand font-semibold">
-                  File-by-file Checklist
-                </div>
-                <div className="text-lg md:text-xl font-bold mt-1 text-slate-900">
-                  作成順チェックリスト (全 23 項目)
-                </div>
-                <p className="mt-2 text-sm md:text-base text-slate-700 leading-relaxed">
-                  <strong className="text-brand-dark">「1. pom.xml → 2. application.properties → … → 22. userInfoEdit.jsp」</strong>
-                  と通し番号で並んだリスト。1 番から順に作れば必ず動く。進捗チェック機能付き。
-                </p>
-                <span className="inline-block mt-3 text-sm bg-brand text-white font-semibold px-3 py-1.5 rounded">
-                  チェックリストを開く →
-                </span>
-              </div>
-            </div>
-          </Link>
-
-          {/* DB Connection banner - NEW */}
-          <Link
-            href="/db-connection"
-            className="block bg-gradient-to-br from-cyan-600 to-blue-700 text-white rounded-xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-start gap-4">
-              <div className="text-3xl md:text-4xl leading-none">🔌</div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-                  Deep Dive
-                </div>
-                <div className="text-lg md:text-xl font-bold mt-1">
-                  DB 接続の仕組み (TERASOLUNA -env 対応)
-                </div>
-                <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
-                  「DB 接続できない」で詰まる部分を細かく解説。
-                  <strong>jdbc.properties → -env.xml → -infra.xml の連鎖</strong>、
-                  Connection Pool、環境プロファイル、エラー診断まで。
-                </p>
-                <span className="inline-block mt-3 text-sm bg-white text-blue-800 font-semibold px-3 py-1.5 rounded">
-                  DB 接続を理解する →
-                </span>
-              </div>
-            </div>
-          </Link>
-
-          {/* Secondary entry cards */}
+          {/* Quick access — 3-card grid */}
+          <div className="mb-3">
+            <h2 className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
+              クイックアクセス
+            </h2>
+          </div>
           <div className="grid gap-3 md:gap-4 md:grid-cols-3 mb-10">
             <Link
               href="/steps/01-project-skeleton"
@@ -187,7 +144,7 @@ export default function HomePage() {
                 用語集
               </div>
               <div className="text-sm text-slate-600 mt-1 leading-snug">
-                Bean / DI / CSRF … 40 用語
+                Bean / DI / CSRF … 検索付き
               </div>
             </Link>
 
@@ -283,5 +240,55 @@ function Bullet({ children }: { children: React.ReactNode }) {
       <span className="text-brand font-bold shrink-0">✓</span>
       <span>{children}</span>
     </li>
+  );
+}
+
+function SecondaryCard({
+  href,
+  emoji,
+  tag,
+  tagBg,
+  tagText,
+  title,
+  desc,
+  accent,
+}: {
+  href: string;
+  emoji: string;
+  tag: string;
+  tagBg: string;
+  tagText: string;
+  title: string;
+  desc: string;
+  accent: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={
+        "block bg-white border rounded-xl p-5 hover:shadow-sm transition-all " +
+        accent
+      }
+    >
+      <div className="flex items-start gap-3">
+        <div className="text-3xl leading-none shrink-0">{emoji}</div>
+        <div className="flex-1 min-w-0">
+          <span
+            className={
+              "inline-block text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded " +
+              tagBg +
+              " " +
+              tagText
+            }
+          >
+            {tag}
+          </span>
+          <div className="text-base md:text-lg font-bold mt-1.5 text-slate-900 leading-tight">
+            {title}
+          </div>
+          <p className="mt-1.5 text-sm text-slate-600 leading-snug">{desc}</p>
+        </div>
+      </div>
+    </Link>
   );
 }

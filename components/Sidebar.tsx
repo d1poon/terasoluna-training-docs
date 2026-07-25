@@ -58,7 +58,9 @@ export function Sidebar({
 }) {
   const currentStep = steps.find((s) => s.slug === currentSlug);
   const currentPhase = findPhaseForStep(currentStep?.number);
-  const initialOpen = new Set<string>(currentPhase ? [currentPhase] : ["setup"]);
+  // Step ページを見ているときはその Phase のみ展開。
+  // それ以外 (トップ / preface / glossary 等) は全 Phase を折りたたんで情報密度を下げる。
+  const initialOpen = new Set<string>(currentPhase ? [currentPhase] : []);
 
   const [openPhases, setOpenPhases] = useState<Set<string>>(initialOpen);
   const [mobileOpen, setMobileOpen] = useState(false);

@@ -57,6 +57,26 @@ const ALIASES: Record<keyof typeof TERMS, string[]> = {
   column: ["カラム"],
   record: ["レコード"],
   pk: ["主キー", "Primary Key"],
+
+  // Build / Maven
+  maven: ["Maven"],
+  pom: ["pom.xml"],
+  applicationProperties: ["application.properties"],
+
+  // Spring (追加)
+  springBoot: ["Spring Boot"],
+  springBootApp: ["@SpringBootApplication"],
+
+  // Spring MVC (追加)
+  getMapping: ["@GetMapping"],
+  postMapping: ["@PostMapping"],
+  modelAttribute: ["@ModelAttribute", "フォームバインディング"],
+  validation: ["Validation", "@Valid", "BindingResult"],
+  controllerAdvice: ["@ControllerAdvice", "@ExceptionHandler"],
+
+  // Java (追加)
+  exception: ["Exception", "例外"],
+  tryCatch: ["try-catch"],
 };
 
 const TERM_LINK_CLASS =
