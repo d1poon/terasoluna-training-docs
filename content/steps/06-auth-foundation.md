@@ -119,9 +119,9 @@ public class SecurityConfig {
 #### `/WEB-INF/**` が **なぜ** permitAll に必要か (超重要)
 
 Spring Security 6 は **JSP への内部 forward も filter chain を再走**する。
-- Controller が "login" 返す → ViewResolver が `/WEB-INF/views/login.jsp` に forward
+- Controller が `"login"` を返す → ViewResolver が `/WEB-INF/views/login.jsp` に forward
 - そこで再度 Spring Security が起動 → `/WEB-INF/...` は authenticated 対象 → `/login` にリダイレクト
-- そこがまた同じルートを通り → **無限リダイレクト**
+- そのリダイレクト先でも同じ経路を通り → **無限リダイレクト**
 
 `/WEB-INF/**` を permitAll しても Servlet コンテナ仕様で外部から直接アクセスできないので **セキュリティは下がらない**。
 

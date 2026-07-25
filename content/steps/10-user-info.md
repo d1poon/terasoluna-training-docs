@@ -104,11 +104,20 @@ String id = principal.getName();  // サーバが「認証済みユーザ」を�
 - **getter がないと空表示になる**。getter を書き忘れると詰まる
 
 ### 「変更する」ボタンをリンクにする
-`<a href="..."><button>変更する</button></a>` は HTML5 では厳密には invalid (`<a>` の中に `<button>`)。**正しくは:**
+教材では見た目のわかりやすさを優先して `<a href="..."><button>変更する</button></a>` の入れ子を使っている。ただし **HTML5 の仕様では `<a>` の中に `<button>` を置くのは invalid**。
+
+厳密に正しい書き方は以下のどちらか:
 ```html
-<a href="<c:url value='/user-info/edit'/>">変更する</a>
+<!-- ① <a> だけを使い、CSS でボタン風に装飾する -->
+<a href="<c:url value='/user-info/edit'/>" class="btn">変更する</a>
+
+<!-- ② form + POST で遷移する (状態を変えない画面遷移でも許容される) -->
+<form action="<c:url value='/user-info/edit'/>" method="get">
+    <button type="submit">変更する</button>
+</form>
 ```
-もしくは form + POST でリダイレクト。**教材では見た目重視で妥協**しているだけなので、コードレビューでは指摘してあげる。
+
+**受講者のコードレビューでは、この点を指摘してあげる**と親切。
 
 ## ディレクトリ構造 (このステップ完了時)
 

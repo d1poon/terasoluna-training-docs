@@ -77,7 +77,7 @@ export default function DbConnectionPage() {
             <Note>
               💡 Spring Boot 単一プロジェクト (このリファレンス) では
               <code>application.properties</code> 1 ファイルで済む。
-              TERASOLUNA が難しく見える 大部分は<strong>ファイルが分散していること</strong>から来る。
+              TERASOLUNA が難しく見える理由の大部分は、<strong>ファイルが複数モジュールに分散していること</strong>から来る。
             </Note>
           </Section>
 

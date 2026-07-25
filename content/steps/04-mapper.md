@@ -101,7 +101,7 @@ public interface UserMapper {
 
 ### `@Param` は何のため?
 - 引数が **2 つ以上**あるとき、XML 側からアクセスする名前を明示する必要がある
-- 1 引数のときは省略しても動くが、**常に付けるのが安全**
+- 引数が 1 つのときは省略しても動くが、**常に付けるのが安全**
 
 ## ディレクトリ構造 (このステップ完了時)
 
@@ -129,7 +129,7 @@ mvn compile
 
 ### 落とし穴
 
-- **`Invalid bound statement (not found)`** エラー: XML の `namespace` と Java クラスのパスが 1文字でも違うと出る。目 grep でチェック
+- **`Invalid bound statement (not found)`** エラー: XML の `namespace` と Java クラスのパスが 1 文字でも違うと出る。両者を並べて 1 文字ずつ目視で照合する
 - **`resultType` に short name を書いても動く場合がある** (Boot の型エイリアス設定次第) が、**完全修飾名で書く方が確実**
 
 ## 次

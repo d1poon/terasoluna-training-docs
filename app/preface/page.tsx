@@ -39,9 +39,9 @@ const faqs: Faq[] = [
     a: (
       <>
         <T term="controller" /> は「勝手にどこかに行く」わけではありません。<T term="controller" /> の
-        <T term="method" />の中で書いてあるコードが上から順に実行されます。
-        例えば <code>userService.findById(id)</code> という行があれば、そこで <T term="service" /> に処理が移ります。
-        最後の <code>return &quot;userInfo&quot;;</code> は「userInfo.jsp に行け」という指示です。
+        <T term="method" />の中に書いてあるコードが、上から順に実行されるだけです。
+        例えば <code>userService.findById(id)</code> という行があれば、その行で <T term="service" /> に処理が移ります。
+        最後の <code>return &quot;userInfo&quot;;</code> は「userInfo.jsp に飛べ」という指示です。
       </>
     ),
   },
@@ -81,11 +81,11 @@ const faqs: Faq[] = [
     q: "なぜ Service を挟むの? Controller から直接 Mapper 呼べば?",
     a: (
       <>
-        動きます。でも: (1) 業務ロジック (「役職が空なら全件検索」等) を書く場所が要る、
-        (2) 複数の <T term="mapper" /> を跨ぐ処理をまとめる、
-        (3) <T term="transactional" /> 境界を分かりやすく、
+        動きます。でも: (1) 業務ロジック (「役職が空なら全件検索」等) を書く場所が必要、
+        (2) 複数の <T term="mapper" /> を跨ぐ処理をまとめる場所が必要、
+        (3) <T term="transactional" /> の境界を分かりやすく置ける、
         (4) テストしやすい (<T term="service" /> だけ単独テストできる)。
-        だから 3 層に分けるのが定石。
+        以上の理由で 3 層に分けるのが定石です。
       </>
     ),
   },

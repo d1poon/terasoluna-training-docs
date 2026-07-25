@@ -224,7 +224,7 @@ export default function ArchitecturePage() {
               <ul className="space-y-1.5 text-sm text-slate-700 list-disc pl-5">
                 <li>全部が 1 つの Controller に集まる → 数百行の巨大クラス</li>
                 <li>テストできない (HTTP・業務ロジック・DB が絡まる)</li>
-                <li>SQL を変えるだけでも Controller 全体を触る羽目に</li>
+                <li>SQL を変えるだけでも Controller 全体を触ることになる</li>
               </ul>
             </div>
             <div className="bg-white rounded-lg border border-emerald-200 p-5">

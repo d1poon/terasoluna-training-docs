@@ -40,7 +40,7 @@ Java のコードは以下の 4 段で組み立てられている:
 ### ② `import` = 他のクラスを短い名前で呼ぶ許可
 
 - Java の標準に含まれる `java.lang.*` (String, System など) は import 不要
-- それ以外は import しないと使えない、あるいは毎回フルパスで書く羽目になる
+- それ以外は import しないと使えない、あるいは毎回フルパスで書く必要が出る
 - 例: `import java.util.List;` があると以降 `List<User>` と書ける。無いと `java.util.List<User>` と書く必要がある
 
 ### ③ `class` = 「もの」の設計図
@@ -118,7 +118,7 @@ public class User {
     /** 役職 (部長 / 課長 / 係長 / 主任 / 一般 など)、users テーブルの role カラム */
     private String role;
 
-    // ---- getters / setters (私は private なので必ずここを経由してアクセスする) ----
+    // ---- getters / setters (上のフィールドは private なので、外からのアクセスはここを経由する) ----
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -170,7 +170,7 @@ A: 動くけど**やらない**。理由:
 - 将来のバリデーション追加が効かなくなる
 - 業界の慣習に沿っていない → チームで読めない
 
-### Q: `User` という名前が Spring Security の User と被る
+### Q: `User` という名前が Spring Security の User と被って大丈夫?
 A: パッケージが違えば別クラスとして共存できる。
 - `com.example.rolemgr.domain.User` (自作)
 - `org.springframework.security.core.userdetails.User` (Spring 側)

@@ -64,7 +64,7 @@ CREATE TABLE users (
 #### なぜこう書く
 
 - **`DROP TABLE IF EXISTS`**: 開発中の再起動で衝突しないように毎回作り直す
-- **`VARCHAR(255)`**: BCrypt ハッシュは 60文字だが余裕を持たせる。50 だと切れて認証失敗する地雷
+- **`VARCHAR(255)`**: BCrypt ハッシュは 60文字だが余裕を持たせる。50 にすると桁溢れでハッシュが切れ、認証が通らなくなる
 - 課題仕様には `password` はないが、**認証には必要**。実装で追加
 
 ## ディレクトリ構造 (このステップ完了時)
@@ -110,7 +110,7 @@ Started RolemgrApplication in X.XXX seconds
 - **`Whitelabel Error Page`**: 正常。まだ Controller がないから
 - **`Failed to determine a suitable driver class`**: `application.properties` の `spring.datasource.*` が抜けている
 - **`Table "USERS" not found`**: `schema.sql` の場所が違う。必ず `src/main/resources/` 直下
-- **H2 コンソールで「JDBC URL 違う」と怒られる**: URL に typo。`jdbc:h2:mem:rolemgr` を厳密に
+- **H2 コンソールで「JDBC URL が不正」と表示される**: 入力した URL のスペルミス。`jdbc:h2:mem:rolemgr` を正確にコピーする
 
 ## 次
 

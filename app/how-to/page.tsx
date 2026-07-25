@@ -233,8 +233,8 @@ public interface UserMapper {
       },
       {
         n: 7,
-        q: "Controller から DB のデータを取ってくるには? (フル通し)",
-        a: "3 層積む: (1) Mapper に findXxx 追加、(2) Service にそれを呼ぶメソッド追加、(3) Controller で Service を呼び、Model にセット、JSP で表示。",
+        q: "Controller から DB のデータを取ってくるには? (Controller → Service → Mapper → DB を一気通貫で)",
+        a: "3 層を積み上げる: (1) Mapper に findXxx 追加、(2) Service にそれを呼ぶメソッド追加、(3) Controller で Service を呼び、Model にセット、JSP で表示。",
         where: "3 ファイルにまたがる (Mapper / Service / Controller)",
         code: [
           {
@@ -504,7 +504,7 @@ public String register(@ModelAttribute UserForm form) {
       {
         n: 17,
         q: "GET と POST どっちで書くの?",
-        a: "<strong>見るだけ / 検索</strong> は GET (URL でブックマークできる、リロードで副作用なし)。<strong>登録・更新・削除</strong> (サーバの状態を変える) は POST。この原則を守るのが Web アプリのお作法。",
+        a: "<strong>見るだけ / 検索</strong> は GET (URL でブックマークできる、リロードで副作用なし)。<strong>登録・更新・削除</strong> (サーバの状態を変える) は POST。この原則を守るのが Web アプリの基本ルール。",
         code: [
           {
             label: "GET (検索)",

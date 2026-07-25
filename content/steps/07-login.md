@@ -44,7 +44,7 @@ step: 07
 
 ### `<%@ page contentType="text/html; charset=UTF-8" ... %>` の意味
 
-- ファイルの先頭必須
+- JSP ファイルの先頭に必ず書く
 - `contentType`: ブラウザに「これは UTF-8 の HTML だよ」と伝えるヘッダを設定
 - 日本語が化ける時はここが疑わしい
 
@@ -244,7 +244,7 @@ http://localhost:8080/login にアクセス → **自作の「ログイン画面
 ## よくある詰まり
 
 - **無限リダイレクト** → SecurityConfig の `/WEB-INF/**` permitAll が抜けている (01_Knowledge/spring-security-6-jsp-forward-loop)
-- **CSRF エラー (403)** → CSRF トークンの hidden が抜けてる
+- **CSRF エラー (403)** → フォーム内の CSRF トークン hidden が抜けている
 - **JSP が真っ白 or 500** → `<%@ taglib %>` の URI 誤り、または `tomcat-embed-jasper` 依存漏れ
 - **日本語が化ける** → `<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>` が先頭にあるか
 
