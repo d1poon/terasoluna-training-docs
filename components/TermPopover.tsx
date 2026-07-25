@@ -46,10 +46,11 @@ export function T({
     if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
     if (left < 8) left = 8;
 
-    setPos({ top: top + window.scrollY, left: left + window.scrollX, placement });
+    // position: fixed 使用のため scrollY/X は加えない (ビューポート基準)
+    setPos({ top, left, placement });
   }, [open]);
 
-  // クリック外し / Esc で閉じる
+  // クリック外し / Esc / スクロール で閉じる
   useEffect(() => {
     if (!open) return;
     function onClickOutside(e: MouseEvent) {
@@ -65,11 +66,17 @@ export function T({
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
     }
+    function onScroll() {
+      // fixed 位置がスクロールで term から離れるので閉じる
+      setOpen(false);
+    }
     window.addEventListener("mousedown", onClickOutside);
     window.addEventListener("keydown", onKey);
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
     return () => {
       window.removeEventListener("mousedown", onClickOutside);
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", onScroll, { capture: true });
     };
   }, [open]);
 
