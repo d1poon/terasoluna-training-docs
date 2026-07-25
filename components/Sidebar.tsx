@@ -15,28 +15,28 @@ const PHASE_GROUPS: PhaseGroup[] = [
   {
     key: "setup",
     emoji: "🔧",
-    name: "下ごしらえ",
+    name: "セットアップ",
     desc: "01-02",
     stepNumbers: [0, 1, 2],
   },
   {
     key: "backend",
     emoji: "⚙️",
-    name: "裏側 (Backend)",
+    name: "バックエンド",
     desc: "03-06",
     stepNumbers: [3, 4, 5, 6],
   },
   {
     key: "frontend",
     emoji: "🎨",
-    name: "画面 (Frontend)",
+    name: "フロントエンド",
     desc: "07-11",
     stepNumbers: [7, 8, 9, 10, 11],
   },
   {
     key: "wrap",
-    emoji: "🎉",
-    name: "完成",
+    emoji: "✅",
+    name: "動作確認",
     desc: "12",
     stepNumbers: [12],
   },
@@ -90,9 +90,9 @@ export function Sidebar({
       <div className="p-5 border-b border-slate-200">{brandBlock}</div>
 
       <nav className="p-3">
-        {/* First-time visitor */}
+        {/* 1. Foundation - まず読む */}
         <div className="text-[10px] uppercase tracking-wider text-brand font-semibold mb-1 px-2">
-          はじめに
+          まず読む
         </div>
         <ul className="mb-4 space-y-0.5">
           <li>
@@ -105,6 +105,33 @@ export function Sidebar({
               <span>まず最初に読む</span>
             </Link>
           </li>
+          <li>
+            <Link
+              href="/textbook"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-indigo-50 text-indigo-900 font-semibold hover:bg-indigo-100"
+            >
+              <span className="text-base">📚</span>
+              <span>教科書 (ゼロから)</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/glossary"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span className="text-base">📖</span>
+              <span>用語集</span>
+            </Link>
+          </li>
+        </ul>
+
+        {/* 2. Reference - 手を動かす時 */}
+        <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
+          リファレンス
+        </div>
+        <ul className="mb-4 space-y-0.5">
           <li>
             <Link
               href="/build-order"
@@ -127,14 +154,21 @@ export function Sidebar({
           </li>
           <li>
             <Link
-              href="/glossary"
+              href="/db-connection"
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-cyan-50 text-cyan-900 font-semibold hover:bg-cyan-100"
             >
-              <span className="text-base">📖</span>
-              <span>用語集</span>
+              <span className="text-base">🔌</span>
+              <span>DB 接続の仕組み</span>
             </Link>
           </li>
+        </ul>
+
+        {/* 3. TERASOLUNA */}
+        <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
+          TERASOLUNA
+        </div>
+        <ul className="mb-4 space-y-0.5">
           <li>
             <Link
               href="/spring-vs-terasoluna"
@@ -152,31 +186,14 @@ export function Sidebar({
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
               <span className="text-base">🧱</span>
-              <span>TERASOLUNA マルチプロジェクト</span>
+              <span>マルチプロジェクト構造</span>
             </Link>
           </li>
         </ul>
 
-        {/* 後輩向け (Trainee section) */}
+        {/* 4. Visualization */}
         <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
-          後輩向け (For Trainees)
-        </div>
-        <ul className="mb-4 space-y-0.5">
-          <li>
-            <Link
-              href="/textbook"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-indigo-50 text-indigo-900 font-semibold hover:bg-indigo-100"
-            >
-              <span className="text-base">📚</span>
-              <span>教科書 (ゼロから)</span>
-            </Link>
-          </li>
-        </ul>
-
-        {/* Overview */}
-        <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
-          Overview
+          可視化
         </div>
         <ul className="mb-4 space-y-0.5">
           <li>

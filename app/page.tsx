@@ -131,6 +131,32 @@ export default function HomePage() {
             </div>
           </Link>
 
+          {/* DB Connection banner - NEW */}
+          <Link
+            href="/db-connection"
+            className="block bg-gradient-to-br from-cyan-600 to-blue-700 text-white rounded-xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-3xl md:text-4xl leading-none">🔌</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                  Deep Dive
+                </div>
+                <div className="text-lg md:text-xl font-bold mt-1">
+                  DB 接続の仕組み (TERASOLUNA -env 対応)
+                </div>
+                <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
+                  「DB 接続できない」で詰まる部分を細かく解説。
+                  <strong>jdbc.properties → -env.xml → -infra.xml の連鎖</strong>、
+                  Connection Pool、環境プロファイル、エラー診断まで。
+                </p>
+                <span className="inline-block mt-3 text-sm bg-white text-blue-800 font-semibold px-3 py-1.5 rounded">
+                  DB 接続を理解する →
+                </span>
+              </div>
+            </div>
+          </Link>
+
           {/* Secondary entry cards */}
           <div className="grid gap-3 md:gap-4 md:grid-cols-3 mb-10">
             <Link

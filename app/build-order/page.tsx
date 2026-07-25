@@ -71,7 +71,7 @@ type Phase = {
 
 const PHASES: Phase[] = [
   {
-    name: "Phase A — 下ごしらえ",
+    name: "Phase A — セットアップ",
     emoji: "🔧",
     desc: "プロジェクトを箱ごと立ち上げる",
     items: [
@@ -82,7 +82,7 @@ const PHASES: Phase[] = [
     ],
   },
   {
-    name: "Phase B — 裏側 (Backend)",
+    name: "Phase B — バックエンド",
     emoji: "⚙️",
     desc: "3層構造 (Domain → Repository → Service) を積み上げる",
     items: [
@@ -103,7 +103,7 @@ const PHASES: Phase[] = [
     ],
   },
   {
-    name: "Phase D — 画面 (Frontend)",
+    name: "Phase D — フロントエンド",
     emoji: "🎨",
     desc: "5画面を順番に。Controller → JSP のペアで積む",
     items: [
@@ -121,8 +121,8 @@ const PHASES: Phase[] = [
     ],
   },
   {
-    name: "Phase E — 完成確認",
-    emoji: "🎉",
+    name: "Phase E — 動作確認",
+    emoji: "✅",
     desc: "全画面を通しで動かして自己確認",
     items: [
       { n: 23, filename: "(新規ファイルなし)", path: "動作確認シナリオ 14 手順", layer: "Entry", desc: "ログイン → 検索 → ユーザ情報 → 変更 → PRG 動作を通しで確認", stepSlug: "12-complete", stepNo: 12, stepTitle: "完成 & まとめ", minutes: 15 },
