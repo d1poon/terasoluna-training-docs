@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { T } from "@/components/TermPopover";
+import { RelatedLinks } from "@/components/RelatedLinks";
 
 export const metadata = { title: "はじめに | TERASOLUNA 研修" };
 
@@ -29,46 +31,115 @@ const flowSteps = [
   { n: 11, actor: "🌐 ブラウザ", action: "HTML を受け取り画面に描画", detail: "お客さんが画面を見る" },
 ];
 
-const faqs = [
+// FAQ は用語をポップオーバー可能な形で書けるよう JSX に変更
+type Faq = { q: string; a: React.ReactNode };
+const faqs: Faq[] = [
   {
     q: "Controller → どこにいくの?",
-    a: "Controller は「勝手にどこかに行く」わけではありません。Controller のメソッドの中で書いてあるコードが上から順に実行されます。例えば `userService.findById(id)` という行があれば、そこで Service に処理が移ります。最後の `return \"userInfo\";` は「userInfo.jsp に行け」という指示です。",
+    a: (
+      <>
+        <T term="controller" /> は「勝手にどこかに行く」わけではありません。<T term="controller" /> の
+        <T term="method" />の中で書いてあるコードが上から順に実行されます。
+        例えば <code>userService.findById(id)</code> という行があれば、そこで <T term="service" /> に処理が移ります。
+        最後の <code>return &quot;userInfo&quot;;</code> は「userInfo.jsp に行け」という指示です。
+      </>
+    ),
   },
   {
     q: "class って結局何?",
-    a: "「もの」の設計図です。たとえば「ユーザー」という設計図が User.java。この設計図から実際の「u001 さん」「u002 さん」を作れる (これをオブジェクトと呼ぶ)。設計図に「フィールド (持ってるデータ)」と「メソッド (できる動作)」を書きます。",
+    a: (
+      <>
+        「もの」の設計図です。たとえば「ユーザー」という設計図が User.java。
+        この設計図から実際の「u001 さん」「u002 さん」を作れる (これを<T term="object" />と呼ぶ)。
+        設計図に「<T term="field" />(持ってるデータ)」と「<T term="method" />(できる動作)」を書きます。
+      </>
+    ),
   },
   {
     q: "@Controller とか @Service って何?",
-    a: "「アノテーション」と呼ばれる Java のラベルです。「この class はウェイターだよ」「これはシェフだよ」と Spring に教えるための貼り紙。Spring は起動時に貼り紙のあるクラスを集めて管理下に置きます (これを DI コンテナ と呼ぶ)。",
+    a: (
+      <>
+        「<T term="annotation" />」と呼ばれる Java のラベルです。
+        「この <T term="class" /> はウェイターだよ」「これはシェフだよ」と Spring に教えるための貼り紙。
+        Spring は起動時に貼り紙のある<T term="class" />を集めて管理下に置きます (これを DI コンテナ と呼ぶ)。
+      </>
+    ),
   },
   {
     q: "DI とか Bean って何?",
-    a: "DI = Dependency Injection = 依存性注入。「Controller が Service を使いたい」時、自分で `new UserService()` するのでなく、Spring が「はい、これ使って」と渡してくれる仕組み。Spring が管理しているオブジェクトを Bean と呼びます。慣れないうちは「Spring が用意して渡してくれる」だけ覚えれば OK。",
+    a: (
+      <>
+        <T term="di" /> = Dependency Injection = 依存性注入。
+        「<T term="controller" /> が <T term="service" /> を使いたい」時、
+        自分で <code>new UserService()</code> するのでなく、Spring が「はい、これ使って」と渡してくれる仕組み。
+        Spring が管理しているオブジェクトを <T term="bean" /> と呼びます。
+        慣れないうちは「Spring が用意して渡してくれる」だけ覚えれば OK。
+      </>
+    ),
   },
   {
     q: "なぜ Service を挟むの? Controller から直接 Mapper 呼べば?",
-    a: "動きます。でも: (1) 業務ロジック (「役職が空なら全件検索」等) を書く場所が要る、(2) 複数の Mapper を跨ぐ処理をまとめる、(3) トランザクション境界を分かりやすく、(4) テストしやすい (Service だけ単独テストできる)。だから 3 層に分けるのが定石。",
+    a: (
+      <>
+        動きます。でも: (1) 業務ロジック (「役職が空なら全件検索」等) を書く場所が要る、
+        (2) 複数の <T term="mapper" /> を跨ぐ処理をまとめる、
+        (3) <T term="transactional" /> 境界を分かりやすく、
+        (4) テストしやすい (<T term="service" /> だけ単独テストできる)。
+        だから 3 層に分けるのが定石。
+      </>
+    ),
   },
   {
     q: "JSP って何? HTML と何が違うの?",
-    a: "JSP = Java Server Pages = 「サーバで Java の力を借りて HTML を組み立てるテンプレート」。`${user.id}` みたいな部分がサーバで「u001」に置き換わってから、ブラウザに HTML として送られます。ブラウザは JSP を見ることはできない (組み立て済みの HTML しか受け取らない)。",
+    a: (
+      <>
+        <T term="jsp" /> = Java Server Pages = 「サーバで Java の力を借りて HTML を組み立てるテンプレート」。
+        <T term="el" /> みたいな部分がサーバで「u001」に置き換わってから、ブラウザに HTML として送られます。
+        ブラウザは JSP を見ることはできない (組み立て済みの HTML しか受け取らない)。
+      </>
+    ),
   },
   {
     q: "GET と POST の違いは?",
-    a: "どちらも HTTP リクエストの種類。GET = 「見たいだけ」「取ってくるだけ」(検索、画面表示)。POST = 「サーバの状態を変える」(更新、削除、新規登録)。GET はブラウザリロードで何度実行されても安全、POST はリロードで二重更新の危険があるので `redirect:` で GET に切り替える (これが PRG パターン)。",
+    a: (
+      <>
+        どちらも <T term="http" /> リクエストの種類。
+        <T term="get" /> = 「見たいだけ」「取ってくるだけ」(検索、画面表示)。
+        <T term="post" /> = 「サーバの状態を変える」(更新、削除、新規登録)。
+        GET はブラウザリロードで何度実行されても安全、POST はリロードで二重更新の危険があるので
+        <code>redirect:</code> で GET に切り替える (これが <T term="prg" /> です)。
+      </>
+    ),
   },
   {
     q: "CSRF って何?",
-    a: "「他のサイトから勝手にあなたのアカウントで送信させる」攻撃を防ぐための合言葉。フォームに hidden で埋め込み、POST 送信時にサーバが照合。合言葉がない POST は Spring Security が 403 で拒否します。",
+    a: (
+      <>
+        <T term="csrf" /> = 「他のサイトから勝手にあなたのアカウントで送信させる」攻撃を防ぐための合言葉。
+        フォームに hidden で埋め込み、POST 送信時にサーバが照合。
+        合言葉がない POST は Spring Security が 403 で拒否します。
+      </>
+    ),
   },
   {
     q: "セッションって何?",
-    a: "「お客さんがお店にいる間、その人だけの情報を保持する箱」。ログイン中のユーザ ID などをここに入れておく。ブラウザを閉じるかタイムアウトで消える。Cookie の JSESSIONID がセッションを識別する鍵。",
+    a: (
+      <>
+        <T term="session" /> = 「お客さんがお店にいる間、その人だけの情報を保持する箱」。
+        ログイン中のユーザ ID などをここに入れておく。
+        ブラウザを閉じるかタイムアウトで消える。Cookie の JSESSIONID がセッションを識別する鍵。
+      </>
+    ),
   },
   {
     q: "MyBatis と JPA/Hibernate の違いは?",
-    a: "どちらも SQL とオブジェクトのブリッジ。JPA は「SQL を書かない、自動生成」。MyBatis は「SQL を自分で書く、細かく制御できる」。Terasoluna は MyBatis を採用。日本のSIer現場で「SQL を人間が見えるところに置きたい」ニーズが強いのが理由。",
+    a: (
+      <>
+        どちらも SQL とオブジェクトのブリッジ。JPA は「SQL を書かない、自動生成」。
+        <T term="mapper" /> は「SQL を自分で書く、細かく制御できる」。
+        Terasoluna は MyBatis を採用。日本の SIer 現場で「SQL を人間が見えるところに置きたい」ニーズが強いのが理由。
+      </>
+    ),
   },
 ];
 
@@ -274,7 +345,7 @@ public String view(Principal principal, Model model) {
                   <summary className="cursor-pointer p-4 md:p-5 font-semibold text-slate-900 hover:bg-slate-50 rounded-xl">
                     Q{i + 1}. {f.q}
                   </summary>
-                  <div className="px-4 md:px-5 pb-4 md:pb-5 text-sm md:text-base text-slate-700 leading-relaxed">
+                  <div className="px-4 md:px-5 pb-4 md:pb-5 text-sm md:text-base text-slate-700 leading-relaxed [&_button]:cursor-help">
                     {f.a}
                   </div>
                 </details>
