@@ -55,6 +55,31 @@ export default function HomePage() {
             </div>
           </Link>
 
+          {/* Textbook banner for trainees */}
+          <Link
+            href="/textbook"
+            className="block bg-gradient-to-br from-indigo-600 to-indigo-800 text-white rounded-2xl p-5 md:p-6 mb-4 md:mb-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-3xl md:text-4xl leading-none">📚</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                  For Trainees · 別ルート
+                </div>
+                <div className="text-lg md:text-xl font-bold mt-1">
+                  後輩 (研修生) 向け 教科書 (完全ゼロから)
+                </div>
+                <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
+                  「カラムって何?」「タグって?」レベルからでも読めるチャプター 1-6 の教科書。
+                  <strong>後輩に「まずこれ読んで」と渡せる</strong>ページ。
+                </p>
+                <span className="inline-block mt-3 text-sm bg-white text-indigo-900 font-semibold px-3 py-1.5 rounded">
+                  教科書を開く →
+                </span>
+              </div>
+            </div>
+          </Link>
+
           {/* How-to recipe book banner */}
           <Link
             href="/how-to"

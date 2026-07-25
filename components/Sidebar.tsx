@@ -157,6 +157,23 @@ export function Sidebar({
           </li>
         </ul>
 
+        {/* 後輩向け (Trainee section) */}
+        <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
+          後輩向け (For Trainees)
+        </div>
+        <ul className="mb-4 space-y-0.5">
+          <li>
+            <Link
+              href="/textbook"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-indigo-50 text-indigo-900 font-semibold hover:bg-indigo-100"
+            >
+              <span className="text-base">📚</span>
+              <span>教科書 (ゼロから)</span>
+            </Link>
+          </li>
+        </ul>
+
         {/* Overview */}
         <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
           Overview
