@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { StepMeta } from "@/lib/steps";
+import { SearchPalette } from "./SearchPalette";
 
 type PhaseGroup = {
   key: string;
@@ -90,6 +91,11 @@ export function Sidebar({
       <div className="p-5 border-b border-slate-200">{brandBlock}</div>
 
       <nav className="p-3">
+        {/* Global search */}
+        <div className="mb-4">
+          <SearchPalette />
+        </div>
+
         {/* 1. Foundation - まず読む */}
         <div className="text-[10px] uppercase tracking-wider text-brand font-semibold mb-1 px-2">
           まず読む

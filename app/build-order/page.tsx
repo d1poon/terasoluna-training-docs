@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { RelatedLinks } from "@/components/RelatedLinks";
 
 // このページはビルド時 (SSG) にはステップメタを埋め込まないので、
 // サイドバー用のダミー steps を作る (実行時に何も参照しないため)
@@ -346,6 +347,13 @@ export default function BuildOrderPage() {
               </p>
             </div>
           )}
+
+          <RelatedLinks items={[
+            { href: "/how-to", emoji: "🍳", label: "「〜するには?」レシピ集", desc: "詰まった時に開く。20 レシピで即答形式" },
+            { href: "/preface", emoji: "📗", label: "まず最初に読む", desc: "全体像を掴んでから戻ってくると理解が早い" },
+            { href: "/db-connection", emoji: "🔌", label: "DB 接続の仕組み", desc: "Step 02 で DB が動かない時はここ" },
+            { href: "/architecture", emoji: "🏛", label: "アーキテクチャ全体図", desc: "22 ファイルが層の中でどこに位置するか" },
+          ]} />
         </main>
       </div>
     </div>

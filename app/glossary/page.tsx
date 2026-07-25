@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { RelatedLinks } from "@/components/RelatedLinks";
 
 export const metadata = { title: "用語集 | TERASOLUNA 研修" };
 
@@ -351,7 +352,14 @@ export default function GlossaryPage() {
             );
           })}
 
-          <div className="mt-10 pt-6 border-t border-slate-200 text-sm text-slate-600 text-center">
+          <RelatedLinks items={[
+            { href: "/textbook", emoji: "📚", label: "教科書 (ゼロから)", desc: "カラム・タグ・class 等の基礎を章立てで" },
+            { href: "/preface", emoji: "📗", label: "まず最初に読む", desc: "レストランメタファーで全体像を掴む" },
+            { href: "/how-to", emoji: "🍳", label: "「〜するには?」レシピ集", desc: "画面遷移・Service 作成 等の実装レシピ" },
+            { href: "/architecture", emoji: "🏛", label: "アーキテクチャ全体図", desc: "22 ファイルの層構造を 1 枚で" },
+          ]} />
+
+          <div className="mt-8 text-sm text-slate-600 text-center">
             まだ足りない用語があれば、Vault の <code>terasoluna-glossary.md</code> に追記してください
           </div>
         </main>

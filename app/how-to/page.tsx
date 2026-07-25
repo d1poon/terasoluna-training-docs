@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { RelatedLinks } from "@/components/RelatedLinks";
 
 export const metadata = { title: "「〜するには?」レシピ集 | TERASOLUNA 研修" };
 
@@ -740,8 +741,16 @@ export default function HowToPage() {
             </section>
           ))}
 
+          {/* Related pages */}
+          <RelatedLinks items={[
+            { href: "/glossary", emoji: "📖", label: "用語集", desc: "分からない単語をここで引く。40 用語カテゴリ別" },
+            { href: "/preface", emoji: "📗", label: "まず最初に読む", desc: "レストランメタファーで全体像。基礎理解から" },
+            { href: "/build-order", emoji: "✅", label: "作成順チェックリスト", desc: "1 番から順に作れば動く。全 22 ファイル進捗管理付き" },
+            { href: "/db-connection", emoji: "🔌", label: "DB 接続の仕組み", desc: "jdbc.properties から Connection Pool まで細かく" },
+          ]} />
+
           {/* Bottom banner */}
-          <section className="mt-12 pt-8 border-t border-slate-200 bg-brand/5 border border-brand/30 rounded-xl p-5 md:p-6">
+          <section className="mt-8 bg-brand/5 border border-brand/30 rounded-xl p-5 md:p-6">
             <h2 className="text-lg font-bold mb-3 text-slate-900">
               👨‍🏫 教える時のコツ
             </h2>
