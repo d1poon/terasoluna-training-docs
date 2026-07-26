@@ -220,35 +220,67 @@ Spring Security の CSRF 保護。**この行が抜けると POST が 403 で弾
 
 #### CSRF 攻撃と対策の流れ (図)
 
-```
-[攻撃者のサイト]                       [銀行サイト (正規)]
-  悪意ある HTML                           /transfer に POST
-   ┌─────────────────┐              ┌────────────────┐
-   │ <img src="        │              │ セッション: OK  │
-   │  https://bank/    │  ←自動送信──→ │ しかし合言葉なし│
-   │  transfer?to=..." │              │ → 403 で弾く   │
-   │ />                │              └────────────────┘
-   └─────────────────┘
-
-  ↑ ブラウザは JSESSIONID を勝手に付けてしまうので
-    合言葉 (CSRFトークン) がないと正規サイトかどうか判定できない
-```
+<div class="flow-diagram flow-diagram--bad">
+  <div class="flow-diagram-title">🚫 CSRF 攻撃のシナリオ (対策無しだとこう抜かれる)</div>
+  <div class="flow-row">
+    <div class="flow-node flow-node--attacker">
+      <div class="flow-node-icon">🕷</div>
+      <div class="flow-node-name">攻撃者のサイト</div>
+      <div class="flow-node-detail">
+        隠された HTML で銀行サイトへ POST を仕込む
+        <code>&lt;img src="bank/transfer?to=..."&gt;</code>
+      </div>
+    </div>
+    <div class="flow-arrow">
+      <div class="flow-arrow-label">自動送信</div>
+      <div class="flow-arrow-note">ブラウザは Cookie (JSESSIONID) を勝手に付ける</div>
+    </div>
+    <div class="flow-node flow-node--server">
+      <div class="flow-node-icon">🏦</div>
+      <div class="flow-node-name">銀行サーバ</div>
+      <div class="flow-node-detail">
+        <span class="flow-check-ok">✓</span> Session: OK<br>
+        <span class="flow-check-ng">✗</span> 合言葉 (CSRF token): 無し<br>
+        <span class="flow-verdict-bad">→ 403 で拒否</span>
+      </div>
+    </div>
+  </div>
+  <div class="flow-footnote">
+    ブラウザは <strong>JSESSIONID を自動で付けてしまう</strong>ので、
+    サーバ側は「正規サイトからの POST」と「攻撃者サイトからの POST」を Cookie だけでは区別できない。
+    そのため合言葉 (CSRF トークン) が必要。
+  </div>
+</div>
 
 **対策**: 正規サイトが発行するフォームだけに hidden な合言葉 (`_csrf.token`) を埋め込む。
 攻撃者のサイトは合言葉を知らないので、POST しても弾かれる。
 
-```
-[正規のフォーム経由]
-  <form action="/transfer" method="post">
-    <input type="hidden" name="_csrf" value="ABC123..." />  ← 合言葉
-    ...
-  </form>
-      │
-      ▼ POST /transfer + _csrf=ABC123...
-      │
-  [銀行サーバ]
-    Session の期待値 ABC123... と一致 → 通す
-```
+<div class="flow-diagram flow-diagram--good">
+  <div class="flow-diagram-title">✅ 対策済み: 正規フォーム経由の POST</div>
+  <div class="flow-row">
+    <div class="flow-node flow-node--legit">
+      <div class="flow-node-icon">🏛</div>
+      <div class="flow-node-name">正規サイト (自分の Web アプリ)</div>
+      <div class="flow-node-detail">
+        フォームに hidden で合言葉を埋め込む
+        <code>&lt;input name="_csrf" value="ABC123"&gt;</code>
+      </div>
+    </div>
+    <div class="flow-arrow">
+      <div class="flow-arrow-label">POST + 合言葉</div>
+      <div class="flow-arrow-note">Cookie と CSRF token の両方を送る</div>
+    </div>
+    <div class="flow-node flow-node--server">
+      <div class="flow-node-icon">🏦</div>
+      <div class="flow-node-name">銀行サーバ</div>
+      <div class="flow-node-detail">
+        <span class="flow-check-ok">✓</span> Session: OK<br>
+        <span class="flow-check-ok">✓</span> 合言葉: 一致<br>
+        <span class="flow-verdict-good">→ 200 通す</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### form の `name="id"` `name="password"`
 - SecurityConfig で `.usernameParameter("id")`, `.passwordParameter("password")` と指定したのでこの name で送る

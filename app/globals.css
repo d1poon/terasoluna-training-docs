@@ -157,3 +157,117 @@
   border-bottom: 1px solid #cbd5e1;
   border-right: 1px solid #cbd5e1;
 }
+
+/* --- Flow diagram (CSRF 攻撃 / 対策 図解) ---
+ * ASCII 図の代わり。モバイルは縦積み、デスクトップは横並びで自動レスポンシブ
+ */
+.flow-diagram {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem 1.25rem;
+  margin: 1.5rem 0;
+}
+.flow-diagram--bad { border-color: #fca5a5; background: #fef2f2; }
+.flow-diagram--good { border-color: #86efac; background: #f0fdf4; }
+
+.flow-diagram-title {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+.flow-diagram--bad .flow-diagram-title { color: #991b1b; }
+.flow-diagram--good .flow-diagram-title { color: #14532d; }
+
+.flow-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+@media (min-width: 640px) {
+  .flow-row {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.flow-node {
+  background: white;
+  border: 2px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  text-align: center;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.flow-node--attacker { border-color: #ef4444; background: #fef2f2; }
+.flow-node--legit    { border-color: #14b8a6; background: #f0fdfa; }
+.flow-node--server   { border-color: #64748b; background: #f8fafc; }
+
+.flow-node-icon { font-size: 1.75rem; line-height: 1; margin-bottom: 0.25rem; }
+.flow-node-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #0f172a;
+  margin-bottom: 0.4rem;
+}
+.flow-node-detail {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #475569;
+  text-align: left;
+}
+.flow-node-detail code {
+  display: inline-block;
+  background: #e2e8f0;
+  color: #0f172a;
+  padding: 0.1em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  word-break: break-all;
+  margin: 0.15rem 0;
+}
+.flow-node-detail strong { color: #0f172a; }
+.flow-node--attacker .flow-node-detail strong { color: #991b1b; }
+.flow-node--server .flow-node-detail .flow-verdict-bad { color: #dc2626; font-weight: 700; }
+.flow-node--server .flow-node-detail .flow-verdict-good { color: #16a34a; font-weight: 700; }
+.flow-node--server .flow-node-detail .flow-check-ok { color: #16a34a; }
+.flow-node--server .flow-node-detail .flow-check-ng { color: #dc2626; }
+
+.flow-arrow {
+  text-align: center;
+  padding: 0.35rem 0.5rem;
+  color: #475569;
+}
+.flow-arrow-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #334155;
+  margin-bottom: 0.15rem;
+}
+.flow-arrow-note {
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: #64748b;
+}
+/* Mobile では矢印を下向きに */
+@media (max-width: 639px) {
+  .flow-arrow-label::before { content: "▼ "; }
+}
+@media (min-width: 640px) {
+  .flow-arrow-label::before { content: "→ "; }
+}
+
+.flow-footnote {
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #cbd5e1;
+  font-size: 0.78rem;
+  color: #475569;
+  line-height: 1.55;
+}
