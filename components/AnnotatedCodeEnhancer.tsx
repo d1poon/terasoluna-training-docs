@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 
 /**
- * AnnotatedCodeEnhancer — 番号付きコード注釈の相互ハイライト
+ * AnnotatedCodeEnhancer — 番号付きコード注釈のポップオーバー表示
  *
  * Markdown の書き方:
  *   ```java
@@ -14,11 +14,12 @@ import { useEffect } from "react";
  *   - **① @GetMapping** — この URL を担当
  *   - **② メソッドシグネチャ** — 引数は Spring が渡す
  *
- * このコンポーネントが以下を行う:
- * - コード内の ①〜⑩ 文字を丸バッジに変換
- * - 直後の <ul>/<ol>/<p> で「<strong>①〜⑩</strong>」から始まる項目に data-anno-note を付ける
- * - コード側 badge と 注釈側 note を data-anno-group で同グループ化
- * - hover でグループ内の同番号を相互ハイライト
+ * 動作:
+ * - コード内の ①〜⑩ を丸バッジ化 (data-anno-mark 付き)
+ * - 直後の <li>/<p> の <strong>①〜⑩</strong> ... を data-anno-note でマーク (中身がポップアップ本体になる)
+ * - バッジをクリック / タップ → その注釈のポップアップを表示
+ * - 外側クリック / Esc / スクロールで閉じる
+ * - キーボード: Tab で バッジフォーカス → Enter/Space で開閉
  */
 
 const CIRCLED_MAP: Record<string, number> = {
@@ -26,9 +27,11 @@ const CIRCLED_MAP: Record<string, number> = {
   "⑥": 6, "⑦": 7, "⑧": 8, "⑨": 9, "⑩": 10,
 };
 
+let popoverEl: HTMLDivElement | null = null;
+let activeMark: HTMLElement | null = null;
+
 export function AnnotatedCodeEnhancer() {
   useEffect(() => {
-    // ページの hydration 完了を待って走査
     const t = setTimeout(enhance, 200);
     return () => clearTimeout(t);
   }, []);
@@ -49,7 +52,7 @@ function enhance() {
     const pre = code.closest("pre");
     if (pre) wrapNotes(pre, gid);
   });
-  wireHover();
+  wireInteraction();
 }
 
 function wrapCircled(root: HTMLElement, gid: string) {
@@ -63,19 +66,21 @@ function wrapCircled(root: HTMLElement, gid: string) {
   }
   nodes.forEach((textNode) => {
     const text = textNode.textContent ?? "";
-    const re = /([①②③④⑤⑥⑦⑧⑨⑩])/g;
-    if (!re.test(text)) return;
     const parts = text.split(/([①②③④⑤⑥⑦⑧⑨⑩])/);
+    if (parts.length === 1) return;
     const frag = document.createDocumentFragment();
     parts.forEach((p) => {
       if (CIRCLED_MAP[p]) {
-        const badge = document.createElement("span");
+        const badge = document.createElement("button");
+        badge.type = "button";
         badge.className = "anno-badge";
         badge.setAttribute("data-anno-mark", String(CIRCLED_MAP[p]));
         badge.setAttribute("data-anno-group", gid);
-        badge.setAttribute("role", "button");
-        badge.setAttribute("tabindex", "0");
-        badge.setAttribute("aria-label", `注釈 ${CIRCLED_MAP[p]} 番`);
+        badge.setAttribute(
+          "aria-label",
+          `注釈 ${CIRCLED_MAP[p]} 番を開く`
+        );
+        badge.setAttribute("aria-haspopup", "dialog");
         badge.textContent = p;
         frag.appendChild(badge);
       } else if (p) {
@@ -92,7 +97,6 @@ function wrapNotes(pre: Element, gid: string) {
   const stopTags = new Set(["PRE", "H1", "H2", "H3", "H4", "HR"]);
   while (el && scanned < 15) {
     if (stopTags.has(el.tagName)) break;
-    // <strong> の先頭 1 文字が丸数字なら、その container (li or p) を note 化
     const strongs = el.querySelectorAll("strong");
     strongs.forEach((s) => {
       const first = (s.textContent ?? "").charAt(0);
@@ -111,62 +115,164 @@ function wrapNotes(pre: Element, gid: string) {
   }
 }
 
-function wireHover() {
-  const doc = document as unknown as { __annoHoverWired?: boolean };
-  if (doc.__annoHoverWired) return;
-  doc.__annoHoverWired = true;
+function wireInteraction() {
+  const doc = document as unknown as { __annoWired?: boolean };
+  if (doc.__annoWired) return;
+  doc.__annoWired = true;
 
-  document.addEventListener("mouseover", (e) => {
-    const t = e.target as HTMLElement;
-    const mark = t.closest("[data-anno-mark]") as HTMLElement | null;
-    if (mark) {
-      activate(mark.dataset.annoGroup!, mark.dataset.annoMark!);
-      return;
-    }
-    const note = t.closest("[data-anno-note]") as HTMLElement | null;
-    if (note) {
-      activate(note.dataset.annoGroup!, note.dataset.annoNote!);
-    }
-  });
-  document.addEventListener("mouseout", (e) => {
-    const t = e.target as HTMLElement;
-    const rel = (e as MouseEvent).relatedTarget as HTMLElement | null;
-    if (
-      t.closest("[data-anno-mark], [data-anno-note]") &&
-      !rel?.closest("[data-anno-mark], [data-anno-note]")
-    ) {
-      deactivateAll();
-    }
-  });
-  // クリック (モバイル・キーボード) 対応: badge タップで対応 note にスクロール + 一時ハイライト
+  // クリック (デスクトップ + モバイル 共通): badge タップで popover 開閉
   document.addEventListener("click", (e) => {
     const t = e.target as HTMLElement;
-    const mark = t.closest("[data-anno-mark]") as HTMLElement | null;
-    if (!mark) return;
-    const gid = mark.dataset.annoGroup!;
-    const n = mark.dataset.annoMark!;
-    activate(gid, n);
-    const note = document.querySelector(
-      `[data-anno-group="${gid}"][data-anno-note="${n}"]`
-    ) as HTMLElement | null;
-    if (note) {
-      note.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      window.setTimeout(deactivateAll, 2000);
+
+    // Close button of popover
+    if (t.closest(".anno-popover-close")) {
+      closePopover();
+      return;
     }
+
+    // Badge を押した
+    const mark = t.closest("[data-anno-mark]") as HTMLElement | null;
+    if (mark) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeMark === mark) {
+        closePopover();
+      } else {
+        showPopover(mark);
+      }
+      return;
+    }
+
+    // popover 外をクリック → 閉じる
+    if (popoverEl && !t.closest(".anno-popover")) {
+      closePopover();
+    }
+  });
+
+  // Esc で閉じる、Enter/Space で開閉
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closePopover();
+      return;
+    }
+    const focused = document.activeElement as HTMLElement | null;
+    if (
+      focused &&
+      focused.matches("[data-anno-mark]") &&
+      (e.key === "Enter" || e.key === " ")
+    ) {
+      e.preventDefault();
+      if (activeMark === focused) {
+        closePopover();
+      } else {
+        showPopover(focused);
+      }
+    }
+  });
+
+  // スクロールで閉じる (badge から離れて意味を失うため)
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (popoverEl) closePopover();
+    },
+    { passive: true, capture: true }
+  );
+
+  // リサイズで閉じる
+  window.addEventListener("resize", () => {
+    if (popoverEl) closePopover();
   });
 }
 
-function activate(gid: string, n: string) {
-  deactivateAll();
-  document
-    .querySelectorAll(
-      `[data-anno-group="${gid}"][data-anno-mark="${n}"], [data-anno-group="${gid}"][data-anno-note="${n}"]`
-    )
-    .forEach((el) => el.classList.add("anno-active"));
+function showPopover(mark: HTMLElement) {
+  closePopover();
+
+  const gid = mark.dataset.annoGroup;
+  const n = mark.dataset.annoMark;
+  if (!gid || !n) return;
+
+  const note = document.querySelector(
+    `[data-anno-group="${gid}"][data-anno-note="${n}"]`
+  ) as HTMLElement | null;
+  if (!note) return;
+
+  popoverEl = document.createElement("div");
+  popoverEl.className = "anno-popover";
+  popoverEl.setAttribute("role", "dialog");
+  popoverEl.setAttribute("aria-modal", "false");
+
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.className = "anno-popover-close";
+  closeBtn.setAttribute("aria-label", "閉じる");
+  closeBtn.textContent = "✕";
+
+  const body = document.createElement("div");
+  body.className = "anno-popover-body";
+  // Note (li or p) の中身をそのままコピー
+  body.innerHTML = note.innerHTML;
+
+  popoverEl.appendChild(closeBtn);
+  popoverEl.appendChild(body);
+  document.body.appendChild(popoverEl);
+
+  positionPopover(mark, popoverEl);
+
+  activeMark = mark;
+  mark.setAttribute("aria-expanded", "true");
 }
 
-function deactivateAll() {
-  document
-    .querySelectorAll(".anno-active")
-    .forEach((el) => el.classList.remove("anno-active"));
+function positionPopover(mark: HTMLElement, popover: HTMLDivElement) {
+  const rect = mark.getBoundingClientRect();
+  const popRect = popover.getBoundingClientRect();
+  const gap = 10;
+  const margin = 8;
+
+  // 垂直方向: 下にスペースあれば下、なければ上
+  let top: number;
+  let placement: "below" | "above";
+  if (
+    rect.bottom + popRect.height + gap > window.innerHeight &&
+    rect.top > popRect.height + gap
+  ) {
+    top = rect.top - popRect.height - gap + window.scrollY;
+    placement = "above";
+  } else {
+    top = rect.bottom + gap + window.scrollY;
+    placement = "below";
+  }
+  popover.classList.add(
+    placement === "below" ? "anno-popover--below" : "anno-popover--above"
+  );
+
+  // 水平方向: badge の左端に揃える。画面外なら調整
+  let left = rect.left + window.scrollX - 4;
+  const maxLeft =
+    window.innerWidth + window.scrollX - popRect.width - margin;
+  const minLeft = window.scrollX + margin;
+  if (left > maxLeft) left = maxLeft;
+  if (left < minLeft) left = minLeft;
+
+  popover.style.top = `${top}px`;
+  popover.style.left = `${left}px`;
+
+  // 矢印の位置調整 (badge の中心を指すように)
+  const badgeCenterX = rect.left + rect.width / 2 + window.scrollX;
+  const arrowOffset = badgeCenterX - left - 6;
+  popover.style.setProperty(
+    "--anno-arrow-left",
+    `${Math.max(12, Math.min(popRect.width - 20, arrowOffset))}px`
+  );
+}
+
+function closePopover() {
+  if (popoverEl) {
+    popoverEl.remove();
+    popoverEl = null;
+  }
+  if (activeMark) {
+    activeMark.removeAttribute("aria-expanded");
+    activeMark = null;
+  }
 }

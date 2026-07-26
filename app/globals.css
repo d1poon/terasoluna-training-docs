@@ -39,8 +39,8 @@
 }
 .prose hr { @apply my-8 border-slate-200; }
 
-/* --- Annotated code prototype (Step 07) ---
- * コード内の ①〜⑩ を丸バッジ化し、直後の説明リストと相互ハイライト
+/* --- Annotated code (Step 07 でプロトタイプ) ---
+ * コード内の ①〜⑩ を丸バッジ化。押すとポップアップで注釈が出る
  */
 .anno-badge {
   display: inline-block;
@@ -48,7 +48,7 @@
   height: 1.4em;
   padding: 0 0.35em;
   margin: 0 0.15em;
-  background: #14b8a6; /* brand.light */
+  background: #14b8a6; /* teal-500 */
   color: #0f172a;
   border: 1px solid #0f766e;
   border-radius: 999px;
@@ -57,34 +57,103 @@
   font-size: 0.85em;
   line-height: 1.4em;
   text-align: center;
-  cursor: help;
+  cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   vertical-align: baseline;
   user-select: none;
 }
 .anno-badge:hover,
-.anno-badge.anno-active,
-.anno-badge:focus-visible {
+.anno-badge:focus-visible,
+.anno-badge[aria-expanded="true"] {
   background: #f0fdfa; /* teal-50 */
   color: #0f766e;
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.35);
-  transform: scale(1.15);
+  transform: scale(1.12);
   outline: none;
 }
 
-/* 説明側 (li or p) */
-[data-anno-note] {
-  border-left: 3px solid transparent;
-  padding-left: 0.5rem;
-  border-radius: 0 0.25rem 0.25rem 0;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  cursor: help;
-}
-[data-anno-note]:hover,
-[data-anno-note].anno-active {
-  background: rgba(20, 184, 166, 0.1);
-  border-left-color: #0f766e;
-}
+/* 説明側 (li or p) — 独立して読める状態を維持、視覚的な強調のみ */
 [data-anno-note] > strong:first-child {
   color: #0f766e;
+}
+
+/* ポップアップ */
+.anno-popover {
+  position: absolute;
+  z-index: 50;
+  max-width: min(360px, calc(100vw - 16px));
+  min-width: 240px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.18),
+    0 4px 10px -2px rgba(0, 0, 0, 0.06);
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #1e293b;
+  animation: annoPopIn 0.12s ease-out;
+}
+@keyframes annoPopIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anno-popover-body {
+  padding-right: 1.25rem;
+}
+.anno-popover-body > strong:first-child {
+  color: #0f766e;
+  font-weight: 700;
+}
+.anno-popover-body code {
+  background: #f1f5f9;
+  color: #134e4a;
+  padding: 0.05em 0.35em;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  font-family: Consolas, "Courier New", monospace;
+}
+.anno-popover-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.anno-popover-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* 矢印 (badge を指す) */
+.anno-popover--below::before,
+.anno-popover--above::before {
+  content: "";
+  position: absolute;
+  left: var(--anno-arrow-left, 20px);
+  width: 12px;
+  height: 12px;
+  background: white;
+  transform: rotate(45deg);
+}
+.anno-popover--below::before {
+  top: -7px;
+  border-top: 1px solid #cbd5e1;
+  border-left: 1px solid #cbd5e1;
+}
+.anno-popover--above::before {
+  bottom: -7px;
+  border-bottom: 1px solid #cbd5e1;
+  border-right: 1px solid #cbd5e1;
 }
