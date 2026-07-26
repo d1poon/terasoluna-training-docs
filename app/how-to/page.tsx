@@ -619,7 +619,7 @@ export default function HowToPage() {
               レシピ集
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
-              後輩から「これどうやるの?」と聞かれた時に開くページ。
+              実装中に「これどうやるの?」となった時に開くページ。
               <strong>「1 行の答え + 実物コード」</strong>で並べてあります。全 {totalRecipes} レシピ。
             </p>
           </div>
@@ -752,16 +752,16 @@ export default function HowToPage() {
           {/* Bottom banner */}
           <section className="mt-8 bg-brand/5 border border-brand/30 rounded-xl p-5 md:p-6">
             <h2 className="text-lg font-bold mb-3 text-slate-900">
-              👨‍🏫 教える時のコツ
+              💡 このページの使い方
             </h2>
             <p className="text-sm md:text-base text-slate-700 leading-relaxed">
-              後輩の質問には{" "}
-              <strong>「何ページに書いてあるよ」ではなく、その場で 1 行答えて実物コードを見せる</strong>
-              のが効きます。このページを別タブで開いておいて、質問が来たら該当 Q を開いて指差しながら答えるのがおすすめ。
+              実装中に手を止めた瞬間、
+              <strong>「どこか別のページを検索する」のではなく、その場で 1 行の答えと実物コードで解決できる</strong>
+              ことを狙って構成しています。別タブで開きっぱなしにしておき、必要な時に該当 Q を開くのが効率的です。
             </p>
             <p className="mt-3 text-sm md:text-base text-slate-700 leading-relaxed">
-              抜け漏れがあれば、実際の研修で受けた質問を随時追記していくと、
-              次に教える時のカンペとしてどんどん厚くなっていきます。
+              他人に説明する立場の方は、質問された時にこのページを見せながら該当箇所を指差すと、
+              言葉での説明よりコードで通じやすくなります。
             </p>
           </section>
         </main>

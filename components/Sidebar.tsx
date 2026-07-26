@@ -307,7 +307,7 @@ export function Sidebar({
 
       <div className="p-4 border-t border-slate-200 text-xs text-slate-500">
         <p>Spring Boot 3.4 + JSP + MyBatis + H2</p>
-        <p className="mt-1">教える立場のあなたのための教材</p>
+        <p className="mt-1">TERASOLUNA スタイルの学習リファレンス</p>
       </div>
     </>
   );

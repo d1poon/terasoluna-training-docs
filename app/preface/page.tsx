@@ -179,7 +179,7 @@ export default function PrefacePage() {
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
               「Controller → どこに行くの?」がわからないレベルからでも読めるように、
               <strong>レストラン</strong>に例えて全体像を掴みます。
-              このページを読むだけで、後輩に「そもそも Web アプリって何を繰り返してるの?」を説明できるようになります。
+              このページを読むだけで、「そもそも Web アプリって何を繰り返しているのか?」を自分の言葉で説明できるようになります。
             </p>
           </div>
 

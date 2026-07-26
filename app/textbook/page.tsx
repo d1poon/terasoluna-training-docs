@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 
-export const metadata = { title: "後輩向け 教科書 | TERASOLUNA 研修" };
+export const metadata = { title: "ゼロから始める 教科書 | TERASOLUNA 研修" };
 
 const CHAPTERS = [
   { n: 1, id: "web", emoji: "🌐", title: "Web アプリって何?" },
@@ -25,17 +25,17 @@ export default function TextbookPage() {
           {/* Hero */}
           <div className="mb-8 lg:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
-              For Trainees · 完全ゼロから
+              For Beginners · 完全ゼロから
             </div>
             <h1 className="text-2xl md:text-4xl font-bold mt-2 text-slate-900 leading-tight">
-              後輩 (研修生) 向け 教科書
+              ゼロから始める 教科書
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
               「カラムって何?」「タグって?」「リクエストって?」 レベルからでも読める、
-              <strong>本当のゼロから始まる教科書</strong>。研修に入る前 or 詰まった時にここを開いて確認してください。
+              <strong>本当のゼロから始まる教科書</strong>。学習を始める前や、Step で詰まった時にここを開いて確認してください。
             </p>
             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
-              💡 このページは<strong>研修生 (受講する側)</strong>向け。教える立場の方は
+              💡 このページは<strong>Web / DB / Java が初めて</strong>の方向け。ある程度知識のある方は
               <Link href="/preface" className="text-brand underline">まず最初に読む (レストランメタファー)</Link>
               や <Link href="/how-to" className="text-brand underline">レシピ集</Link> の方が先に読むと効率的です。
             </div>
@@ -424,7 +424,7 @@ public class MenuController {
           <Chapter n={5} id="web-parts" emoji="🎯" title="Web アプリの部品 (層の話)">
             <p>
               このアプリは 3 つの<strong>層 (レイヤー)</strong> に分かれている。それぞれ役割が違う。
-              後輩がまず理解すべき対応関係:
+              まず頭に入れておきたい対応関係:
             </p>
             <AsciiBox>
 {`[ブラウザ]

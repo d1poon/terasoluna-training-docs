@@ -7,7 +7,8 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 
 # 役職編集アプリ 組立ガイド (ガンプラ式)
 
-> **教える立場のあなたが「後輩に何を聞かれても答えられる」状態を作るためのガイド**。後輩に配る資料ではなく、教える側が理解を深めるための教材です。
+> **単に動くコードを写経するのではなく、各行の「なぜこう書くか」まで理解しながら進めるためのガイド**。
+> 独学の学習者にも、他人に教える立場の方にも役立つ構成です。
 > Java・JSP の基本文法から入り、部品ひとつずつ、順番通りに置いていけば必ず完成します。
 > 各ステップは前のステップに依存する構造なので、飛ばさずに順に進めてください。
 
@@ -44,7 +45,7 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 | 09 | 検索画面 | `SearchController.java`, `search.jsp` | 役職テキスト検索 (部分一致) が動く |
 | 10 | ユーザ情報画面 | `UserInfoController.java` (view), `userInfo.jsp` | 自分の ID/役職が表示される |
 | 11 | 変更画面 | `UserInfoController.java` (edit + POST), `userInfoEdit.jsp` | 役職を書き換えて DB 更新できる、PRG パターンで画面が戻る |
-| 12 | 完成 & まとめ | (なし、動作確認だけ) | 5画面全部つながる、後輩に教えられる状態 |
+| 12 | 完成 & まとめ | (なし、動作確認だけ) | 5画面全部つながる、他人に説明できる状態 |
 
 ---
 

@@ -15,7 +15,7 @@ export default function HomePage() {
           {/* Hero */}
           <div className="mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
-              教える立場のあなたが理解しておくためのメモ
+              「なぜこう書くか」まで理解しながら組み立てる Spring 教材
             </div>
             <h1 className="text-2xl md:text-4xl font-bold mt-2 text-slate-900 leading-tight">
               役職編集アプリを
@@ -23,10 +23,10 @@ export default function HomePage() {
               12 ステップで組み立てる
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
-              <strong>これは後輩に配る資料ではなく、教える側 (あなた)
-              が「後輩に何を聞かれても答えられる」状態を作るためのガイド</strong>。
+              <strong>単に動くコードを写経するのではなく、各行の「なぜこう書くか」まで納得しながら進める構成のガイド</strong>。
               Java・JSP の基本文法から入って、Spring Boot + JSP + MyBatis + H2 で
-              ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリをガンプラのように部品ごとに組み立てます。
+              ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリを、
+              ガンプラのように部品ごとに組み立てます。独学の学習者にも、他人に教える立場の方にも役立つ構成です。
             </p>
           </div>
 
@@ -70,11 +70,11 @@ export default function HomePage() {
             <SecondaryCard
               href="/textbook"
               emoji="📚"
-              tag="For Trainees"
+              tag="For Beginners"
               tagBg="bg-indigo-100"
               tagText="text-indigo-900"
-              title="後輩向け 教科書 (ゼロから)"
-              desc="「カラムって何?」「タグって?」レベルからでも読めるチャプター 1-6。後輩に渡せるページ。"
+              title="ゼロから始める 教科書"
+              desc="「カラムって何?」「タグって?」レベルからでも読めるチャプター 1-6。プログラミングが初めての人向け。"
               accent="border-indigo-200 hover:border-indigo-500"
             />
             <SecondaryCard
@@ -182,7 +182,7 @@ export default function HomePage() {
               </Bullet>
               <Bullet>
                 各ステップに「<strong>なぜこう書くか</strong>」の解説付き
-                — 後輩の想定質問に即答できる状態を目指す
+                — 「なんとなく動いた」ではなく、自分の言葉で説明できる状態を目指す
               </Bullet>
               <Bullet>
                 <strong>プレイグラウンド付き</strong>: 実物と同じ画面を触って動きを確かめられる

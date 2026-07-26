@@ -383,11 +383,11 @@ export default function TerasolunaMultiProjectPage() {
           {/* Section 7: How to read a TERASOLUNA project */}
           <section className="mb-10">
             <h2 className="text-xl md:text-2xl font-bold mb-4 text-slate-900">
-              6. 後輩の TERASOLUNA プロジェクトを見せられたら
+              6. 実案件の TERASOLUNA プロジェクトを渡されたら
             </h2>
             <div className="bg-white rounded-xl border border-slate-200 p-5 md:p-6">
               <p className="text-slate-700 mb-4 text-sm md:text-base leading-relaxed">
-                後輩が「動きません」と言って TERASOLUNA プロジェクトを持ってきた時の見方:
+                「動きません」と言われて TERASOLUNA プロジェクトを渡された時、どこから読むか:
               </p>
               <ol className="space-y-3 text-sm md:text-base text-slate-700 list-decimal pl-6">
                 <li>

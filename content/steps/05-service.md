@@ -59,7 +59,7 @@ public class UserService {
 }
 ```
 
-## なぜ Service を分けるか (受講者からよく来る質問)
+## なぜ Service を分けるか (よくある疑問)
 
 Controller で直接 Mapper を呼べば動くのに、なぜ Service を挟むのか?
 

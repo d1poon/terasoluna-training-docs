@@ -487,7 +487,7 @@ export default function SpringVsTerasolunaPage() {
             </h2>
             <p className="text-slate-700 mb-4 text-sm md:text-base leading-relaxed">
               <strong>Controller / Service / Mapper のロジック自体は 1 行も変えなくて良い</strong>。
-              下の対応表を頭に入れておけば、後輩が TERASOLUNA archetype で書いてきたコードも読み替えできる。
+              下の対応表を頭に入れておけば、TERASOLUNA archetype で書かれたコードもスムーズに読める。
             </p>
             <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
               <table className="w-full text-sm md:text-base">
@@ -528,17 +528,17 @@ export default function SpringVsTerasolunaPage() {
             </div>
           </section>
 
-          {/* Section 7: 教える時 */}
+          {/* Section 7: 一言で捉える */}
           <section className="mb-10">
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 md:p-6">
               <h3 className="font-bold text-amber-900 mb-2 text-base md:text-lg">
-                💡 教える時の一言
+                💡 1 行で覚えるならこう
               </h3>
               <p className="text-sm md:text-base text-amber-900 leading-relaxed">
-                「Spring Boot も TERASOLUNA も、中で動いてるのは同じ <strong>Spring Framework</strong> なんだよ。
+                「Spring Boot も TERASOLUNA も、中で動いているのは同じ <strong>Spring Framework</strong>。
                 Controller / Service / Mapper の書き方はまったく同じで、違うのは<strong>設定の書き方</strong>だけ。
-                Boot はプロパティ 1 行、TERASOLUNA は XML で 5 行、みたいな違い」
-                — この 1 発で、後輩の頭に地図ができる。
+                Boot はプロパティ 1 行、TERASOLUNA は XML で 5 行、というような違い」
+                — この 1 文が頭に入っていると、両者を行き来した時に混乱しません。
               </p>
             </div>
           </section>
@@ -578,7 +578,7 @@ export default function SpringVsTerasolunaPage() {
                   TERASOLUNA 5.x 開発ガイドライン ↗
                 </div>
                 <div className="text-sm text-slate-600 mt-1">
-                  日本語の公式ドキュメント。後輩に「詳しくはここ」と渡せる
+                  日本語の公式ドキュメント。詳細を確認したい時の一次情報源
                 </div>
               </a>
             </div>
