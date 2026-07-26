@@ -125,31 +125,40 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Controller
+@Controller                                                                  // ①
 public class LoginController {
 
-    @GetMapping("/login")
-    public String loginForm(@RequestParam(required = false) String error,
+    @GetMapping("/login")                                                    // ②
+    public String loginForm(@RequestParam(required = false) String error,    // ③
                             @RequestParam(required = false) String logout,
-                            Model model) {
-        if (error != null) {
+                            Model model) {                                   // ④
+        if (error != null) {                                                 // ⑤
             model.addAttribute("errorMessage", "ID またはパスワードが違います");
         }
         if (logout != null) {
             model.addAttribute("logoutMessage", "ログアウトしました");
         }
-        return "login";
+        return "login";                                                      // ⑥
     }
 }
 ```
+
+> 💡 コード内の丸数字 (①〜⑥) にホバー or タップすると、下の対応する説明がハイライトされます。
+
+- **① `@Controller`** — このクラスを Spring MVC の「Web の窓口係」として登録するラベル。起動時にコンポーネントスキャンで拾われて Bean になる。
+- **② `@GetMapping("/login")`** — GET リクエストの `/login` がこのメソッドに来る、という宣言。ブラウザで `http://.../login` を開いた瞬間、下のコードが実行される。
+- **③ `@RequestParam(required = false) String error`** — URL の `?error` パラメータを受け取る。`required = false` なので付いていない場合は `null` になる (エラーで戻された時だけ `?error` 付きで飛んでくる)。
+- **④ `Model model`** — Spring MVC が自動で用意してくれる「JSP に渡すデータの箱」。この引数に書くだけで注入される (DI)。
+- **⑤ `if (error != null)`** — エラー付きで戻された場合だけ、赤字メッセージ用のキーを Model に詰める。JSP 側で `${errorMessage}` で拾って表示。
+- **⑥ `return "login";`** — 「`login.jsp` を実行しろ」の指示。実際は `spring.mvc.view.prefix/suffix` の設定で `/WEB-INF/views/login.jsp` に forward される。
 
 **GET のみ**の Controller。POST は Spring Security が自動処理してくれるので**書かない**。
 
 ### 2. `src/main/webapp/WEB-INF/views/login.jsp`
 
 ```jsp
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>    <%-- ① --%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>                            <%-- ② --%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -159,19 +168,20 @@ public class LoginController {
 <body>
     <h1>ログイン</h1>
 
-    <c:if test="${not empty errorMessage}">
+    <c:if test="${not empty errorMessage}">                                 <%-- ③ --%>
         <p style="color:red;">${errorMessage}</p>
     </c:if>
     <c:if test="${not empty logoutMessage}">
         <p style="color:green;">${logoutMessage}</p>
     </c:if>
 
-    <form action="<c:url value='/login'/>" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <form action="<c:url value='/login'/>" method="post">                   <%-- ④ --%>
+        <input type="hidden" name="${_csrf.parameterName}"                  <%-- ⑤ --%>
+               value="${_csrf.token}" />
 
         <div>
             <label>ユーザID:
-                <input type="text" name="id" required />
+                <input type="text" name="id" required />                    <%-- ⑥ --%>
             </label>
         </div>
         <div>
@@ -191,16 +201,14 @@ public class LoginController {
 </html>
 ```
 
-## 一行ごとに何をしているか
+> 💡 コード内の丸数字 (①〜⑥) にホバー or タップすると、下の対応する説明がハイライトされます。
 
-| 行 | 何をしている |
-|---|---|
-| `<%@ page ... %>` | この JSP ファイルは UTF-8 の HTML を返す、と宣言 |
-| `<%@ taglib prefix="c" ... %>` | `<c:if>` などの JSTL を使うと宣言 |
-| `<c:if test="${not empty errorMessage}">` | サーバ側に `errorMessage` があるときだけ中身を表示 (Controller が `?error` 付きURLで来た時にセットする) |
-| `<form action="<c:url value='/login'/>" method="post">` | フォーム送信先 = /login、送信方法 = POST |
-| `<input type="hidden" name="${_csrf.parameterName}" ...>` | Spring Security の CSRF トークンを hidden で埋める |
-| `<input type="text" name="id" required />` | ユーザID の入力欄。`name="id"` は Controller の `@RequestParam` や Spring Security の `.usernameParameter("id")` と対応 |
+- **① `<%@ page contentType="text/html; charset=UTF-8" %>`** — この JSP は「UTF-8 の HTML」を返すと宣言。日本語が化けないようにする最重要行、JSP ファイルの先頭に必ず書く。
+- **② `<%@ taglib prefix="c" uri="jakarta.tags.core" %>`** — JSTL の Core タグ集を `c:` プレフィックスで使うと宣言。この行があるから `<c:if>` や `<c:forEach>` が使える。
+- **③ `<c:if test="${not empty errorMessage}">`** — サーバ側 (Controller) が `errorMessage` を Model に詰めていた時だけ、中の赤字を表示する。「値があれば表示、無ければスキップ」の書き方。
+- **④ `<form action="<c:url value='/login'/>" method="post">`** — フォーム送信先を `/login`、送信方法を POST に指定。`<c:url>` はコンテキストパスを自動で付けてくれるヘルパー。
+- **⑤ `<input type="hidden" name="${_csrf.parameterName}" ...>`** — Spring Security の CSRF 合言葉をフォームに埋め込む。**この行が抜けると POST が 403 で弾かれる**。詳細は次の「なぜこう書く」節。
+- **⑥ `<input type="text" name="id" required />`** — ユーザ ID の入力欄。`name="id"` は Controller の `@RequestParam` および SecurityConfig の `.usernameParameter("id")` と対応。**3 箇所で名前を揃える必要**あり。
 
 ## なぜこう書く
 

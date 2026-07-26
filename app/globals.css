@@ -38,3 +38,53 @@
   @apply bg-transparent p-0 text-slate-100;
 }
 .prose hr { @apply my-8 border-slate-200; }
+
+/* --- Annotated code prototype (Step 07) ---
+ * コード内の ①〜⑩ を丸バッジ化し、直後の説明リストと相互ハイライト
+ */
+.anno-badge {
+  display: inline-block;
+  min-width: 1.4em;
+  height: 1.4em;
+  padding: 0 0.35em;
+  margin: 0 0.15em;
+  background: #14b8a6; /* brand.light */
+  color: #0f172a;
+  border: 1px solid #0f766e;
+  border-radius: 999px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.85em;
+  line-height: 1.4em;
+  text-align: center;
+  cursor: help;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  vertical-align: baseline;
+  user-select: none;
+}
+.anno-badge:hover,
+.anno-badge.anno-active,
+.anno-badge:focus-visible {
+  background: #f0fdfa; /* teal-50 */
+  color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.35);
+  transform: scale(1.15);
+  outline: none;
+}
+
+/* 説明側 (li or p) */
+[data-anno-note] {
+  border-left: 3px solid transparent;
+  padding-left: 0.5rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  cursor: help;
+}
+[data-anno-note]:hover,
+[data-anno-note].anno-active {
+  background: rgba(20, 184, 166, 0.1);
+  border-left-color: #0f766e;
+}
+[data-anno-note] > strong:first-child {
+  color: #0f766e;
+}

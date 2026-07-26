@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { EnableCodeCopy } from "@/components/CopyableCode";
 import { TermActivator } from "@/components/TermActivator";
+import { AnnotatedCodeEnhancer } from "@/components/AnnotatedCodeEnhancer";
 
 export const metadata: Metadata = {
   title: "TERASOLUNA 研修 — 役職編集アプリ 組立ガイド",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <EnableCodeCopy />
         <TermActivator />
+        <AnnotatedCodeEnhancer />
       </body>
     </html>
   );
