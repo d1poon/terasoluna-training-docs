@@ -145,7 +145,7 @@ Spring MVC 独自の記法。View名の代わりに書くと、内部で `HttpSe
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/
+rolemgr/src/main/
 ├── java/com/example/rolemgr/controller/
 │   └── UserInfoController.java            ← 3メソッドに (view + editForm + edit)
 └── webapp/WEB-INF/views/

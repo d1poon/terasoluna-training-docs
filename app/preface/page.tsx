@@ -137,7 +137,21 @@ const faqs: Faq[] = [
       <>
         どちらも SQL とオブジェクトのブリッジ。JPA は「SQL を書かない、自動生成」。
         <T term="mapper" /> は「SQL を自分で書く、細かく制御できる」。
-        Terasoluna は MyBatis を採用。日本の SIer 現場で「SQL を人間が見えるところに置きたい」ニーズが強いのが理由。
+        Terasoluna は MyBatis を採用。日本の SIer (System Integrator = システム開発を請け負う企業) の現場で
+        「SQL を人間が見えるところに置きたい」ニーズが強いのが理由。
+      </>
+    ),
+  },
+  {
+    q: "archetype って何?",
+    a: (
+      <>
+        <strong>archetype (アーキタイプ)</strong> は Maven の「プロジェクト雛形」。
+        <code>mvn archetype:generate ...</code> と実行すると、archetype に沿った pom.xml・
+        フォルダ構造・サンプルコードが自動で生成されます。
+        TERASOLUNA の <code>terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype</code> は
+        「TERASOLUNA 標準のマルチプロジェクト構造をゼロから作るためのテンプレート」。
+        「白紙 (blank)」なので、生成されるのは箱と設定だけで、アプリのロジックは自分で書き足すことになります。
       </>
     ),
   },

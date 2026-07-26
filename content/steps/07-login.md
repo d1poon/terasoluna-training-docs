@@ -210,6 +210,38 @@ Spring Security が POST `/login` を Filter で先に**横取り**する。Cont
 ### CSRF トークンの hidden 埋め込み
 Spring Security の CSRF 保護。**この行が抜けると POST が 403 で弾かれる**。Spring Security が JSP からアクセスできる場所に `_csrf` オブジェクトを勝手に置いてくれている。
 
+#### CSRF 攻撃と対策の流れ (図)
+
+```
+[攻撃者のサイト]                       [銀行サイト (正規)]
+  悪意ある HTML                           /transfer に POST
+   ┌─────────────────┐              ┌────────────────┐
+   │ <img src="        │              │ セッション: OK  │
+   │  https://bank/    │  ←自動送信──→ │ しかし合言葉なし│
+   │  transfer?to=..." │              │ → 403 で弾く   │
+   │ />                │              └────────────────┘
+   └─────────────────┘
+
+  ↑ ブラウザは JSESSIONID を勝手に付けてしまうので
+    合言葉 (CSRFトークン) がないと正規サイトかどうか判定できない
+```
+
+**対策**: 正規サイトが発行するフォームだけに hidden な合言葉 (`_csrf.token`) を埋め込む。
+攻撃者のサイトは合言葉を知らないので、POST しても弾かれる。
+
+```
+[正規のフォーム経由]
+  <form action="/transfer" method="post">
+    <input type="hidden" name="_csrf" value="ABC123..." />  ← 合言葉
+    ...
+  </form>
+      │
+      ▼ POST /transfer + _csrf=ABC123...
+      │
+  [銀行サーバ]
+    Session の期待値 ABC123... と一致 → 通す
+```
+
 ### form の `name="id"` `name="password"`
 - SecurityConfig で `.usernameParameter("id")`, `.passwordParameter("password")` と指定したのでこの name で送る
 - 変えたければ両方合わせて変える必要あり
@@ -217,7 +249,7 @@ Spring Security の CSRF 保護。**この行が抜けると POST が 403 で弾
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/
+rolemgr/src/main/
 ├── java/com/example/rolemgr/
 │   ├── ...
 │   └── controller/
@@ -243,7 +275,7 @@ http://localhost:8080/login にアクセス → **自作の「ログイン画面
 
 ## よくある詰まり
 
-- **無限リダイレクト** → SecurityConfig の `/WEB-INF/**` permitAll が抜けている (01_Knowledge/spring-security-6-jsp-forward-loop)
+- **無限リダイレクト** → SecurityConfig の `/WEB-INF/**` permitAll が抜けている ([Step 06 参照](/steps/06-auth-foundation))
 - **CSRF エラー (403)** → フォーム内の CSRF トークン hidden が抜けている
 - **JSP が真っ白 or 500** → `<%@ taglib %>` の URI 誤り、または `tomcat-embed-jasper` 依存漏れ
 - **日本語が化ける** → `<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>` が先頭にあるか

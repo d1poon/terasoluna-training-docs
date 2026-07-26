@@ -59,9 +59,9 @@ public class UserService {
 }
 ```
 
-## なぜ Service を分けるか (受講者から絶対来る質問)
+## なぜ Service を分けるか (受講者からよく来る質問)
 
-Controller で直接 Mapper を呼べば動くのに、なぜ Service を挟む?
+Controller で直接 Mapper を呼べば動くのに、なぜ Service を挟むのか?
 
 1. **トランザクション境界**を明示できる。`@Transactional` は Service に付けるのが定石
 2. **業務ロジック**をここに集約 (例: 「役職が空文字なら全件検索扱い」のような判定)
@@ -98,7 +98,7 @@ public UserService(UserMapper userMapper) {
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/java/com/example/rolemgr/
+rolemgr/src/main/java/com/example/rolemgr/
 ├── RolemgrApplication.java
 ├── domain/User.java
 ├── repository/UserMapper.java

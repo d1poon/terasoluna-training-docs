@@ -63,7 +63,7 @@ export default function GlossaryPage() {
           />
 
           <div className="mt-8 text-sm text-slate-600 text-center">
-            まだ足りない用語があれば、Vault の <code>terasoluna-glossary.md</code> に追記してください
+            分からない用語があっても、まずは Step ページで実際のコードと照らし合わせながら読むと理解が進みます
           </div>
         </main>
       </div>

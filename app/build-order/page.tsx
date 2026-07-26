@@ -76,7 +76,7 @@ const PHASES: Phase[] = [
     emoji: "🔧",
     desc: "プロジェクトを箱ごと立ち上げる",
     items: [
-      { n: 1, filename: "pom.xml", path: "reference-app/", layer: "Build", desc: "Maven 設定・依存宣言", stepSlug: "01-project-skeleton", stepNo: 1, stepTitle: "プロジェクト骨組み", minutes: 10 },
+      { n: 1, filename: "pom.xml", path: "rolemgr/", layer: "Build", desc: "Maven 設定・依存宣言", stepSlug: "01-project-skeleton", stepNo: 1, stepTitle: "プロジェクト骨組み", minutes: 10 },
       { n: 2, filename: "application.properties", path: "src/main/resources/", layer: "AppConfig", desc: "Spring Boot 設定 (ポート・DB・JSP パス・MyBatis)", stepSlug: "01-project-skeleton", stepNo: 1, stepTitle: "プロジェクト骨組み", minutes: 5 },
       { n: 3, filename: "RolemgrApplication.java", path: "src/main/java/com/example/rolemgr/", layer: "Entry", desc: "@SpringBootApplication + main() 起動点", stepSlug: "02-empty-boot", stepNo: 2, stepTitle: "空アプリ起動 & DB 準備", minutes: 3 },
       { n: 4, filename: "schema.sql", path: "src/main/resources/", layer: "DDL", desc: "起動時に users テーブルを作る DDL", stepSlug: "02-empty-boot", stepNo: 2, stepTitle: "空アプリ起動 & DB 準備", minutes: 3 },

@@ -122,7 +122,7 @@ String id = principal.getName();  // サーバが「認証済みユーザ」を�
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/
+rolemgr/src/main/
 ├── java/com/example/rolemgr/controller/
 │   └── UserInfoController.java            ← 追加
 └── webapp/WEB-INF/views/

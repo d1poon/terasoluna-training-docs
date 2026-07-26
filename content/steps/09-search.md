@@ -146,7 +146,7 @@ WHERE role LIKE '%' || #{role} || '%'
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/
+rolemgr/src/main/
 ├── java/com/example/rolemgr/controller/
 │   └── SearchController.java              ← 追加
 └── webapp/WEB-INF/views/

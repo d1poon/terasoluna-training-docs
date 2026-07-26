@@ -35,9 +35,9 @@ export default function TextbookPage() {
               <strong>本当のゼロから始まる教科書</strong>。研修に入る前 or 詰まった時にここを開いて確認してください。
             </p>
             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
-              💡 このページは<strong>後輩向け</strong>。教える立場のダンダンは
+              💡 このページは<strong>研修生 (受講する側)</strong>向け。教える立場の方は
               <Link href="/preface" className="text-brand underline">まず最初に読む (レストランメタファー)</Link>
-              や <Link href="/how-to" className="text-brand underline">レシピ集</Link> のほうが先。
+              や <Link href="/how-to" className="text-brand underline">レシピ集</Link> の方が先に読むと効率的です。
             </div>
           </div>
 

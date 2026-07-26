@@ -19,6 +19,55 @@ step: 06
 
 - [Step 05](/steps/05-service) 完了
 
+---
+
+## 🔰 その前に: Spring Security の全体像 (1 分で読む)
+
+Step 06 では 3 ファイルを一気に書くが、その前にこの図が頭に入っているとコードが読みやすい。
+
+```
+┌──────────────────────────────────────────────────────┐
+│  ブラウザ  ─ GET /menu ─►  Spring Security          │
+│                            (Filter Chain)             │
+│                                │                       │
+│                                ▼                       │
+│                       ① 認証済み?                     │
+│                          ├─ Yes → 通す (Controller へ)│
+│                          └─ No  → /login にリダイレクト│
+└──────────────────────────────────────────────────────┘
+```
+
+Spring Security は 3 つのピースの組み合わせで動く:
+
+| ピース | 役割 | このステップで書くファイル |
+|---|---|---|
+| **① SecurityFilterChain** | 「どの URL を守るか」「どこにログインフォームがあるか」の**ルール設定** | `SecurityConfig.java` |
+| **② UserDetailsService** | 「ID を渡すから、DB からユーザ情報を取ってきて」に応える**問い合わせ係** | `CustomUserDetailsService.java` |
+| **③ PasswordEncoder** | パスワードをハッシュ化 / 照合する**暗号係** | `SecurityConfig.java` の中で `@Bean` として提供 |
+
+さらにサンプルデータを DB に投入するために `DataInitializer.java` も追加する (これは Spring Security の部品ではなく、単に「起動時に 5 ユーザを入れる」ための便利クラス)。
+
+**流れのイメージ**:
+```
+ログインボタン押下 (POST /login)
+   │
+   ▼
+① SecurityFilterChain が POST /login をキャッチ
+   │
+   ▼
+② UserDetailsService.loadUserByUsername("u001") → DB から User 1 件
+   │
+   ▼
+③ PasswordEncoder.matches(入力PW, DBのハッシュ) が true なら認証成功
+   │
+   ▼
+Session に「認証済み」のマークを付ける → /menu へリダイレクト
+```
+
+上の 3 ファイルが下の 3 ステップに 1:1 で対応している、と押さえてから読むと詰まりにくい。
+
+---
+
 ## 追加するファイル (3つ、一括で書く)
 
 ### 1. `src/main/java/com/example/rolemgr/security/CustomUserDetailsService.java`
@@ -125,8 +174,6 @@ Spring Security 6 は **JSP への内部 forward も filter chain を再走**す
 
 `/WEB-INF/**` を permitAll しても Servlet コンテナ仕様で外部から直接アクセスできないので **セキュリティは下がらない**。
 
-詳細: 01_Knowledge/spring-security-6-jsp-forward-loop
-
 ### 3. `src/main/java/com/example/rolemgr/config/DataInitializer.java`
 
 起動時にサンプルユーザ 5 名を投入する係。パスワードは**その場で BCrypt でハッシュ化**。
@@ -177,7 +224,7 @@ public class DataInitializer implements CommandLineRunner {
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/java/com/example/rolemgr/
+rolemgr/src/main/java/com/example/rolemgr/
 ├── RolemgrApplication.java
 ├── config/
 │   ├── SecurityConfig.java                ← 追加

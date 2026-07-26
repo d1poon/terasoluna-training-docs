@@ -9,10 +9,12 @@ step: 03
 
 ## このステップのゴール
 
-- `users` テーブルの 1行を Java オブジェクトで表す POJO を作る
+- `users` テーブルの 1 行を Java オブジェクトで表す **POJO** を作る
 - **Java の class・package・private・getter/setter が何かをこの Step で理解する**
 
-このステップは短いが、**Java 全体を通じて何度も出てくる基本文法**が全部詰まっている。ここで一度腹落ちさせておく。
+> 💡 **POJO** = Plain Old Java Object。「フレームワークに縛られない普通の Java クラス」のこと。特殊な継承やアノテーションなしで、フィールドと getter/setter だけを持つ素朴な class を指す。
+
+このステップは短いが、**Java 全体を通じて何度も出てくる基本文法**が全部詰まっている。ここで一度しっかり理解しておく。
 
 ## 事前準備
 
@@ -179,7 +181,7 @@ A: パッケージが違えば別クラスとして共存できる。
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/java/com/example/rolemgr/
+rolemgr/src/main/java/com/example/rolemgr/
 ├── RolemgrApplication.java
 └── domain/
     └── User.java                          ← 追加

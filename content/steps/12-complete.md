@@ -21,10 +21,8 @@ step: 12
 ## 最終ディレクトリ構造
 
 ```
-reference-app/
+rolemgr/
 ├── pom.xml
-├── run.ps1
-├── README.md
 └── src/main/
     ├── java/com/example/rolemgr/
     │   ├── RolemgrApplication.java
@@ -121,11 +119,10 @@ reference-app/
 
 ## この後どこへ
 
-- 教える側の全体像・想定 Q&A: 05_Learning/terasoluna-teaching-guide
-- TERASOLUNA archetype との対応: 上記ガイドの Section 8
-- 落とし穴・トラブル: 01_Knowledge/spring-security-6-jsp-forward-loop
-- 動作リファレンス: `C:\Users\donpa\Workspace\terasoluna-training\reference-app\`
-- **公開版ホームページ (外から見える)**: https://terasoluna-training-docs.vercel.app
+- 実装レシピを引く: [「〜するには?」レシピ集](/how-to)
+- TERASOLUNA archetype との対応: [Boot vs TERASOLUNA](/spring-vs-terasoluna)
+- 用語の再確認: [用語集](/glossary) (Ctrl+K で全ページ検索も可能)
+- 別視点で全体像を眺める: [アーキテクチャ全体図](/architecture)
 
 ## おめでとう
 

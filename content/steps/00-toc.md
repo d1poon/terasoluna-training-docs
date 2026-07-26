@@ -7,10 +7,9 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 
 # 役職編集アプリ 組立ガイド (ガンプラ式)
 
-> **これは私 (ダンダン) 自身が「教えるために理解しておく」ためのガイド**。後輩に配る資料ではなく、自分が腹落ちさせるための教材。
-> Java・JSP の基本文法から入り、部品ひとつずつ、順番通りに置いていけば必ず完成する。
-> 各ステップは前のステップに依存する。飛ばさないこと。
-> **公開版 (どこからでも見られる)**: https://terasoluna-training-docs.vercel.app
+> **教える立場のあなたが「後輩に何を聞かれても答えられる」状態を作るためのガイド**。後輩に配る資料ではなく、教える側が理解を深めるための教材です。
+> Java・JSP の基本文法から入り、部品ひとつずつ、順番通りに置いていけば必ず完成します。
+> 各ステップは前のステップに依存する構造なので、飛ばさずに順に進めてください。
 
 ---
 
@@ -23,8 +22,8 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 ## 前提
 
 - JDK 17+ (JDK 24 でも動く)
-- Maven (`C:\Users\donpa\Workspace\terasoluna-training\tools\apache-maven-3.9.9\` に展開済み)
-- 作業フォルダ: `C:\Users\donpa\Workspace\terasoluna-training\reference-app\` (既に完成品あり — 新規に組む場合は別フォルダで)
+- Maven 3.8+ (公式サイトから DL → 展開 → `bin/` を PATH に追加)
+- 作業フォルダは任意 (例: `~/workspace/rolemgr/`)。空フォルダを 1 つ用意しておく
 
 ---
 
@@ -72,6 +71,6 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 
 ## 参考
 
-- 教える側の全体ガイド: 05_Learning/terasoluna-teaching-guide
-- プロジェクト状態: 02_Projects/terasoluna-training
-- 踏み込んだ落とし穴: 01_Knowledge/spring-security-6-jsp-forward-loop
+- 全体像: [まず最初に読む](/preface) — レストランメタファーで概念を掴む
+- 部品一覧: [アーキテクチャ全体図](/architecture) — 22 ファイルの層構造を 1 枚で
+- TERASOLUNA との対応: [Boot vs TERASOLUNA](/spring-vs-terasoluna)

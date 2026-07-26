@@ -116,7 +116,7 @@ GET だと「他サイトから `<img src='.../logout'>` を仕込まれる」�
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/
+rolemgr/src/main/
 ├── java/com/example/rolemgr/
 │   └── controller/
 │       ├── LoginController.java

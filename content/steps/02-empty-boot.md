@@ -51,6 +51,8 @@ public class RolemgrApplication {
 
 **起動時に実行される DDL**。`users` テーブルを作る。
 
+> 💡 **DDL** = Data Definition Language (データ定義言語)。テーブルの作成 (`CREATE TABLE`) や削除 (`DROP TABLE`) など、DB の「箱の形」を定義する SQL のこと。データ本体を出し入れする `SELECT` / `INSERT` (これは DML と呼ぶ) と区別される。
+
 ```sql
 DROP TABLE IF EXISTS users;
 
@@ -70,7 +72,7 @@ CREATE TABLE users (
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/
+rolemgr/
 ├── pom.xml
 └── src/main/
     ├── java/com/example/rolemgr/

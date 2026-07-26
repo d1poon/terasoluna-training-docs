@@ -18,7 +18,7 @@ step: 01
 ## 事前準備
 
 - JDK 17+ が入っている (`java -version` で確認)
-- Maven が展開済み (`C:\Users\donpa\Workspace\terasoluna-training\tools\apache-maven-3.9.9\bin\mvn -v`)
+- Maven 3.8+ にパスが通っている (`mvn -v` でバージョンが表示される)
 
 ## 追加するファイル (2つ)
 
@@ -143,7 +143,7 @@ logging.level.org.springframework.security=INFO
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/
+rolemgr/
 ├── pom.xml                               ← 追加
 └── src/
     └── main/
@@ -153,10 +153,9 @@ reference-app/
 
 ## 動作確認
 
+作業フォルダ (プロジェクトルート) に移動して:
+
 ```powershell
-$env:MAVEN_HOME = "C:\Users\donpa\Workspace\terasoluna-training\tools\apache-maven-3.9.9"
-$env:PATH = "$env:MAVEN_HOME\bin;$env:PATH"
-cd C:\Users\donpa\Workspace\terasoluna-training\reference-app
 mvn compile
 ```
 
@@ -164,8 +163,8 @@ mvn compile
 
 エラーが出たら:
 - `pom.xml` の XML タグ閉じ忘れ (`</dependency>` など)
-- インデントミス (実はどうでもいい、閉じ忘れをチェック)
-- `mvn: command not found` → 環境変数の設定漏れ
+- インデントは動作に影響しないので、閉じ忘れだけをチェック
+- `mvn: command not found` → Maven の `bin/` に PATH が通っていない。`$env:PATH` (PowerShell) または `$PATH` (bash/zsh) に Maven の `bin/` ディレクトリを追加
 
 ## よくある詰まり
 

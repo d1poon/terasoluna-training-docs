@@ -19,6 +19,10 @@ step: 04
 
 ## 追加するファイル (2つ、ペアで動く)
 
+> 💡 **このステップで登場する用語**
+> - **完全修飾名** = パッケージ名 + クラス名の全体。例: `com.example.rolemgr.repository.UserMapper`。「Java 全世界で 1 つに決まる名前」。
+> - **namespace** = XML の中で「どの Java interface と紐付けるか」を書く属性。ここに Java の完全修飾名を入れることで、XML の SQL がその interface のメソッドと結びつく。
+
 ### 1. `src/main/java/com/example/rolemgr/repository/UserMapper.java`
 
 **インターフェース**。Java 側からは「このメソッドを呼ぶ」という契約だけ。
@@ -81,32 +85,39 @@ public interface UserMapper {
 
 ## なぜこう書く
 
-### インターフェースと XML の紐付けルール
-- **XML の `namespace`** = **インターフェースの完全修飾名**
-- **XML の `<select id="X">` の X** = **インターフェースのメソッド名 X**
-- **`resultType`** = 結果の各行を詰めるクラスの完全修飾名
+### ① `#{xxx}` と `${xxx}` の違い (絶対に混同しないこと)
 
-このルールを守れば、MyBatis が実行時にインターフェースの実装を自動生成してくれる。
+XML の SQL の中で 一番目立つのがこれ。両者は見た目は似ているが**中身は別物**:
 
-### `#{xxx}` と `${xxx}` の違い (絶対に混同しないこと)
-
-| | 内部動作 | SQLインジェクションのリスク | 使う場面 |
+| | 内部動作 | SQL インジェクションのリスク | 使う場面 |
 |---|---|---|---|
 | `#{name}` | PreparedStatement のプレースホルダ (`?`) | 安全 | 99% はこれ |
 | `${name}` | 文字列連結 (SQL に直接埋め込む) | 危険 | 動的なテーブル名など特殊ケース |
 
-### `@Mapper` アノテーション
+**迷ったら `#{}`** と覚える。ユーザ入力を受け取る箇所で `${}` を使うと SQL インジェクション攻撃を許すことになる。
+
+### ② インターフェースと XML の紐付けルール
+
+`namespace` を鍵に、Java 側の interface と XML の SQL がぴったり結合する:
+
+- **XML の `namespace`** = **インターフェースの完全修飾名**
+- **XML の `<select id="X">` の X** = **インターフェースのメソッド名 X**
+- **`resultType`** = 結果の各行を詰めるクラスの完全修飾名
+
+このルールを守れば、MyBatis が実行時にインターフェースの実装を自動生成してくれる (自分で `class UserMapperImpl` を書く必要がない)。
+
+### ③ `@Mapper` アノテーション
 - MyBatis Spring Boot Starter が起動時に走査し、**このインターフェースの実装を自動作成**して DI 用 Bean として登録
 - Terasoluna archetype では `MapperScannerConfigurer` を XML で書くが、Boot は `@Mapper` だけで OK
 
-### `@Param` は何のため?
+### ④ `@Param` は何のため?
 - 引数が **2 つ以上**あるとき、XML 側からアクセスする名前を明示する必要がある
 - 引数が 1 つのときは省略しても動くが、**常に付けるのが安全**
 
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-reference-app/src/main/
+rolemgr/src/main/
 ├── java/com/example/rolemgr/
 │   ├── RolemgrApplication.java
 │   ├── domain/User.java

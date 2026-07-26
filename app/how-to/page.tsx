@@ -760,8 +760,8 @@ export default function HowToPage() {
               のが効きます。このページを別タブで開いておいて、質問が来たら該当 Q を開いて指差しながら答えるのがおすすめ。
             </p>
             <p className="mt-3 text-sm md:text-base text-slate-700 leading-relaxed">
-              抜け漏れがあれば、このページに Q を追加してどんどん育ててください。
-              vault の <code>05_Learning/</code> 配下に対応する Markdown を作れば、同期スクリプトでサイトに反映されます。
+              抜け漏れがあれば、実際の研修で受けた質問を随時追記していくと、
+              次に教える時のカンペとしてどんどん厚くなっていきます。
             </p>
           </section>
         </main>
