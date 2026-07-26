@@ -36,19 +36,26 @@ import org.apache.ibatis.annotations.Param;
 
 import com.example.rolemgr.domain.User;
 
-@Mapper
-public interface UserMapper {
+@Mapper                                                                 // ①
+public interface UserMapper {                                           // ②
 
     /** ログイン用: 主キーで1件取得 */
-    User findById(@Param("id") String id);
+    User findById(@Param("id") String id);                              // ③
 
     /** 検索画面用: 役職 (部分一致) で0件以上取得 */
     List<User> findByRole(@Param("role") String role);
 
     /** 変更画面用: 役職を更新 */
-    int updateRole(@Param("id") String id, @Param("role") String role);
+    int updateRole(@Param("id") String id, @Param("role") String role); // ④
 }
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。下の一覧も同じ内容です。
+
+- **① `@Mapper`** — MyBatis に「これは Mapper インターフェースだよ」と知らせるラベル。起動時に MyBatis Spring Boot Starter が走査し、**実装クラスを自動生成**して Bean として DI 用に登録する。
+- **② `interface UserMapper`** — 抽象メソッドの列挙のみで、**実装は書かない**。実装は MyBatis が実行時に (対応する XML の SQL を使って) 動的に生成する。
+- **③ `User findById(@Param("id") String id)`** — 「id を渡すと User が 1 件返る」という契約。XML 側の `<select id="findById">` と名前で紐付く。戻り値型 `User` = 検索結果 1 行を詰めるオブジェクト。
+- **④ `int updateRole(...)`** — 更新系メソッドは通常「更新した行数」を int で返す。`@Param` は引数が 2 つ以上あるときに必須 (XML 側から `#{id}` `#{role}` の名前で参照するため)。
 
 ### 2. `src/main/resources/mapper/UserMapper.xml`
 
@@ -59,22 +66,22 @@ public interface UserMapper {
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.rolemgr.repository.UserMapper">
+<mapper namespace="com.example.rolemgr.repository.UserMapper">          <!-- ① -->
 
-    <select id="findById" resultType="com.example.rolemgr.domain.User">
+    <select id="findById" resultType="com.example.rolemgr.domain.User">  <!-- ② -->
         SELECT id, password, role
           FROM users
-         WHERE id = #{id}
+         WHERE id = #{id}                                                <!-- ③ -->
     </select>
 
     <select id="findByRole" resultType="com.example.rolemgr.domain.User">
         SELECT id, password, role
           FROM users
-         WHERE role LIKE '%' || #{role} || '%'
+         WHERE role LIKE '%' || #{role} || '%'                           <!-- ④ -->
          ORDER BY id
     </select>
 
-    <update id="updateRole">
+    <update id="updateRole">                                             <!-- ⑤ -->
         UPDATE users
            SET role = #{role}
          WHERE id = #{id}
@@ -82,6 +89,14 @@ public interface UserMapper {
 
 </mapper>
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `namespace="com.example.rolemgr.repository.UserMapper"`** — この XML がどの Java interface とペアなのかを**完全修飾名**で宣言。ここが interface のパスと 1 文字でも違うと `Invalid bound statement` エラーが出る。
+- **② `<select id="findById" resultType="...User">`** — `id` = interface のメソッド名と一致させる。`resultType` = 結果 1 行を詰める Java クラスの完全修飾名。MyBatis は `SELECT` の各列を User の同名フィールドに詰めてくれる (`application.properties` の `map-underscore-to-camel-case=true` が snake→camel 変換もしてくれる)。
+- **③ `WHERE id = #{id}`** — `#{id}` は Java メソッドの `@Param("id")` から値を受け取り、**PreparedStatement のプレースホルダ (`?`) として**バインドされる。SQL インジェクション安全。
+- **④ `role LIKE '%' || #{role} || '%'`** — 部分一致検索。`||` は**SQL 標準の文字列連結**演算子 (H2 / PostgreSQL / Oracle で動く)。MySQL では `CONCAT('%', #{role}, '%')` に変える必要あり。
+- **⑤ `<update id="updateRole">`** — 更新系は `<select>` ではなく `<update>` タグを使う (`<insert>` `<delete>` も同様)。戻り値の int は影響を受けた行数を返す。
 
 ## なぜこう書く
 

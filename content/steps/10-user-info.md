@@ -45,16 +45,24 @@ public class UserInfoController {
         this.userService = userService;
     }
 
-    @GetMapping("/user-info")
-    public String view(Principal principal, Model model) {
-        String id = principal.getName();
-        User user = userService.findById(id);
+    @GetMapping("/user-info")                                        // ①
+    public String view(Principal principal, Model model) {           // ②
+        String id = principal.getName();                             // ③
+        User user = userService.findById(id);                        // ④
         model.addAttribute("loginId", id);
-        model.addAttribute("user", user);
+        model.addAttribute("user", user);                            // ⑤
         return "userInfo";
     }
 }
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `@GetMapping("/user-info")`** — 見るだけの画面なので GET。**URL パラメータで userId を受けない**のがこのアプリの重要な設計 (下記 ③ で決まる)。
+- **② `Principal principal`** — 引数に書くだけで Spring Security が「今ログインしているユーザ情報」を注入してくれる。**手動でセッションを触らない**のが Spring MVC 流。
+- **③ `String id = principal.getName();`** — ログイン時に入力した ID を取得。URL に載っていないので**他人の ID に書き換えられない** (IDOR 脆弱性回避)。
+- **④ `userService.findById(id);`** — Service 経由で DB からユーザ 1 件を取得。Controller が直接 Mapper を呼ばず Service を挟むのは 3 層構造の原則。
+- **⑤ `model.addAttribute("user", user);`** — 取ってきた User オブジェクトを丸ごと Model に詰める。JSP 側では `${user.id}` `${user.role}` で各フィールドを EL 式で参照できる。
 
 ### 2. `src/main/webapp/WEB-INF/views/userInfo.jsp`
 
@@ -73,15 +81,20 @@ public class UserInfoController {
 
     <h1>ユーザー情報</h1>
 
-    <p>ID: ${user.id}</p>
+    <p>ID: ${user.id}</p>                                        <%-- ① --%>
     <p>役職: ${user.role}</p>
 
-    <a href="<c:url value='/user-info/edit'/>">
+    <a href="<c:url value='/user-info/edit'/>">                  <%-- ② --%>
         <button type="button">変更する</button>
     </a>
 </body>
 </html>
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `${user.id}`** — EL 式 (Expression Language)。**JavaBean 規約**に従って裏で `user.getId()` が呼ばれ、その戻り値がここに埋め込まれる。User クラスに `getId()` を書き忘れていると空表示になるのが典型的な詰まりどころ。
+- **② `<a href="<c:url value='/user-info/edit'/>">`** — 変更画面 (Step 11) へのリンク。`<c:url>` はコンテキストパスを自動で付けてくれるヘルパー (アプリの deploy パスが変わってもリンク切れしない)。
 
 ## なぜこう書く
 

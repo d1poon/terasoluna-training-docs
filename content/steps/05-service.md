@@ -32,18 +32,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.rolemgr.domain.User;
 import com.example.rolemgr.repository.UserMapper;
 
-@Service
-@Transactional
+@Service                                                      // ①
+@Transactional                                                // ②
 public class UserService {
 
-    private final UserMapper userMapper;
+    private final UserMapper userMapper;                      // ③
 
     /** コンストラクタ注入 (Spring 4.3+ なら @Autowired 省略可) */
-    public UserService(UserMapper userMapper) {
+    public UserService(UserMapper userMapper) {               // ④
         this.userMapper = userMapper;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)                           // ⑤
     public User findById(String id) {
         return userMapper.findById(id);
     }
@@ -53,11 +53,20 @@ public class UserService {
         return userMapper.findByRole(role == null ? "" : role);
     }
 
-    public void updateRole(String id, String newRole) {
+    public void updateRole(String id, String newRole) {       // ⑥
         userMapper.updateRole(id, newRole);
     }
 }
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `@Service`** — このクラスを Spring MVC の「業務ロジック係」として登録するラベル。実際の挙動は `@Component` と同じ (Bean 登録) だが、役割を名前で明示する。
+- **② `@Transactional` (クラス全体)** — このクラスの**全 public メソッド**をトランザクション境界で包む。メソッド開始で BEGIN、正常終了で COMMIT、例外で ROLLBACK が自動で行われる。個別メソッドの `@Transactional` は上書き。
+- **③ `private final UserMapper userMapper;`** — `final` で「後から差し替え不能」を宣言。null を許さないコンストラクタ注入の相棒。
+- **④ `public UserService(UserMapper userMapper)`** — コンストラクタ引数に書くだけで Spring が Bean を渡してくれる (**コンストラクタ注入**、DI の推奨形式)。テストで `new UserService(mockMapper)` と書けば単体テストできる。
+- **⑤ `@Transactional(readOnly = true)`** — 参照系メソッドの最適化ヒント。DB によっては読み取りロックを緩めるなどの高速化が働く (H2 では効果薄いが「意図の明示」として書く)。
+- **⑥ `public void updateRole(...)`** — 更新系はクラス全体の `@Transactional` (readOnly=false) が適用され、SQL 例外時に自動でロールバックされる。
 
 ## なぜ Service を分けるか (よくある疑問)
 

@@ -25,17 +25,35 @@ step: 06
 
 Step 06 では 3 ファイルを一気に書くが、その前にこの図が頭に入っているとコードが読みやすい。
 
-```
-┌──────────────────────────────────────────────────────┐
-│  ブラウザ  ─ GET /menu ─►  Spring Security          │
-│                            (Filter Chain)             │
-│                                │                       │
-│                                ▼                       │
-│                       ① 認証済み?                     │
-│                          ├─ Yes → 通す (Controller へ)│
-│                          └─ No  → /login にリダイレクト│
-└──────────────────────────────────────────────────────┘
-```
+<div class="flow-diagram">
+  <div class="flow-diagram-title">🔐 Filter Chain の判定フロー</div>
+  <div class="flow-vertical">
+    <div class="flow-step">
+      <span class="flow-step-badge">1</span>
+      <div class="flow-step-content">
+        ブラウザから <code>GET /menu</code> がサーバに届く
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge">2</span>
+      <div class="flow-step-content">
+        <strong>Spring Security Filter Chain</strong> がリクエストを横取りして「認証済み?」を判定
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge flow-step-badge--yes">✓</span>
+      <div class="flow-step-content">
+        <strong>Yes (認証済み)</strong> → Controller へ通す
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge flow-step-badge--no">✗</span>
+      <div class="flow-step-content">
+        <strong>No (未認証)</strong> → <code>/login</code> にリダイレクト
+      </div>
+    </div>
+  </div>
+</div>
 
 Spring Security は 3 つのピースの組み合わせで動く:
 
@@ -47,22 +65,41 @@ Spring Security は 3 つのピースの組み合わせで動く:
 
 さらにサンプルデータを DB に投入するために `DataInitializer.java` も追加する (これは Spring Security の部品ではなく、単に「起動時に 5 ユーザを入れる」ための便利クラス)。
 
-**流れのイメージ**:
-```
-ログインボタン押下 (POST /login)
-   │
-   ▼
-① SecurityFilterChain が POST /login をキャッチ
-   │
-   ▼
-② UserDetailsService.loadUserByUsername("u001") → DB から User 1 件
-   │
-   ▼
-③ PasswordEncoder.matches(入力PW, DBのハッシュ) が true なら認証成功
-   │
-   ▼
-Session に「認証済み」のマークを付ける → /menu へリダイレクト
-```
+<div class="flow-diagram">
+  <div class="flow-diagram-title">🔑 ログイン時の流れ (3 ピースがどう連携するか)</div>
+  <div class="flow-vertical">
+    <div class="flow-step">
+      <span class="flow-step-badge">1</span>
+      <div class="flow-step-content">
+        <strong>ログインボタン押下</strong> — ブラウザから <code>POST /login</code>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge">2</span>
+      <div class="flow-step-content">
+        <strong>SecurityFilterChain</strong> が <code>POST /login</code> をキャッチ
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge">3</span>
+      <div class="flow-step-content">
+        <strong>UserDetailsService.loadUserByUsername("u001")</strong> → DB から User 1 件取得
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge">4</span>
+      <div class="flow-step-content">
+        <strong>PasswordEncoder.matches(入力PW, DB のハッシュ)</strong> が true なら認証成功
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge flow-step-badge--yes">✓</span>
+      <div class="flow-step-content">
+        Session に「認証済み」のマークを付ける → <code>/menu</code> へリダイレクト
+      </div>
+    </div>
+  </div>
+</div>
 
 上の 3 ファイルが下の 3 ステップに 1:1 で対応している、と押さえてから読むと詰まりにくい。
 
@@ -135,15 +172,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/h2-console/**", "/WEB-INF/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/login", "/css/**", "/h2-console/**", "/WEB-INF/**").permitAll()  // ①
+                .anyRequest().authenticated()                                                        // ②
             )
             .formLogin(form -> form
-                .loginPage("/login")
+                .loginPage("/login")                                                                 // ③
                 .loginProcessingUrl("/login")
-                .usernameParameter("id")
+                .usernameParameter("id")                                                             // ④
                 .passwordParameter("password")
-                .defaultSuccessUrl("/menu", true)
+                .defaultSuccessUrl("/menu", true)                                                    // ⑤
                 .failureUrl("/login?error")
                 .permitAll()
             )
@@ -152,18 +189,29 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-            .headers(h -> h.frameOptions(f -> f.sameOrigin()));
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))                            // ⑥
+            .headers(h -> h.frameOptions(f -> f.sameOrigin()));                                      // ⑦
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {                                                       // ⑧
         return new BCryptPasswordEncoder();
     }
 }
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `permitAll()`** — この 4 パス (`/login`, `/css/**`, `/h2-console/**`, `/WEB-INF/**`) は認証**なし**で見られる。ログイン画面自体は認証前でも見られないと詰むので必ず開放。`/WEB-INF/**` は JSP forward の再フィルタ問題を回避するため必要 (次節「なぜ」参照)。
+- **② `.anyRequest().authenticated()`** — 上の 4 パス以外の**全 URL は認証必須**。未認証で叩くと `/login` にリダイレクトされる。
+- **③ `.loginPage("/login")`** — 「認証が必要なとき、ここに飛ばす」のログインフォーム URL。同時に `loginProcessingUrl("/login")` で「POST 先も同じ /login」と宣言。
+- **④ `.usernameParameter("id")`** — ログインフォームの `<input name="id">` から ID を受け取る。デフォルトは `username` だが、このアプリの命名に合わせて `id` に変更。JSP 側の name 属性と必ず揃える。
+- **⑤ `.defaultSuccessUrl("/menu", true)`** — 認証成功時に飛ぶ URL。第 2 引数 `true` は「常にここに飛ぶ (どこから来たか関係なく)」の意味。
+- **⑥ `.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))`** — H2 コンソールは開発用の別 UI で CSRF トークンを送らないため、この URL だけ CSRF 保護を免除。**本番では H2 コンソール自体を無効化する**べき。
+- **⑦ `.frameOptions(f -> f.sameOrigin())`** — H2 コンソールは iframe 内で動く UI なので、同一オリジンからの frame 埋め込みを許可。デフォルト (DENY) だとコンソールが真っ白になる。
+- **⑧ `PasswordEncoder` の `@Bean`** — BCrypt をパスワード暗号化器として登録。認証時 Spring Security が自動的に `encoder.matches(入力, DB のハッシュ)` を呼ぶ。他クラスからも `@Autowired` で使える (DataInitializer で seed 投入時に使用)。
 
 #### `/WEB-INF/**` が **なぜ** permitAll に必要か (超重要)
 

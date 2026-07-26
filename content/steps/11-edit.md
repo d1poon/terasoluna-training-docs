@@ -55,22 +55,31 @@ public class UserInfoController {
         return "userInfo";
     }
 
-    @GetMapping("/user-info/edit")
+    @GetMapping("/user-info/edit")                                   // ①
     public String editForm(Principal principal, Model model) {
         String id = principal.getName();
-        User user = userService.findById(id);
+        User user = userService.findById(id);                        // ②
         model.addAttribute("loginId", id);
         model.addAttribute("user", user);
         return "userInfoEdit";
     }
 
-    @PostMapping("/user-info/edit")
-    public String edit(@RequestParam String role, Principal principal) {
-        userService.updateRole(principal.getName(), role);
-        return "redirect:/user-info";
+    @PostMapping("/user-info/edit")                                  // ③
+    public String edit(@RequestParam String role, Principal principal) {  // ④
+        userService.updateRole(principal.getName(), role);           // ⑤
+        return "redirect:/user-info";                                // ⑥
     }
 }
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `@GetMapping("/user-info/edit")`** — 変更画面の**表示**用 GET メソッド。フォームを描画するだけで、まだ DB は変更しない。
+- **② `userService.findById(id)`** — フォームの初期値として「今の役職」を表示するため、まず現在値を取得する。編集画面は必ず「現在値ロード → 表示 → ユーザ入力 → 保存」の順。
+- **③ `@PostMapping("/user-info/edit")`** — フォーム送信を受ける**同じ URL の POST 版**。GET と POST でメソッドを分けるのが Spring MVC の定石 (同名でも競合しない)。
+- **④ `@RequestParam String role`** — フォームの `<input name="role">` から値を受け取る。null は許さない (フォーム側で `required` にしてある想定)。
+- **⑤ `userService.updateRole(...)`** — Service 経由で DB を UPDATE。トランザクション境界は `@Service` の `@Transactional` に任せる。
+- **⑥ `return "redirect:/user-info";`** — **PRG パターンの核心**。View 名でなく `redirect:` 接頭辞を返すと、Spring が「302 リダイレクトレスポンス」を作ってブラウザに返し、ブラウザは自動で `GET /user-info` を叩き直す。この結果**リロードで二重更新されない**。
 
 ### 2. `src/main/webapp/WEB-INF/views/userInfoEdit.jsp`
 
@@ -91,16 +100,22 @@ public class UserInfoController {
 
     <p>ID: ${user.id}</p>
 
-    <form action="<c:url value='/user-info/edit'/>" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <form action="<c:url value='/user-info/edit'/>" method="post">                      <%-- ① --%>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />    <%-- ② --%>
         <label>役職:
-            <input type="text" name="role" value="${user.role}" />
+            <input type="text" name="role" value="${user.role}" />                       <%-- ③ --%>
         </label>
         <button type="submit">変更する</button>
     </form>
 </body>
 </html>
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `<form action="/user-info/edit" method="post">`** — 送信先は Controller の `@PostMapping("/user-info/edit")` と同じ URL、method は必ず **POST** (状態を変えるため)。GET だと URL にパスワード相当の値が乗ってしまうこともある。
+- **② `<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />`** — CSRF 対策の合言葉。**この行がないと POST が Spring Security に 403 で弾かれる**。`_csrf` は Spring Security が JSP から見える場所に自動で置いてくれるオブジェクト。
+- **③ `value="${user.role}"`** — フォームを開いた瞬間、入力欄に**現在の役職**が入っている状態にする。Controller の `editForm` メソッドが `model.addAttribute("user", user)` で詰めた値がここで拾える。ユーザが変更しない場合は現在値がそのまま送信される。
 
 ## なぜこう書く
 
@@ -123,6 +138,42 @@ public String edit(...) {
 - ブラウザは自動的に `GET /user-info` を発行する
 - 現在の URL バーが `/user-info` になる
 - リロードしても GET なので副作用なし ✓
+
+<div class="flow-diagram flow-diagram--good">
+  <div class="flow-diagram-title">✅ PRG パターンの流れ (これが正解)</div>
+  <div class="flow-vertical">
+    <div class="flow-step">
+      <span class="flow-step-badge">1</span>
+      <div class="flow-step-content">
+        <strong>ブラウザ</strong>: フォーム送信 <code>POST /user-info/edit</code>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge">2</span>
+      <div class="flow-step-content">
+        <strong>サーバ</strong>: DB を UPDATE、レスポンスとして <code>302 Location: /user-info</code> を返す
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge">3</span>
+      <div class="flow-step-content">
+        <strong>ブラウザ</strong>: 302 を受けて自動で <code>GET /user-info</code> を送る (URL バーが <code>/user-info</code> に変わる)
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge">4</span>
+      <div class="flow-step-content">
+        <strong>サーバ</strong>: 表示画面用の userInfo.jsp を返す (SELECT だけ、副作用なし)
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-step-badge flow-step-badge--yes">✓</span>
+      <div class="flow-step-content">
+        ユーザが F5 リロード → <code>GET /user-info</code> がもう 1 回飛ぶだけ、二重更新なし
+      </div>
+    </div>
+  </div>
+</div>
 
 これは**Web アプリのイディオム**。POST の後は必ずリダイレクト。
 

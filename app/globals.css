@@ -338,3 +338,66 @@
   color: #475569;
   line-height: 1.55;
 }
+
+/* 縦方向のステップフロー (Step 06 の Filter Chain 判定・認証流れ図など) */
+.flow-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.flow-step {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  padding: 0.8rem 1rem;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  position: relative;
+}
+.flow-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: -0.45rem;
+  left: 1.8rem;
+  width: 2px;
+  height: 0.55rem;
+  background: #94a3b8;
+}
+.flow-step-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: #0f766e;
+  color: white;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.flow-step-badge--yes { background: #16a34a; }
+.flow-step-badge--no  { background: #dc2626; }
+.flow-step-content {
+  flex: 1 1 auto;
+  padding-top: 0.3rem;
+  color: #334155;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.flow-step-content code {
+  background: #e2e8f0;
+  color: #0f172a;
+  padding: 0.05em 0.35em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+.flow-step-content strong { color: #0f172a; font-weight: 700; }
+@media (max-width: 639px) {
+  .flow-step { padding: 0.75rem 0.9rem; gap: 0.65rem; }
+  .flow-step-content { font-size: 0.95rem; }
+}

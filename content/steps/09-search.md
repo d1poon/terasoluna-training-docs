@@ -39,17 +39,17 @@ public class SearchController {
 
     private final UserService userService;
 
-    public SearchController(UserService userService) {
+    public SearchController(UserService userService) {                  // ①
         this.userService = userService;
     }
 
-    @GetMapping("/search")
-    public String search(@RequestParam(required = false) String role,
+    @GetMapping("/search")                                              // ②
+    public String search(@RequestParam(required = false) String role,   // ③
                          Principal principal,
                          Model model) {
         model.addAttribute("loginId", principal.getName());
-        model.addAttribute("role", role);
-        if (role != null) {
+        model.addAttribute("role", role);                               // ④
+        if (role != null) {                                             // ⑤
             List<User> results = userService.searchByRole(role);
             model.addAttribute("results", results);
         }
@@ -58,12 +58,20 @@ public class SearchController {
 }
 ```
 
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① コンストラクタ引数に `UserService`** — Spring が自動で Service Bean を渡してくれる (DI)。`@Autowired` は Spring 4.3+ でコンストラクタ 1 個のみなら省略可能。
+- **② `@GetMapping("/search")`** — 検索は「見るだけ」の操作なので **GET** を使う。`?role=部長` の形で URL に条件が乗り、ブックマーク・リロード可能。
+- **③ `@RequestParam(required = false) String role`** — 初回アクセス `/search` (パラメータなし) でもエラーにしないよう `required = false`。この場合 `role` は `null` になる。
+- **④ `model.addAttribute("role", role)`** — 検索したキーワードを JSP に渡す (フォームの入力欄に初期値として表示するため)。
+- **⑤ `if (role != null)`** — 初回アクセス (パラメータなし) と検索実行後の 2 状態を区別。初回はテーブル非表示、検索後は結果表示。**空文字と null の違い**が JSP 側の 3 状態分岐 (下記) の鍵。
+
 ### 2. `src/main/webapp/WEB-INF/views/search.jsp`
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<c:set var="showMenuButton" value="true" />
+<c:set var="showMenuButton" value="true" />                             <%-- ① --%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -75,16 +83,16 @@ public class SearchController {
 
     <h1>検索</h1>
 
-    <form action="<c:url value='/search'/>" method="get">
+    <form action="<c:url value='/search'/>" method="get">                <%-- ② --%>
         <label>役職:
-            <input type="text" name="role" value="${role}" />
+            <input type="text" name="role" value="${role}" />            <%-- ③ --%>
         </label>
         <button type="submit">検索</button>
     </form>
 
-    <c:if test="${results != null}">
+    <c:if test="${results != null}">                                      <%-- ④ --%>
         <c:choose>
-            <c:when test="${not empty results}">
+            <c:when test="${not empty results}">                          <%-- ⑤ --%>
                 <table border="1" style="margin-top:16px; border-collapse:collapse;">
                     <thead>
                         <tr>
@@ -93,7 +101,7 @@ public class SearchController {
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="u" items="${results}">
+                        <c:forEach var="u" items="${results}">            <%-- ⑥ --%>
                             <tr>
                                 <td style="padding:4px 12px;">${u.id}</td>
                                 <td style="padding:4px 12px;">${u.role}</td>
@@ -103,13 +111,23 @@ public class SearchController {
                 </table>
             </c:when>
             <c:otherwise>
-                <p style="margin-top:16px;">該当なし</p>
+                <p style="margin-top:16px;">該当なし</p>                   <%-- ⑦ --%>
             </c:otherwise>
         </c:choose>
     </c:if>
 </body>
 </html>
 ```
+
+> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+
+- **① `<c:set var="showMenuButton" value="true" />`** — 共通ヘッダの `<c:if>` に「メニューボタンを出す」フラグを渡す。メニュー画面には不要、他画面では必要、を切り替えている。
+- **② `method="get"`** — 検索は GET。URL がブックマーク可能・リロード安全 (副作用なし)。POST にしてはいけない。
+- **③ `value="${role}"`** — 前回検索したキーワードを入力欄の初期値に (再検索しやすくするため)。Controller が Model に `role` を詰めているのでここで拾える。
+- **④ `<c:if test="${results != null}">`** — **null** = 初回アクセス (何も表示しない) / **not null** = 検索実行後。この分岐で「フォームだけ」と「フォーム + 結果」を区別。
+- **⑤ `<c:choose>` + `<c:when test="${not empty results}">`** — 検索実行後の中で更に「1 件以上ヒット」と「0 件」を分岐。**null / 空リスト / 中身あり** の 3 状態を区別する必要がある。
+- **⑥ `<c:forEach var="u" items="${results}">`** — JSTL の繰り返し。`items` に List を渡すと、各要素が `var` の名前でループ変数に入る。
+- **⑦ `<c:otherwise> 該当なし`** — 検索したが 0 件だった場合の表示。フォームだけの状態と区別されるので「探したけど無い」ことがユーザに伝わる。
 
 ## なぜこう書く
 
