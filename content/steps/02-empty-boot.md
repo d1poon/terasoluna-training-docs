@@ -21,7 +21,17 @@ step: 02
 
 ## 追加するファイル (2つ)
 
-### 1. `src/main/java/com/example/rolemgr/RolemgrApplication.java`
+### 1. `RolemgrApplication.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3 ft-file">📄 RolemgrApplication.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 **アプリのエントリポイント**。ここから起動する。
 
@@ -47,7 +57,16 @@ public class RolemgrApplication {
   - `@ComponentScan`: このクラスと同じパッケージ (`com.example.rolemgr`) 以下を全部スキャンして `@Controller` / `@Service` / `@Repository` を Bean 登録
 - **`SpringApplication.run(...)`**: 起動して、埋め込み Tomcat が上がる。それだけ
 
-### 2. `src/main/resources/schema.sql`
+### 2. `schema.sql`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/resources/</div>
+    <div class="ft-line ft-l2 ft-file">📄 schema.sql <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 **起動時に実行される DDL**。`users` テーブルを作る。
 

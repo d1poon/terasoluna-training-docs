@@ -115,7 +115,18 @@ step: 07
 
 ## 追加するファイル (2つ)
 
-### 1. `src/main/java/com/example/rolemgr/controller/LoginController.java`
+### 1. `LoginController.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 controller/</div>
+    <div class="ft-line ft-l4 ft-file">📄 LoginController.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```java
 package com.example.rolemgr.controller;
@@ -154,7 +165,18 @@ public class LoginController {
 
 **GET のみ**の Controller。POST は Spring Security が自動処理してくれるので**書かない**。
 
-### 2. `src/main/webapp/WEB-INF/views/login.jsp`
+### 2. `login.jsp`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
+    <div class="ft-line ft-l2">📁 WEB-INF/</div>
+    <div class="ft-line ft-l3">📁 views/</div>
+    <div class="ft-line ft-l4 ft-file">📄 login.jsp <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>    <%-- ① --%>

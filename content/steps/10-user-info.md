@@ -20,7 +20,18 @@ step: 10
 
 ## 追加するファイル (2つ)
 
-### 1. `src/main/java/com/example/rolemgr/controller/UserInfoController.java`
+### 1. `UserInfoController.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 controller/</div>
+    <div class="ft-line ft-l4 ft-file">📄 UserInfoController.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 **Step 11 で編集メソッドも追加する**ので、今は表示メソッドだけ書く。
 
@@ -64,7 +75,18 @@ public class UserInfoController {
 - **④ `userService.findById(id);`** — Service 経由で DB からユーザ 1 件を取得。Controller が直接 Mapper を呼ばず Service を挟むのは 3 層構造の原則。
 - **⑤ `model.addAttribute("user", user);`** — 取ってきた User オブジェクトを丸ごと Model に詰める。JSP 側では `${user.id}` `${user.role}` で各フィールドを EL 式で参照できる。
 
-### 2. `src/main/webapp/WEB-INF/views/userInfo.jsp`
+### 2. `userInfo.jsp`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
+    <div class="ft-line ft-l2">📁 WEB-INF/</div>
+    <div class="ft-line ft-l3">📁 views/</div>
+    <div class="ft-line ft-l4 ft-file">📄 userInfo.jsp <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

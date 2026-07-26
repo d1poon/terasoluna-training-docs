@@ -21,6 +21,17 @@ step: 11
 
 ### 1. `UserInfoController.java` に 2 メソッド追加
 
+<div class="file-location">
+  <div class="file-location-label">✏️ このファイルを編集 (Step 10 で作成済み)</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 controller/</div>
+    <div class="ft-line ft-l4 ft-file">📄 UserInfoController.java <span class="ft-tag ft-tag--modify">修正</span></div>
+  </div>
+</div>
+
 Step 10 のファイルを開いて、`editForm` と `edit` を追加:
 
 ```java
@@ -81,7 +92,18 @@ public class UserInfoController {
 - **⑤ `userService.updateRole(...)`** — Service 経由で DB を UPDATE。トランザクション境界は `@Service` の `@Transactional` に任せる。
 - **⑥ `return "redirect:/user-info";`** — **PRG パターンの核心**。View 名でなく `redirect:` 接頭辞を返すと、Spring が「302 リダイレクトレスポンス」を作ってブラウザに返し、ブラウザは自動で `GET /user-info` を叩き直す。この結果**リロードで二重更新されない**。
 
-### 2. `src/main/webapp/WEB-INF/views/userInfoEdit.jsp`
+### 2. `userInfoEdit.jsp`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
+    <div class="ft-line ft-l2">📁 WEB-INF/</div>
+    <div class="ft-line ft-l3">📁 views/</div>
+    <div class="ft-line ft-l4 ft-file">📄 userInfoEdit.jsp <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

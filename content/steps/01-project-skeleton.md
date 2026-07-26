@@ -22,7 +22,15 @@ step: 01
 
 ## 追加するファイル (2つ)
 
-### 1. `pom.xml` (プロジェクト直下)
+### 1. `pom.xml`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成 (プロジェクト直下)</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1 ft-file">📄 pom.xml <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 Maven の心臓部。**どの依存ライブラリを使うか**、**どの Java バージョンで動かすか**をここで宣言する。
 
@@ -101,7 +109,16 @@ Maven の心臓部。**どの依存ライブラリを使うか**、**どの Java
 - **`tomcat-embed-jasper`**: JSP を解釈するために必要。これがないと画面真っ白
 - **`jakarta.servlet.jsp.jstl-api` + `-jstl`**: `<c:if>` などの JSTL タグを使うため。**API と実装は別依存**なことに注意
 
-### 2. `src/main/resources/application.properties`
+### 2. `application.properties`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/resources/</div>
+    <div class="ft-line ft-l2 ft-file">📄 application.properties <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 Spring Boot の**設定ファイル**。値を並べるだけ。
 

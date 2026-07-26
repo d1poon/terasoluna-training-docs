@@ -19,7 +19,18 @@ step: 08
 
 ## 追加するファイル (3つ)
 
-### 1. `src/main/java/com/example/rolemgr/controller/MenuController.java`
+### 1. `MenuController.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 controller/</div>
+    <div class="ft-line ft-l4 ft-file">📄 MenuController.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```java
 package com.example.rolemgr.controller;
@@ -41,7 +52,19 @@ public class MenuController {
 }
 ```
 
-### 2. `src/main/webapp/WEB-INF/views/common/header.jsp`
+### 2. `header.jsp` (共通ヘッダ)
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
+    <div class="ft-line ft-l2">📁 WEB-INF/</div>
+    <div class="ft-line ft-l3">📁 views/</div>
+    <div class="ft-line ft-l4">📁 common/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l5 ft-file">📄 header.jsp <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 **全画面共通のヘッダ**。他の JSP から `<%@ include %>` される。
 
@@ -63,7 +86,18 @@ public class MenuController {
 </div>
 ```
 
-### 3. `src/main/webapp/WEB-INF/views/menu.jsp`
+### 3. `menu.jsp`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
+    <div class="ft-line ft-l2">📁 WEB-INF/</div>
+    <div class="ft-line ft-l3">📁 views/</div>
+    <div class="ft-line ft-l4 ft-file">📄 menu.jsp <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

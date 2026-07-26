@@ -107,7 +107,18 @@ Spring Security は 3 つのピースの組み合わせで動く:
 
 ## 追加するファイル (3つ、一括で書く)
 
-### 1. `src/main/java/com/example/rolemgr/security/CustomUserDetailsService.java`
+### 1. `CustomUserDetailsService.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 security/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 CustomUserDetailsService.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 Spring Security が「ユーザ ID から DB を引いてくれ」と依頼する係。
 
@@ -151,7 +162,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 **注意**: `import` に `org.springframework.security.core.userdetails.User` (Spring 側) と `com.example.rolemgr.domain.User` (自作) が両方登場する。同名だが**完全に別クラス**。
 
-### 2. `src/main/java/com/example/rolemgr/config/SecurityConfig.java`
+### 2. `SecurityConfig.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 config/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 SecurityConfig.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 Spring Security の**設定本体**。認可ルール、ログインパス、ハッシュ器を宣言。
 
@@ -222,7 +244,18 @@ Spring Security 6 は **JSP への内部 forward も filter chain を再走**す
 
 `/WEB-INF/**` を permitAll しても Servlet コンテナ仕様で外部から直接アクセスできないので **セキュリティは下がらない**。
 
-### 3. `src/main/java/com/example/rolemgr/config/DataInitializer.java`
+### 3. `DataInitializer.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 config/</div>
+    <div class="ft-line ft-l4 ft-file">📄 DataInitializer.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 起動時にサンプルユーザ 5 名を投入する係。パスワードは**その場で BCrypt でハッシュ化**。
 

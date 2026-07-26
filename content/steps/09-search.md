@@ -18,7 +18,18 @@ step: 09
 
 ## 追加するファイル (2つ)
 
-### 1. `src/main/java/com/example/rolemgr/controller/SearchController.java`
+### 1. `SearchController.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 controller/</div>
+    <div class="ft-line ft-l4 ft-file">📄 SearchController.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```java
 package com.example.rolemgr.controller;
@@ -66,7 +77,18 @@ public class SearchController {
 - **④ `model.addAttribute("role", role)`** — 検索したキーワードを JSP に渡す (フォームの入力欄に初期値として表示するため)。
 - **⑤ `if (role != null)`** — 初回アクセス (パラメータなし) と検索実行後の 2 状態を区別。初回はテーブル非表示、検索後は結果表示。**空文字と null の違い**が JSP 側の 3 状態分岐 (下記) の鍵。
 
-### 2. `src/main/webapp/WEB-INF/views/search.jsp`
+### 2. `search.jsp`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
+    <div class="ft-line ft-l2">📁 WEB-INF/</div>
+    <div class="ft-line ft-l3">📁 views/</div>
+    <div class="ft-line ft-l4 ft-file">📄 search.jsp <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

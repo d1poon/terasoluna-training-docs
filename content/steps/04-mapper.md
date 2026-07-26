@@ -23,7 +23,18 @@ step: 04
 > - **完全修飾名** = パッケージ名 + クラス名の全体。例: `com.example.rolemgr.repository.UserMapper`。「Java 全世界で 1 つに決まる名前」。
 > - **namespace** = XML の中で「どの Java interface と紐付けるか」を書く属性。ここに Java の完全修飾名を入れることで、XML の SQL がその interface のメソッドと結びつく。
 
-### 1. `src/main/java/com/example/rolemgr/repository/UserMapper.java`
+### 1. `UserMapper.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 repository/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 UserMapper.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 **インターフェース**。Java 側からは「このメソッドを呼ぶ」という契約だけ。
 
@@ -57,7 +68,17 @@ public interface UserMapper {                                           // ②
 - **③ `User findById(@Param("id") String id)`** — 「id を渡すと User が 1 件返る」という契約。XML 側の `<select id="findById">` と名前で紐付く。戻り値型 `User` = 検索結果 1 行を詰めるオブジェクト。
 - **④ `int updateRole(...)`** — 更新系メソッドは通常「更新した行数」を int で返す。`@Param` は引数が 2 つ以上あるときに必須 (XML 側から `#{id}` `#{role}` の名前で参照するため)。
 
-### 2. `src/main/resources/mapper/UserMapper.xml`
+### 2. `UserMapper.xml`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/resources/</div>
+    <div class="ft-line ft-l2">📁 mapper/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l3 ft-file">📄 UserMapper.xml <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 **SQL 本体**。XML に切り出しておくと、DBA が SQL レビューしやすい (Java コードを読まなくていい)。
 

@@ -19,7 +19,18 @@ step: 05
 
 ## 追加するファイル (1つ)
 
-### `src/main/java/com/example/rolemgr/service/UserService.java`
+### `UserService.java`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 rolemgr/</div>
+    <div class="ft-line ft-l1">📁 src/main/java/</div>
+    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
+    <div class="ft-line ft-l3">📁 service/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 UserService.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
 ```java
 package com.example.rolemgr.service;
