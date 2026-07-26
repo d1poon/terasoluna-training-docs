@@ -5,9 +5,12 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  html, body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* 意図しない要素が viewport をはみ出しても横スクロールを発生させない */
+    overflow-x: hidden;
+    max-width: 100%;
   }
   body {
     @apply bg-slate-50 text-slate-900;
@@ -61,6 +64,20 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   vertical-align: baseline;
   user-select: none;
+  /* iOS の 300ms タップ遅延を排除 + ハイライトのちらつき無効化 */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+/* モバイルでは指でも押しやすいサイズに */
+@media (max-width: 639px) {
+  .anno-badge {
+    min-width: 1.7em;
+    height: 1.7em;
+    line-height: 1.7em;
+    font-size: 0.9em;
+    padding: 0 0.5em;
+    margin: 0 0.2em;
+  }
 }
 .anno-badge:hover,
 .anno-badge:focus-visible,
@@ -136,7 +153,7 @@
   color: #0f172a;
 }
 
-/* 矢印 (badge を指す) */
+/* 矢印 (badge を指す) — デスクトップのみ */
 .anno-popover--below::before,
 .anno-popover--above::before {
   content: "";
@@ -156,6 +173,42 @@
   bottom: -7px;
   border-bottom: 1px solid #cbd5e1;
   border-right: 1px solid #cbd5e1;
+}
+
+/* モバイル: ボトムシート形式 (画面下端に固定、スクロールで閉じない) */
+@media (max-width: 639px) {
+  .anno-popover {
+    position: fixed !important;
+    top: auto !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    animation: annoSlideUp 0.18s ease-out;
+    box-shadow: 0 -8px 30px -5px rgba(0, 0, 0, 0.25);
+  }
+  @keyframes annoSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .anno-popover--below::before,
+  .anno-popover--above::before {
+    display: none;
+  }
+  .anno-popover-close {
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  .anno-popover-body {
+    padding-right: 2rem;
+  }
 }
 
 /* --- Flow diagram (CSRF 攻撃 / 対策 図解) ---
@@ -198,12 +251,14 @@
   background: white;
   border: 2px solid #cbd5e1;
   border-radius: 0.5rem;
-  padding: 0.75rem 0.9rem;
+  padding: 0.9rem 1rem;
   text-align: center;
   min-height: 100%;
+  min-width: 0; /* Grid child が親幅を超えないように */
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow: hidden; /* 子の overflow を封じ込め */
 }
 .flow-node--attacker { border-color: #ef4444; background: #fef2f2; }
 .flow-node--legit    { border-color: #14b8a6; background: #f0fdfa; }
@@ -212,25 +267,37 @@
 .flow-node-icon { font-size: 1.75rem; line-height: 1; margin-bottom: 0.25rem; }
 .flow-node-name {
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #0f172a;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 .flow-node-detail {
-  font-size: 0.78rem;
-  line-height: 1.55;
+  font-size: 0.85rem;
+  line-height: 1.6;
   color: #475569;
   text-align: left;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .flow-node-detail code {
   display: inline-block;
+  max-width: 100%;
   background: #e2e8f0;
   color: #0f172a;
-  padding: 0.1em 0.4em;
+  padding: 0.1em 0.45em;
   border-radius: 0.25rem;
   font-size: 0.85em;
-  word-break: break-all;
-  margin: 0.15rem 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  margin: 0.2rem 0;
+  vertical-align: baseline;
+}
+/* モバイルはさらに大きめに */
+@media (max-width: 639px) {
+  .flow-node { padding: 1rem 1.1rem; }
+  .flow-node-icon { font-size: 2rem; margin-bottom: 0.35rem; }
+  .flow-node-name { font-size: 1rem; margin-bottom: 0.55rem; }
+  .flow-node-detail { font-size: 0.92rem; line-height: 1.65; }
 }
 .flow-node-detail strong { color: #0f172a; }
 .flow-node--attacker .flow-node-detail strong { color: #991b1b; }

@@ -170,19 +170,33 @@ function wireInteraction() {
     }
   });
 
-  // スクロールで閉じる (badge から離れて意味を失うため)
+  // スクロールで閉じる — ただしモバイルの場合は popover が bottom-sheet 固定なので閉じない
+  // (iOS Safari のバウンス scroll でタップ直後に即座に閉じる誤動作を防ぐ)
+  let scrollBaseY = 0;
   window.addEventListener(
     "scroll",
     () => {
-      if (popoverEl) closePopover();
+      if (!popoverEl) return;
+      if (isMobileViewport()) return; // モバイルは fixed 位置なので閉じない
+      // デスクトップでも 30px 以上の意図的スクロールでのみ閉じる
+      if (Math.abs(window.scrollY - scrollBaseY) > 30) {
+        closePopover();
+      }
     },
     { passive: true, capture: true }
   );
+  // popover 表示時に scrollBaseY を初期化するため、showPopover から呼び出せるように window に保持
+  (window as unknown as { __annoScrollBaseSet?: (y: number) => void }).__annoScrollBaseSet =
+    (y: number) => (scrollBaseY = y);
 
-  // リサイズで閉じる
+  // リサイズで閉じる (viewport 変化で位置が破綻するため)
   window.addEventListener("resize", () => {
     if (popoverEl) closePopover();
   });
+}
+
+function isMobileViewport() {
+  return window.matchMedia("(max-width: 639px)").matches;
 }
 
 function showPopover(mark: HTMLElement) {
@@ -217,7 +231,15 @@ function showPopover(mark: HTMLElement) {
   popoverEl.appendChild(body);
   document.body.appendChild(popoverEl);
 
-  positionPopover(mark, popoverEl);
+  // モバイルは CSS で bottom-sheet 固定にしているので位置計算スキップ
+  if (!isMobileViewport()) {
+    positionPopover(mark, popoverEl);
+  }
+
+  // スクロール基準を今の位置に更新 (誤動作防止)
+  const setter = (window as unknown as { __annoScrollBaseSet?: (y: number) => void })
+    .__annoScrollBaseSet;
+  if (setter) setter(window.scrollY);
 
   activeMark = mark;
   mark.setAttribute("aria-expanded", "true");
