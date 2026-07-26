@@ -6,7 +6,7 @@ import { TermActivator } from "@/components/TermActivator";
 export const metadata: Metadata = {
   title: "TERASOLUNA 研修 — 役職編集アプリ 組立ガイド",
   description:
-    "Spring Boot + JSP + MyBatis + H2 で役職編集アプリを 12 ステップで組み立てるガンプラ式ガイド",
+    "Spring Boot + JSP + MyBatis + H2 で役職編集アプリを 12 ステップで組み立てる学習ガイド。「なぜこう書くか」まで理解しながら進める構成。",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

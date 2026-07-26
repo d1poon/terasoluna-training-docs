@@ -5,7 +5,7 @@ last_updated: 2026-07-21
 tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 ---
 
-# 役職編集アプリ 組立ガイド (ガンプラ式)
+# 役職編集アプリ 組立ガイド
 
 > **単に動くコードを写経するのではなく、各行の「なぜこう書くか」まで理解しながら進めるためのガイド**。
 > 独学の学習者にも、他人に教える立場の方にも役立つ構成です。
@@ -24,7 +24,7 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 
 - JDK 17+ (JDK 24 でも動く)
 - Maven 3.8+ (公式サイトから DL → 展開 → `bin/` を PATH に追加)
-- 作業フォルダは任意 (例: `~/workspace/rolemgr/`)。空フォルダを 1 つ用意しておく
+- 作業フォルダは任意 (Windows なら `C:\workspace\rolemgr\` / macOS・Linux なら `~/workspace/rolemgr/` など)。空フォルダを 1 つ用意しておく
 
 ---
 

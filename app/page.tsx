@@ -26,7 +26,11 @@ export default function HomePage() {
               <strong>単に動くコードを写経するのではなく、各行の「なぜこう書くか」まで納得しながら進める構成のガイド</strong>。
               Java・JSP の基本文法から入って、Spring Boot + JSP + MyBatis + H2 で
               ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリを、
-              ガンプラのように部品ごとに組み立てます。独学の学習者にも、他人に教える立場の方にも役立つ構成です。
+              部品ごとに順番通りに組み立てます。独学の学習者にも、他人に教える立場の方にも役立つ構成です。
+            </p>
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+              <strong>TERASOLUNA</strong> は日本の SIer 現場で広く使われる Spring ベースの開発フレームワーク。
+              本教材は先に Spring Boot でシンプルに組んでから TERASOLUNA スタイルへの読み替えを提供する構成なので、両者を初めて触る人でも順に理解できます。
             </p>
           </div>
 
@@ -63,7 +67,7 @@ export default function HomePage() {
           {/* Secondary — Other routes (2×2 grid) */}
           <div className="mb-3">
             <h2 className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
-              別ルート · 用途で選ぶ
+              用途別の入口
             </h2>
           </div>
           <div className="grid gap-3 md:grid-cols-2 mb-10">
@@ -204,9 +208,13 @@ export default function HomePage() {
 
           {/* Step list */}
           <section>
-            <h2 className="text-xl md:text-2xl font-bold mb-4 text-slate-900">
+            <h2 className="text-xl md:text-2xl font-bold mb-2 text-slate-900">
               12 ステップ一覧
             </h2>
+            <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+              各ステップ 5〜15 分、通しで 1〜3 時間 (コピペしていくだけなら短め、理解しながらだと長め)。
+              前のステップに依存するので、上から順に進めてください。
+            </p>
             <div className="grid gap-2">
               {stepsExceptToc.map((step) => (
                 <Link
