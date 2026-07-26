@@ -307,37 +307,109 @@ export default function SpringVsTerasolunaPage() {
             </div>
           </section>
 
-          {/* Section 2: 関係図 */}
+          {/* Section 2: 関係図 (HTML カード形式) */}
           <section className="mb-10">
             <h2 className="text-xl md:text-2xl font-bold mb-3 text-slate-900">
               2. 関係図
             </h2>
-            <div className="bg-white rounded-xl border border-slate-200 p-4 md:p-6 overflow-x-auto">
-              <pre className="text-xs md:text-sm font-mono leading-relaxed text-slate-800">
-{`┌─────────────────────────────────────────────────┐
-│  Spring Framework 6                             │
-│  DI コンテナ / AOP / トランザクション …           │
-└─┬───────────────────────────────────────────────┘
-  │
-  ├─── Spring MVC        リクエスト処理 (Controller)
-  ├─── Spring Security   認証・認可
-  └─── Spring Data       DB アクセス抽象
 
-     ↓ この上に、目的別のラッパーが 2 つある ↓
+            {/* 土台: Spring Framework */}
+            <div className="bg-white rounded-xl border-2 border-slate-300 p-5 mb-3">
+              <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-1">
+                共通の土台
+              </div>
+              <div className="text-lg font-bold text-slate-900">
+                🌱 Spring Framework 6
+              </div>
+              <div className="text-sm text-slate-600 mt-1">
+                DI コンテナ / AOP / トランザクション管理 …の中核
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3 text-sm">
+                <div className="bg-slate-50 border border-slate-200 rounded p-2.5">
+                  <div className="font-semibold text-slate-800">Spring MVC</div>
+                  <div className="text-xs text-slate-600 mt-0.5">リクエスト処理 (Controller)</div>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded p-2.5">
+                  <div className="font-semibold text-slate-800">Spring Security</div>
+                  <div className="text-xs text-slate-600 mt-0.5">認証・認可</div>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded p-2.5">
+                  <div className="font-semibold text-slate-800">Spring Data</div>
+                  <div className="text-xs text-slate-600 mt-0.5">DB アクセス抽象</div>
+                </div>
+              </div>
+            </div>
 
-┌─────────────────────────┐  ┌─────────────────────────┐
-│ Spring Boot 3           │  │ TERASOLUNA 5            │
-│                         │  │                         │
-│ 最小設定で使うラッパー   │  │ SIer案件向け             │
-│ + application.properties│  │  テンプレート集         │
-│ + 埋め込み Tomcat        │  │ + XML 設定ベース         │
-│ + mvn spring-boot:run   │  │ + 標準 archetype 提供   │
-│ + jar or war            │  │ + Validation / 共通例外 │
-│                         │  │ + 外部 Tomcat に war    │
-└─────────────────────────┘  └─────────────────────────┘
+            {/* 中間の説明 */}
+            <div className="text-center text-sm text-slate-500 my-3">
+              ↓ この上に「目的別のラッパー」が 2 つある ↓
+            </div>
 
-どちらも Spring がベース。書き方の流儀が違うだけ。`}
-              </pre>
+            {/* 2 つのラッパー */}
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="bg-white rounded-xl border-2 border-emerald-300 p-5">
+                <div className="text-xs uppercase tracking-wider text-emerald-700 font-semibold mb-1">
+                  ラッパー ①
+                </div>
+                <div className="text-lg font-bold text-slate-900">
+                  🚀 Spring Boot 3
+                </div>
+                <div className="text-sm text-slate-600 mt-1 mb-3">
+                  最小設定で使うラッパー
+                </div>
+                <ul className="space-y-1.5 text-sm text-slate-700">
+                  <li className="flex gap-2">
+                    <span className="text-emerald-600 shrink-0">✓</span>
+                    <span><code className="text-xs bg-slate-100 px-1 rounded">application.properties</code> で設定</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-emerald-600 shrink-0">✓</span>
+                    <span>埋め込み Tomcat が付属</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-emerald-600 shrink-0">✓</span>
+                    <span><code className="text-xs bg-slate-100 px-1 rounded">mvn spring-boot:run</code> で起動</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-emerald-600 shrink-0">✓</span>
+                    <span>jar or war のどちらでも作れる</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-xl border-2 border-orange-300 p-5">
+                <div className="text-xs uppercase tracking-wider text-orange-700 font-semibold mb-1">
+                  ラッパー ②
+                </div>
+                <div className="text-lg font-bold text-slate-900">
+                  🧱 TERASOLUNA 5
+                </div>
+                <div className="text-sm text-slate-600 mt-1 mb-3">
+                  日本の SIer 案件向けテンプレート集
+                </div>
+                <ul className="space-y-1.5 text-sm text-slate-700">
+                  <li className="flex gap-2">
+                    <span className="text-orange-600 shrink-0">✓</span>
+                    <span>XML 設定ベース</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-orange-600 shrink-0">✓</span>
+                    <span>標準 archetype 提供</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-orange-600 shrink-0">✓</span>
+                    <span>Validation / 共通例外ハンドラ組込</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-orange-600 shrink-0">✓</span>
+                    <span>外部 Tomcat に war をデプロイ</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-4 text-center text-sm text-slate-700 bg-amber-50 border border-amber-200 rounded-lg p-3">
+              💡 どちらも <strong>Spring Framework がベース</strong>。書き方の流儀が違うだけ。
             </div>
           </section>
 

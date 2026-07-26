@@ -314,35 +314,47 @@ export default function PrefacePage() {
               4. 実物のコードで追う (Step 10 の view メソッド)
             </h2>
             <div className="bg-slate-900 text-slate-100 rounded-xl p-4 md:p-6 overflow-x-auto text-sm">
-              <pre className="font-mono leading-relaxed">
-{`@GetMapping("/user-info")              // ← ここに来ると呼ばれる
-public String view(Principal principal, Model model) {
-
-    String id = principal.getName();   // ログインユーザの ID を取り出す
-                                        //   ↑ Spring Security が用意した Principal
-
-    User user = userService.findById(id);
-    //          ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ ここで Service に「行く」
-
-    model.addAttribute("loginId", id); // JSP に見せたい値を Model に詰める
-    model.addAttribute("user", user);
-
-    return "userInfo";                  // ← ここで JSP に「行く」
-    //     userInfo.jsp を実行しろ、と Spring MVC に指示
+              <pre className="font-mono leading-relaxed"><code>
+{`@GetMapping("/user-info")                     // ①
+public String view(Principal principal,       // ②
+                   Model model) {
+    String id = principal.getName();          // ③
+    User user = userService.findById(id);     // ④
+    model.addAttribute("loginId", id);
+    model.addAttribute("user", user);         // ⑤
+    return "userInfo";                         // ⑥
 }`}
-              </pre>
+              </code></pre>
             </div>
+
+            <p className="mt-3 text-sm text-slate-600">
+              💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。下の一覧も同じ内容です。
+            </p>
+
+            <ul className="mt-3 space-y-2 text-sm md:text-base text-slate-700 pl-4">
+              <li><strong>① <code>@GetMapping(&quot;/user-info&quot;)</code></strong> — この URL のリクエストが来たら、このメソッドが呼ばれる、という宣言。</li>
+              <li><strong>② メソッドシグネチャ (Principal / Model)</strong> — 引数に書くだけで Spring MVC が値を渡してくれる (DI)。<code>Principal</code> = ログイン情報、<code>Model</code> = JSP に渡すデータの箱。</li>
+              <li><strong>③ <code>principal.getName()</code></strong> — ログイン中のユーザ ID を取得。URL に載せずサーバ側で確定させることで、他人 ID への書き換えを防ぐ (IDOR 対策)。</li>
+              <li><strong>④ <code>userService.findById(id)</code></strong> — <strong>この行が実行された瞬間、Service に処理が「飛ぶ」</strong>。「勝手にどこかに行く」ではなく、コードが Service を呼んでいるだけ。</li>
+              <li><strong>⑤ <code>model.addAttribute(&quot;user&quot;, user)</code></strong> — JSP に見せたい値を Model の「箱」に詰める。JSP 側で <code>${"${user.id}"}</code> などで取り出せる。</li>
+              <li><strong>⑥ <code>return &quot;userInfo&quot;;</code></strong> — 「<code>userInfo.jsp</code> に行け」の指示。Spring MVC が <code>/WEB-INF/views/userInfo.jsp</code> に forward する。</li>
+            </ul>
 
             <p className="mt-4 text-slate-700 leading-relaxed">
               このあと <code className="text-brand-dark bg-slate-100 rounded px-1.5 py-0.5 text-sm">userInfo.jsp</code> が実行されます:
             </p>
 
             <div className="mt-3 bg-slate-900 text-slate-100 rounded-xl p-4 md:p-6 overflow-x-auto text-sm">
-              <pre className="font-mono leading-relaxed">
-{`<p>ID: \${user.id}</p>       <!-- Model に addAttribute した user から取り出して埋め込み -->
-<p>役職: \${user.role}</p>   <!-- サーバ側で "部長" に置き換わってからブラウザに送られる -->`}
-              </pre>
+              <pre className="font-mono leading-relaxed"><code>
+{`<p>ID: \${user.id}</p>       <!-- ⑦ -->
+<p>役職: \${user.role}</p>   <!-- ⑧ -->`}
+              </code></pre>
             </div>
+
+            <ul className="mt-3 space-y-2 text-sm md:text-base text-slate-700 pl-4">
+              <li><strong>⑦ <code>${"${user.id}"}</code></strong> — サーバ側で <code>user.getId()</code> が呼ばれ、その戻り値 (例: <code>u001</code>) がここに埋め込まれる。</li>
+              <li><strong>⑧ <code>${"${user.role}"}</code></strong> — 同様に <code>user.getRole()</code> の結果 (例: <code>部長</code>) に置き換わる。ブラウザが受け取る HTML には <code>${"${..}"}</code> は既に無い、置き換わった値だけが届く。</li>
+            </ul>
           </section>
 
           {/* FAQ */}

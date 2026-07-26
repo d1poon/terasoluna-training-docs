@@ -39,7 +39,9 @@ export function AnnotatedCodeEnhancer() {
 }
 
 function enhance() {
-  const codes = document.querySelectorAll<HTMLElement>(".prose pre code");
+  // .prose 内だけでなく tsx ページの全 pre code を対象に。
+  // ①〜⑩ 検出ガード (下の hasCircled) で無関係な code は素通り
+  const codes = document.querySelectorAll<HTMLElement>("pre code");
   let groupId = 0;
   codes.forEach((code) => {
     if (code.dataset.annoProcessed) return;

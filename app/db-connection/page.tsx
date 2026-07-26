@@ -111,13 +111,20 @@ database.driverClassName=org.postgresql.Driver`} />
             <p>
               URL は「どの DB サーバの、どの database か」を書いた住所文字列。パーツごとに分解して覚える:
             </p>
-            <AsciiBox>
-{`jdbc:postgresql://localhost:5432/rolemgr?ssl=false
-───┬────  ───┬─── ────┬──── ─┬── ─┬───── ───┬────
-   │        │        │      │    │        │
-プレフィックス │        │      │    │        追加オプション (省略可)
-(必ず jdbc:)  ベンダー   ホスト  ポート DB名`}
-            </AsciiBox>
+
+            {/* URL 分解: 色分けチップで各パーツを可視化 (レスポンシブ, wrap) */}
+            <div className="my-4 bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div className="text-xs text-slate-500 mb-2 font-mono">例: PostgreSQL の JDBC URL</div>
+              <div className="flex flex-wrap items-baseline gap-y-3 font-mono text-sm md:text-base">
+                <UrlPart color="rose" label="プレフィックス">jdbc:</UrlPart>
+                <UrlPart color="amber" label="ベンダー">postgresql</UrlPart>
+                <UrlPart color="cyan" label="ホスト">://localhost</UrlPart>
+                <UrlPart color="violet" label="ポート">:5432</UrlPart>
+                <UrlPart color="emerald" label="DB 名">/rolemgr</UrlPart>
+                <UrlPart color="slate" label="追加オプション (省略可)">?ssl=false</UrlPart>
+              </div>
+            </div>
+
             <Table
               head={["パーツ", "意味", "例"]}
               rows={[
@@ -159,42 +166,26 @@ database.driverClassName=org.postgresql.Driver`} />
               マルチプロジェクトなので、DB 関連の設定は<strong>複数モジュールに散らばる</strong>。
               下の図は、リクエストが DB に届くまでに<strong>Spring がどのファイルをどう読むか</strong>の流れ:
             </p>
-            <AsciiBox>
-{`1. Spring 起動
-    │
-    ▼
-2. -env/src/main/resources/jdbc.properties
-    ┌────────────────────────────────────┐
-    │ database.url=jdbc:postgresql://... │  ← 4 情報を平文で置く
-    │ database.username=app_user          │
-    │ database.password=secret            │
-    │ database.driverClassName=...        │
-    └────────────────────────────────────┘
-    │
-    ▼ Spring が読み込み
-    ▼
-3. -env/META-INF/spring/{projectName}-env.xml
-    ┌────────────────────────────────────────────┐
-    │ <bean id="dataSource"                       │
-    │       class="BasicDataSource">              │  ← DataSource Bean 作成
-    │   <property name="url" value="\${database.url}"/> │
-    │   ...                                       │
-    │ </bean>                                     │
-    └────────────────────────────────────────────┘
-    │
-    ▼ SqlSessionFactory が DataSource を使う
-    ▼
-4. -domain/META-INF/spring/{projectName}-infra.xml
-    ┌────────────────────────────────────────────┐
-    │ <bean id="sqlSessionFactory">              │  ← MyBatis の入口
-    │   <property name="dataSource" ref="dataSource"/> │
-    │ </bean>                                    │
-    └────────────────────────────────────────────┘
-    │
-    ▼ Mapper interface + XML の SQL を実行
-    ▼
-5. DB (PostgreSQL / H2)`}
-            </AsciiBox>
+            <div className="my-4 bg-white border border-slate-200 rounded-xl p-4 md:p-5">
+              <div className="text-sm font-bold text-slate-800 mb-3">起動から DB 接続確立までの流れ</div>
+              <ol className="space-y-3">
+                <ChainStep n={1} title="Spring 起動">
+                  Spring コンテナが初期化を開始
+                </ChainStep>
+                <ChainStep n={2} title="jdbc.properties を読み込む" file="-env/src/main/resources/jdbc.properties">
+                  4 情報 (URL / username / password / driverClassName) を平文プロパティで置く
+                </ChainStep>
+                <ChainStep n={3} title="DataSource Bean を組み立てる" file="-env/META-INF/spring/{projectName}-env.xml">
+                  <code>&lt;bean id=&quot;dataSource&quot; class=&quot;BasicDataSource&quot;&gt;</code> が上のプロパティを埋め込んで生成される
+                </ChainStep>
+                <ChainStep n={4} title="MyBatis に DataSource を渡す" file="-domain/META-INF/spring/{projectName}-infra.xml">
+                  <code>&lt;bean id=&quot;sqlSessionFactory&quot;&gt;</code> が dataSource を参照 → Mapper が使える状態に
+                </ChainStep>
+                <ChainStep n={5} title="実際の DB (PostgreSQL / H2) に接続完了">
+                  Mapper interface + XML の SQL が実行可能に
+                </ChainStep>
+              </ol>
+            </div>
             <Table
               head={["#", "ファイル (どのモジュール)", "何を書く"]}
               rows={[
@@ -285,19 +276,32 @@ cp.maxWait=60000`} />
               DB 接続は<strong>作るのに時間がかかる</strong> (TCP 接続 + 認証 + セッション初期化で数百 ms)。
               毎リクエストで作り直したら遅すぎる。だから起動時に<strong>複数の接続をあらかじめ用意しておく</strong>。これが Connection Pool。
             </p>
-            <AsciiBox>
-{`     [起動時に 8 個くらい作っておく]
-            ┌──┬──┬──┬──┬──┬──┬──┬──┐
-Connection Pool: [C1][C2][C3][C4][C5][C6][C7][C8]
-            └─┬┴─┬┴─┬┴─┬┴─┬┴─┬┴─┬┴─┬┘
-              │  │  │  │  │  │  │  │
-      各リクエストがプールから借りて、使い終わったら返す
-
-              │
-              ▼
-        [空きが無ければ待つ (maxWait ms 以内)]
-        [それでも取れなければエラー]`}
-            </AsciiBox>
+            <div className="my-4 bg-white border border-slate-200 rounded-xl p-4 md:p-5">
+              <div className="text-sm font-bold text-slate-800 mb-3">Connection Pool の動きイメージ</div>
+              <div className="mb-3">
+                <div className="text-xs text-slate-500 mb-2 font-mono">起動時にあらかじめ N 個の接続を作っておく:</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {["C1","C2","C3","C4","C5","C6","C7","C8"].map((c) => (
+                    <span
+                      key={c}
+                      className="inline-flex items-center justify-center min-w-[3rem] px-2 py-1.5 bg-cyan-100 border border-cyan-400 text-cyan-900 rounded font-mono text-xs font-bold"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 text-sm text-slate-700">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                  <div className="font-bold text-emerald-900 mb-1">✓ 空きがあるとき</div>
+                  各リクエストがプールから 1 個借りて、処理が終わったら返す (作成コスト回避)
+                </div>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="font-bold text-amber-900 mb-1">⏳ 空きが無いとき</div>
+                  <code>maxWait</code> ms 以内で空くのを待つ。それでも取れなければタイムアウトエラー
+                </div>
+              </div>
+            </div>
             <Table
               head={["プロパティ", "意味", "研修値", "本番値"]}
               rows={[
@@ -612,6 +616,66 @@ function Note({ children }: { children: React.ReactNode }) {
     <div className="my-3 bg-amber-50 border border-amber-200 rounded-lg p-3 md:p-4 text-xs md:text-sm text-amber-900">
       {children}
     </div>
+  );
+}
+
+const URL_PART_STYLES: Record<string, { bg: string; text: string; label: string }> = {
+  rose:    { bg: "bg-rose-100",    text: "text-rose-900",    label: "text-rose-700" },
+  amber:   { bg: "bg-amber-100",   text: "text-amber-900",   label: "text-amber-700" },
+  cyan:    { bg: "bg-cyan-100",    text: "text-cyan-900",    label: "text-cyan-700" },
+  violet:  { bg: "bg-violet-100",  text: "text-violet-900",  label: "text-violet-700" },
+  emerald: { bg: "bg-emerald-100", text: "text-emerald-900", label: "text-emerald-700" },
+  slate:   { bg: "bg-slate-100",   text: "text-slate-900",   label: "text-slate-600" },
+};
+
+function ChainStep({
+  n,
+  title,
+  file,
+  children,
+}: {
+  n: number;
+  title: string;
+  file?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex gap-3 items-start">
+      <span className="shrink-0 w-8 h-8 rounded-full bg-brand text-white font-bold flex items-center justify-center text-sm">
+        {n}
+      </span>
+      <div className="flex-1 min-w-0 pt-0.5">
+        <div className="font-semibold text-slate-900 text-sm md:text-base">{title}</div>
+        {file && (
+          <div className="mt-0.5 text-xs font-mono text-slate-500 break-all">{file}</div>
+        )}
+        <div className="mt-1 text-xs md:text-sm text-slate-700 leading-relaxed">
+          {children}
+        </div>
+      </div>
+    </li>
+  );
+}
+
+function UrlPart({
+  color,
+  label,
+  children,
+}: {
+  color: keyof typeof URL_PART_STYLES;
+  label: string;
+  children: React.ReactNode;
+}) {
+  const s = URL_PART_STYLES[color];
+  return (
+    <span className="inline-flex flex-col items-start">
+      <span className={`text-[10px] ${s.label} font-semibold uppercase tracking-wider`}>
+        {label}
+      </span>
+      <span className={`${s.bg} ${s.text} px-1.5 py-0.5 rounded font-bold`}>
+        {children}
+      </span>
+    </span>
   );
 }
 
