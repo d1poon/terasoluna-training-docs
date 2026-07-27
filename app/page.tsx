@@ -28,15 +28,6 @@ export default function HomePage() {
               ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリを「なぜこう書くか」まで理解しながら組み立てます。
               初学者向けに、<strong>各行の意図を自分の言葉で説明できる状態を目指す</strong>丁寧な構成にしています。
             </p>
-            <div className="mt-4 bg-emerald-50 border-l-4 border-emerald-400 rounded-r p-4 text-sm text-emerald-900 leading-relaxed">
-              <div className="font-bold mb-1">🌱 このガイドの読み方</div>
-              <ul className="space-y-1 list-disc pl-5">
-                <li><strong>所要時間の目安は載せていません</strong> — 速さより「腑に落ちるまで読む」を優先。詰まったら何度でも同じ節を読み直して大丈夫</li>
-                <li><strong>順番通りに一つずつ</strong> — 前の Step の成果物を次で使うので、飛ばさない</li>
-                <li><strong>「なぜこう書く」節</strong>は動くコードを書いた後に読む。初回は「動いた」で先に進んでも良い</li>
-                <li><strong>「よくある詰まり」節</strong>は詰まってから開く早見表</li>
-              </ul>
-            </div>
             <p className="mt-3 text-sm text-slate-600 leading-relaxed">
               <strong>TERASOLUNA</strong> は日本の SIer 現場で広く使われる Spring ベースの開発フレームワーク。本教材は{" "}
               <code className="text-xs bg-slate-100 px-1 rounded">terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE</code>{" "}
