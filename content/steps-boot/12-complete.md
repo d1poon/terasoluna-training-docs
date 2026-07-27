@@ -55,7 +55,7 @@ rolemgr/
         └── common/header.jsp
 ```
 
-**Step 01-11 で作成したファイル: 21 個** (Java 11、JSP 6、XML 1、properties 1、SQL 1、pom.xml 1)。手で書けば 45 分〜1.5 時間、コピペなら 15-30 分。
+**Step 01-11 で作成したファイル: 21 個** (Java 11、JSP 6、XML 1、properties 1、SQL 1、pom.xml 1)。時間は気にせず、動きが理解できるまで各 Step を復習してから通し確認に進んでください。
 
 ## 5画面 通し確認シナリオ
 

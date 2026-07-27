@@ -26,12 +26,21 @@ export default function HomePage() {
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
               <strong>研修環境で実際に使う TERASOLUNA archetype (blank-jsp-mybatis3) の 5 モジュール構成</strong>を軸に、
               ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリを「なぜこう書くか」まで理解しながら組み立てます。
-              単に写経するのでなく、各行の意図を自分の言葉で説明できる状態を目指します。
+              初学者向けに、<strong>各行の意図を自分の言葉で説明できる状態を目指す</strong>丁寧な構成にしています。
             </p>
+            <div className="mt-4 bg-emerald-50 border-l-4 border-emerald-400 rounded-r p-4 text-sm text-emerald-900 leading-relaxed">
+              <div className="font-bold mb-1">🌱 このガイドの読み方</div>
+              <ul className="space-y-1 list-disc pl-5">
+                <li><strong>所要時間の目安は載せていません</strong> — 速さより「腑に落ちるまで読む」を優先。詰まったら何度でも同じ節を読み直して大丈夫</li>
+                <li><strong>順番通りに一つずつ</strong> — 前の Step の成果物を次で使うので、飛ばさない</li>
+                <li><strong>「なぜこう書く」節</strong>は動くコードを書いた後に読む。初回は「動いた」で先に進んでも良い</li>
+                <li><strong>「よくある詰まり」節</strong>は詰まってから開く早見表</li>
+              </ul>
+            </div>
             <p className="mt-3 text-sm text-slate-600 leading-relaxed">
               <strong>TERASOLUNA</strong> は日本の SIer 現場で広く使われる Spring ベースの開発フレームワーク。本教材は{" "}
               <code className="text-xs bg-slate-100 px-1 rounded">terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE</code>{" "}
-              (Spring Boot 4.0.2 / JDK 17 / MyBatis 3.5.19 / Tomcat 11) を"正"として書かれています。
+              (Spring Boot 4.0.2 / JDK 17 / MyBatis 3.5.19 / Tomcat 11) を主軸に書かれています。
               先に Boot 単一版で本質を掴みたい人向けに <Link href="/steps-boot/00-toc" className="text-brand underline">補助: Boot 版</Link> も用意しています。
             </p>
           </div>
@@ -201,9 +210,9 @@ export default function HomePage() {
                 <strong>Java・JSP の基本文法から</strong>始まる。初見でも読める粒度
               </Bullet>
               <Bullet>
-                各ステップは <strong>5〜15 分</strong>。順番通りに進めれば動くところまで到達する構成
-                (詰まった時は <Link href="/how-to" className="text-brand underline">レシピ集</Link>
-                や各 Step の「動作確認」節を参照)
+                <strong>時間は気にせず、腑に落ちるまで読んでから次へ</strong>。
+                所要時間の目安は敢えて載せていません — 速く進めることより、各行の意味を自分の言葉で説明できる状態を優先してください。
+                詰まった時は各 Step の「動作確認」節 や <Link href="/troubleshoot" className="text-brand underline">トラブルシュート</Link> を参照
               </Bullet>
               <Bullet>
                 コードは <strong>コピペOK</strong>。すべて手打ちしなくていい
@@ -238,9 +247,10 @@ export default function HomePage() {
               Step 一覧 (TERASOLUNA multi-project)
             </h2>
             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-              Step 00 で 5 モジュールの地図を掴んでから、Step 01-12 で動くアプリを組む (通しで 2〜4 時間)。
-              Step 13-15 は「JUnit5 + Mockito + MockMvc で自動テストを書く」フェーズ (追加 1〜2 時間)。
-              前のステップに依存するので、上から順に進めてください。
+              まず <strong>Step 00</strong> で 5 モジュールの地図を掴む。あとは <strong>Step 01 から順に一つずつ</strong>、
+              動作確認までを丁寧に踏んでから次へ進めます。前のステップの成果物を次で使うので、飛ばさずに順に進めてください。
+              <strong>時間の目安は載せていません</strong> — 自分のペースで、詰まったら「なぜこう書く」節や「よくある詰まり」節を何度でも読み返す前提の構成です。
+              <br />
               なお <strong>Step 02.5 / 12.5</strong> は<strong>オプションのステップ</strong>で、飛ばしても次に進めます。
             </p>
             <div className="grid gap-2">

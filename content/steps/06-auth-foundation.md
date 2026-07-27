@@ -18,7 +18,7 @@ step: 06
 
 - [Step 05](/steps/05-service) 完了 (UserService が動く状態)
 
-## Spring Security の全体像 (1 分で読む)
+## Spring Security の全体像 (先に俯瞰)
 
 <div class="flow-vertical">
   <div class="flow-step">

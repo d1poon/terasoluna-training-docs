@@ -134,7 +134,8 @@ const PHASES: Phase[] = [
 ];
 
 const TOTAL_ITEMS = PHASES.reduce((sum, p) => sum + p.items.length, 0);
-const TOTAL_MINUTES = PHASES.reduce((s, p) => s + p.items.reduce((s2, i) => s2 + i.minutes, 0), 0);
+// 時間目安 (TOTAL_MINUTES) はデータとしては保持するが UI 表示から外した。
+// 初学者が焦って先に進まないよう「時間より理解」を優先する方針 (2026-07-28)
 const LS_KEY = "terasoluna-training-docs.build-progress";
 
 export default function BuildOrderPage() {
@@ -191,7 +192,7 @@ export default function BuildOrderPage() {
               <strong>1 番から順に作ればひと通り動くところまで到達できる構成</strong>
               (動かなかった時は <Link href="/how-to" className="text-brand underline">レシピ集</Link> や
               各 Step の「よくあるハマり」節を参照)
-              — 全 {TOTAL_ITEMS} 項目、目安 {TOTAL_MINUTES} 分。
+              — 全 {TOTAL_ITEMS} 項目。<strong>時間の目安は載せていません</strong> — 自分のペースで、腑に落ちるまで読んでから次に進めてください。
               チェック状態はこのブラウザに保存されます。
             </p>
             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
@@ -332,8 +333,7 @@ export default function BuildOrderPage() {
                               >
                                 Step {String(item.stepNo).padStart(2, "0")} を開く →
                               </Link>
-                              <span className="text-slate-400">·</span>
-                              <span className="text-slate-500">目安 {item.minutes} 分</span>
+                              {/* 時間目安 (item.minutes) は敢えて非表示。初学者が焦らないよう、自分のペース優先 */}
                             </div>
                           </div>
                         </label>

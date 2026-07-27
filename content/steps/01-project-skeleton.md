@@ -191,7 +191,7 @@ mvn clean install
 [INFO] BUILD SUCCESS
 ```
 
-5 モジュール全てが SUCCESS なら OK。**初回は 5-10 分かかる** (TERASOLUNA + Spring Boot + Jakarta EE の依存を DL するため)。
+5 モジュール全てが SUCCESS なら OK。**初回は依存 DL のため少し時間がかかる** (TERASOLUNA + Spring Boot + Jakarta EE の jar 群を Maven Central から取得するため)。焦らず終わるまで待ってください。**2 回目以降はキャッシュから取るので短い**です。
 
 ### 3-b. STS / Eclipse に import
 

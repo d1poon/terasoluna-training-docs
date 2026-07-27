@@ -17,7 +17,7 @@ step: 11
 
 - [Step 10](/steps/10-user-info) 完了
 
-## PRG パターンとは (1 分)
+## PRG パターンとは (概要)
 
 <div class="flow-vertical">
   <div class="flow-step">
