@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { StepMeta } from "@/lib/steps";
 import { formatStepNumber } from "@/lib/step-format";
+import { BOOT_STEPS } from "@/lib/boot-steps-list";
 import { SearchPalette } from "./SearchPalette";
 
 type PhaseGroup = {
@@ -276,7 +277,7 @@ export function Sidebar({
 
         {/* Steps grouped by phase (collapsible) */}
         <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
-          Steps
+          Steps (TERASOLUNA)
         </div>
         <ul className="space-y-1">
           {PHASE_GROUPS.map((phase) => {
@@ -351,11 +352,63 @@ export function Sidebar({
             );
           })}
         </ul>
+
+        {/* 補助: Boot 版 (先に理解したい人向け) */}
+        <div className="mt-6 text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1 px-2">
+          補助
+        </div>
+        <ul className="space-y-1">
+          <li>
+            <button
+              type="button"
+              onClick={() => togglePhase("boot-aux")}
+              className={
+                "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
+                (openPhases.has("boot-aux")
+                  ? "bg-amber-50 text-amber-900 font-semibold"
+                  : "text-slate-600 hover:bg-slate-100")
+              }
+            >
+              <span aria-hidden="true" className="text-base leading-none">📘</span>
+              <span className="flex-1 text-left leading-tight">
+                Boot 版 (先に理解したい人向け)
+              </span>
+              <span
+                className={
+                  "text-slate-400 text-xs transition-transform " +
+                  (openPhases.has("boot-aux") ? "rotate-90" : "")
+                }
+              >
+                ▸
+              </span>
+            </button>
+
+            {openPhases.has("boot-aux") && (
+              <ul className="ml-2 mt-1 mb-2 border-l border-amber-200 pl-1 space-y-0.5">
+                {BOOT_STEPS.map((step) => (
+                  <li key={step.slug}>
+                    <Link
+                      href={`/steps-boot/${step.slug}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-baseline gap-2 px-3 py-1.5 rounded-md text-sm text-slate-600 hover:bg-amber-50"
+                    >
+                      <span className="font-mono text-[11px] text-amber-500">
+                        {formatStepNumber(step.number)}
+                      </span>
+                      <span className="leading-tight">{step.title}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        </ul>
       </nav>
 
       <div className="p-4 border-t border-slate-200 text-xs text-slate-500">
-        <p>Spring Boot 3.4 + JSP + MyBatis + H2</p>
-        <p className="mt-1">TERASOLUNA スタイルの学習リファレンス</p>
+        <p>TERASOLUNA GFW 5.11.0.RELEASE</p>
+        <p className="mt-1">multi-project + JSP + MyBatis + Tomcat 11</p>
+        <p className="mt-1 text-slate-400">補助: Spring Boot 3.4 単一プロジェクト版</p>
       </div>
     </>
   );

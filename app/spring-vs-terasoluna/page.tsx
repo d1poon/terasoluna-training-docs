@@ -253,20 +253,24 @@ export default function SpringVsTerasolunaPage() {
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
-              フレームワーク比較
+              補助: Boot からの読み替え表
             </div>
             <h1 className="text-2xl md:text-4xl font-bold mt-2 text-slate-900 leading-tight">
-              Spring Boot と TERASOLUNA
+              Boot から TERASOLUNA への
               <br className="md:hidden" />
-              — 何が違って何が同じ?
+              読み替え表 (補助)
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
-              このリファレンス実装は Spring Boot で組んでいますが、会社の研修課題は TERASOLUNA。
-              「何が変わって、何が変わらないのか」を実物コードのサイドバイサイドで整理します。
+              本教材の主軸は <Link href="/steps/00-modules-map" className="text-brand underline font-semibold">TERASOLUNA multi-project 版 Steps</Link> です。
+              このページは、先に <Link href="/steps-boot/00-toc" className="text-brand underline">Spring Boot 補助版</Link> で本質を掴んだ人向けに、
+              「同じ機能をそれぞれの流儀でどう書くか」の対応表を提供します。
             </p>
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+              ⚠️ このページは<strong>比較・読み替えのための補助資料</strong>です。実プロジェクトの実装手順は <Link href="/steps/00-modules-map" className="underline">Step 00 (5 モジュールの地図)</Link> から順に進めてください。
+            </div>
           </div>
 
-          <PageMeta targetVersion="Boot 3.4 / TERASOLUNA archetype 5.11.0" />
+          <PageMeta targetVersion="TERASOLUNA 5.11.0.RELEASE (主軸) / Boot 3.4 (補助対比)" />
 
           {/* Callout: multi-project pointer */}
           <div className="mb-8 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5">
@@ -588,7 +592,7 @@ export default function SpringVsTerasolunaPage() {
                     ["mybatis.mapper-locations プロパティ", "applicationContext-mybatis.xml の SqlSessionFactoryBean"],
                     ["spring.mvc.view.prefix プロパティ", "spring-mvc.xml の InternalResourceViewResolver"],
                     ["mvn spring-boot:run (埋め込み Tomcat)", "war ビルド → Tomcat の webapps/ に配置"],
-                    ["Java 17 + Spring Boot 3.4", "Java 11 + Spring 5.7 (TERASOLUNA 5.7 系の場合)"],
+                    ["Java 17 + Spring Boot 3.4", "Java 17 + Spring Boot 4.0.2 (TERASOLUNA 5.11.0 系、BOM 管理)"],
                     ["Controller / Service / Mapper のコード", "そのままコピーで動くケースが多い"],
                     ["JSP + JSTL + EL 式", "書き方は共通 (Jakarta EE 名前空間の差だけ注意)"],
                     ["MyBatis Mapper XML", "SQL 部分は共通、namespace のみプロジェクトに合わせる"],

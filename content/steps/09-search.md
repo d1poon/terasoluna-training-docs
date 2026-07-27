@@ -1,207 +1,181 @@
 ---
-title: "検索画面"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/spring, tech/jsp, tech/mybatis]
+title: "検索画面 (Form クラス + LIKE 検索)"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/spring-mvc, tech/jsp]
 step: 09
 ---
 
-# Step 09 — 検索画面
+# Step 09 — 検索画面 (Form クラス + LIKE 検索)
 
 ## このステップのゴール
 
-- 役職テキストを入れて検索 → 部分一致で users を絞り込み → 結果を同画面下に表示
-- 空文字なら全件表示
+- 役職 (`role`) の部分一致検索画面を作る
+- **TERASOLUNA 規約**: 画面入力バインディングは Entity 直バインドでなく **Form クラスを別に立てる**
+- SearchController → UserService → UserRepository の 3 層呼び出しを完成させる
 
 ## 事前準備
 
 - [Step 08](/steps/08-menu) 完了
 
-## 追加するファイル (2つ)
+## なぜ Form クラスを別に作るのか
 
-### 1. `SearchController.java`
+Entity (`User`) を `@ModelAttribute` に直接バインドすると:
+
+- **セキュリティリスク**: 攻撃者が `password` や `role` を picking する余地 (Mass Assignment 脆弱性)
+- **画面の都合が Entity に染み出す**: 画面固有の項目 (「検索キーワード」等) を Entity に混ぜたくない
+- **Validation の分離**: 画面ごとに違う validation ルールを Entity に持たせるのは無理
+
+→ **Form (Command Object) を用意して分離する**。TERASOLUNA では全画面共通の規約。
+
+## 追加するファイル (3 つ)
+
+### 1. `UserSearchForm.java` (画面入力バインディング用)
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/java/</div>
-    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
-    <div class="ft-line ft-l3">📁 controller/</div>
-    <div class="ft-line ft-l4 ft-file">📄 SearchController.java <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/demo-web/src/main/java/com/example/demo/app/</div>
+    <div class="ft-line ft-l1">📁 search/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l2 ft-file">📄 UserSearchForm.java <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
 ```java
-package com.example.rolemgr.controller;
+package com.example.demo.app.search;
 
-import java.security.Principal;
-import java.util.List;
+import java.io.Serializable;
+import jakarta.validation.constraints.Size;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+/**
+ * 検索画面の入力バインディング用 Form。
+ * Entity (User) とは別に用意する — Mass Assignment 脆弱性の予防。
+ */
+public class UserSearchForm implements Serializable {
 
-import com.example.rolemgr.domain.User;
-import com.example.rolemgr.service.UserService;
+    private static final long serialVersionUID = 1L;
 
-@Controller
-public class SearchController {
+    @Size(max = 50)                                                            // ①
+    private String role;
 
-    private final UserService userService;
-
-    public SearchController(UserService userService) {                  // ①
-        this.userService = userService;
-    }
-
-    @GetMapping("/search")                                              // ②
-    public String search(@RequestParam(required = false) String role,   // ③
-                         Principal principal,
-                         Model model) {
-        model.addAttribute("loginId", principal.getName());
-        model.addAttribute("role", role);                               // ④
-        if (role != null) {                                             // ⑤
-            List<User> results = userService.searchByRole(role);
-            model.addAttribute("results", results);
-        }
-        return "search";
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
 ```
 
-> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+- **① `@Size(max = 50)`** — Hibernate Validator (Bean Validation) の制約アノテーション。Controller で `@Valid` を付けると自動チェック
 
-- **① コンストラクタ引数に `UserService`** — Spring が自動で Service Bean を渡してくれる (DI)。`@Autowired` は Spring 4.3+ でコンストラクタ 1 個のみなら省略可能。
-- **② `@GetMapping("/search")`** — 検索は「見るだけ」の操作なので **GET** を使う。`?role=部長` の形で URL に条件が乗り、ブックマーク・リロード可能。
-- **③ `@RequestParam(required = false) String role`** — 初回アクセス `/search` (パラメータなし) でもエラーにしないよう `required = false`。この場合 `role` は `null` になる。
-- **④ `model.addAttribute("role", role)`** — 検索したキーワードを JSP に渡す (フォームの入力欄に初期値として表示するため)。
-- **⑤ `if (role != null)`** — 初回アクセス (パラメータなし) と検索実行後の 2 状態を区別。初回はテーブル非表示、検索後は結果表示。**空文字と null の違い**が JSP 側の 3 状態分岐 (下記) の鍵。
-
-### 2. `search.jsp`
+### 2. `SearchController.java`
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
-    <div class="ft-line ft-l2">📁 WEB-INF/</div>
-    <div class="ft-line ft-l3">📁 views/</div>
-    <div class="ft-line ft-l4 ft-file">📄 search.jsp <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/demo-web/src/main/java/com/example/demo/app/search/</div>
+    <div class="ft-line ft-l1 ft-file">📄 SearchController.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
+
+```java
+package com.example.demo.app.search;
+
+import java.util.List;
+import jakarta.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.example.demo.domain.model.User;
+import com.example.demo.domain.service.user.UserService;
+
+@Controller
+public class SearchController {
+
+    @Inject
+    UserService userService;                                                   // ①
+
+    @ModelAttribute("userSearchForm")                                          // ②
+    public UserSearchForm setUpForm() {
+        return new UserSearchForm();
+    }
+
+    @GetMapping("/search")
+    public String search(@ModelAttribute UserSearchForm form, Model model) {   // ③
+        List<User> results = userService.searchByRole(form.getRole());
+        model.addAttribute("results", results);
+        return "search/search";
+    }
+}
+```
+
+- **① `@Inject UserService`** — Step 05 で作った Service を注入
+- **② `@ModelAttribute` セットアップメソッド** — GET でフォーム初期表示するとき、空の Form を Model に載せておく。JSP 側で `${userSearchForm.role}` として参照可能に
+- **③ `@ModelAttribute UserSearchForm form`** — リクエストパラメータ `?role=部長` を Form の同名フィールドに自動バインド
+
+### 3. `search.jsp`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/demo-web/src/main/webapp/WEB-INF/views/</div>
+    <div class="ft-line ft-l1">📁 search/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l2 ft-file">📄 search.jsp <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
 ```jsp
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<c:set var="showMenuButton" value="true" />                             <%-- ① --%>
+<%@ taglib prefix="form" uri="jakarta.tags.form" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>検索画面</title>
+    <meta charset="UTF-8" />
+    <title>役職検索 — demo</title>
 </head>
 <body>
-    <%@ include file="common/header.jsp" %>
+    <h1>役職検索</h1>
 
-    <h1>検索</h1>
-
-    <form action="<c:url value='/search'/>" method="get">                <%-- ② --%>
-        <label>役職:
-            <input type="text" name="role" value="${role}" />            <%-- ③ --%>
+    <form:form modelAttribute="userSearchForm" method="get"
+               action="${pageContext.request.contextPath}/search">
+        <label>役職 (部分一致)
+            <form:input path="role" />
         </label>
         <button type="submit">検索</button>
-    </form>
+    </form:form>
 
-    <c:if test="${results != null}">                                      <%-- ④ --%>
-        <c:choose>
-            <c:when test="${not empty results}">                          <%-- ⑤ --%>
-                <table border="1" style="margin-top:16px; border-collapse:collapse;">
-                    <thead>
-                        <tr>
-                            <th style="padding:4px 12px;">ID</th>
-                            <th style="padding:4px 12px;">役職</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="u" items="${results}">            <%-- ⑥ --%>
-                            <tr>
-                                <td style="padding:4px 12px;">${u.id}</td>
-                                <td style="padding:4px 12px;">${u.role}</td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </c:when>
-            <c:otherwise>
-                <p style="margin-top:16px;">該当なし</p>                   <%-- ⑦ --%>
-            </c:otherwise>
-        </c:choose>
+    <c:if test="${not empty results}">
+        <h2>結果 (${results.size()} 件)</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>役職</th></tr>
+            </thead>
+            <tbody>
+                <c:forEach var="u" items="${results}">
+                    <tr>
+                        <td><c:out value="${u.id}" /></td>                     <%-- ① --%>
+                        <td><c:out value="${u.role}" /></td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
     </c:if>
 </body>
 </html>
 ```
 
-> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
-
-- **① `<c:set var="showMenuButton" value="true" />`** — 共通ヘッダの `<c:if>` に「メニューボタンを出す」フラグを渡す。メニュー画面には不要、他画面では必要、を切り替えている。
-- **② `method="get"`** — 検索は GET。URL がブックマーク可能・リロード安全 (副作用なし)。POST にしてはいけない。
-- **③ `value="${role}"`** — 前回検索したキーワードを入力欄の初期値に (再検索しやすくするため)。Controller が Model に `role` を詰めているのでここで拾える。
-- **④ `<c:if test="${results != null}">`** — **null** = 初回アクセス (何も表示しない) / **not null** = 検索実行後。この分岐で「フォームだけ」と「フォーム + 結果」を区別。
-- **⑤ `<c:choose>` + `<c:when test="${not empty results}">`** — 検索実行後の中で更に「1 件以上ヒット」と「0 件」を分岐。**null / 空リスト / 中身あり** の 3 状態を区別する必要がある。
-- **⑥ `<c:forEach var="u" items="${results}">`** — JSTL の繰り返し。`items` に List を渡すと、各要素が `var` の名前でループ変数に入る。
-- **⑦ `<c:otherwise> 該当なし`** — 検索したが 0 件だった場合の表示。フォームだけの状態と区別されるので「探したけど無い」ことがユーザに伝わる。
-
-## なぜこう書く
-
-### 検索は GET
-- URL がブックマーク可能 (`?role=部長` を共有できる)
-- サーバ状態を変えない = 何度実行しても安全 (冪等)
-- ブラウザのリロードで再検索されても副作用なし
-
-**更新は POST**、**検索は GET** は HTTP の基本原則。
-
-### `@RequestParam(required = false)`
-初回アクセス (`/search`) は `role` パラメータなし → **必須にしない**指定。
-
-### `<c:set var="showMenuButton" value="true" />`
-共通ヘッダ (`header.jsp`) で `<c:if test="${not empty showMenuButton}">` で「メニュー」ボタンを出すためのフラグ。メニュー画面では省略、他の画面ではセットする。
-
-### `<c:choose>` / `<c:when>` / `<c:otherwise>`
-JSTL の if-else 構造。「results が空リスト」と「results が null (検索未実行)」を区別する必要があるため、外側の `<c:if test="${results != null}">` と組み合わせて 3 状態を分けている。
-
-| results の状態 | 意味 | 画面表示 |
-|---|---|---|
-| null | まだ検索していない | フォームだけ |
-| 空リスト | 検索したが該当0件 | 「該当なし」 |
-| 1件以上 | ヒット | テーブル表示 |
-
-### 部分一致検索 (`LIKE`)
-Mapper XML で書いた:
-```sql
-WHERE role LIKE '%' || #{role} || '%'
-```
-- `#{role}` は PreparedStatement のパラメータなので SQLインジェクション安全
-- `||` は SQL 標準の**文字列連結** (Oracle / PostgreSQL / H2 で動く)。MySQL は `CONCAT()` が必要
-
-## ディレクトリ構造 (このステップ完了時)
-
-```
-rolemgr/src/main/
-├── java/com/example/rolemgr/controller/
-│   └── SearchController.java              ← 追加
-└── webapp/WEB-INF/views/
-    └── search.jsp                         ← 追加
-```
+- **① `<c:out value="${u.id}" />`** — HTML エスケープして出力。`${u.id}` 直出しは XSS 脆弱性。**JSP では常に `<c:out>` で包む**のが原則
 
 ## 動作確認
 
-再起動 → ログイン → メニューから「ユーザーを検索する」→ 検索画面。
+Tomcat 起動 → ログイン → メニュー → 「役職検索」リンク → 「長」で検索 → 3 件 (ROLE_USER が対象は 0 件だが、ROLE_ADMIN + 「長」を含めた検索は用途による)。空欄で検索 → 5 件全表示。
 
-- 空欄で検索 → 5 件全部出る (全員が LIKE '%%' にマッチ)
-- 「部」→ 部長 (u001) だけ出る
-- 「長」→ 部長 + 課長 + 係長 の 3 件
-- 「xyz」→ 「該当なし」
+## よくある詰まり
+
+- **`Neither BindingResult nor plain target object for bean name 'userSearchForm' available`**: `@ModelAttribute("userSearchForm")` セットアップメソッドを書き忘れ、または名前 (`userSearchForm`) が JSP の `<form:form modelAttribute>` と不一致
+- **`<c:out>` を書き忘れ**: XSS 脆弱性の温床。**必ずエスケープ**する ([[/security-checklist#xss|セキュリティチェックリスト XSS 節]] 参照)
+- **`form:input` タグ未定義**: `<%@ taglib prefix="form" uri="jakarta.tags.form" %>` の宣言忘れ、または旧 URI (`http://www.springframework.org/tags/form`) を使っている
 
 ## 次
 
-→ [Step 10: ユーザ情報画面](/steps/10-user-info)
+→ [Step 10: ユーザ情報画面 (認証コンテキストから ID 取得)](/steps/10-user-info)

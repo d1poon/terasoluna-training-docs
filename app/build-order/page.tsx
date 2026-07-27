@@ -194,9 +194,14 @@ export default function BuildOrderPage() {
               — 全 {TOTAL_ITEMS} 項目、目安 {TOTAL_MINUTES} 分。
               チェック状態はこのブラウザに保存されます。
             </p>
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+              ⚠️ このチェックリストは<strong>Spring Boot 単一プロジェクト版</strong>のファイル配置に基づきます。
+              TERASOLUNA multi-project 版では、モジュール別配置は{" "}
+              <Link href="/steps/00-modules-map" className="text-brand underline">Step 00 (5 モジュールの地図)</Link> を参照してください。
+            </div>
           </div>
 
-          <PageMeta />
+          <PageMeta targetVersion="Spring Boot 3.4 単一プロジェクト版 (Boot 補助側の参照用)" />
 
           {/* Progress bar */}
           <div className="mb-8 bg-white rounded-xl border border-slate-200 p-4">

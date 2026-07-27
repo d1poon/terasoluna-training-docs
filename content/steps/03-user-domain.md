@@ -1,138 +1,62 @@
 ---
-title: "User ドメイン"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/spring, tech/java, tech/java-basics]
+title: "User ドメイン (Entity)"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/java]
 step: 03
 ---
 
-# Step 03 — User ドメインクラス (Java 基礎込み)
+# Step 03 — User ドメイン (Entity)
 
 ## このステップのゴール
 
-- `users` テーブルの 1 行を Java オブジェクトで表す **POJO** を作る
-- **Java の class・package・private・getter/setter が何かをこの Step で理解する**
+- `users` テーブルの 1 行を表す **Entity** (`User.java`) を作る
+- `demo-domain` モジュールの `domain.model` パッケージに配置する
+- DDL を `demo-initdb` に置き、起動時にテーブルが作られるようにする
 
-> 💡 **POJO** = Plain Old Java Object。「フレームワークに縛られない普通の Java クラス」のこと。特殊な継承やアノテーションなしで、フィールドと getter/setter だけを持つ素朴な class を指す。
-
-このステップは短いが、**Java 全体を通じて何度も出てくる基本文法**が全部詰まっている。ここで一度しっかり理解しておく。
+**なぜ Entity と DDL をペアで扱うか**: この 2 つが対応していないと Repository が動かない (Step 04 でつまづく)。ここで揃えておく。
 
 ## 事前準備
 
-- [Step 02](/steps/02-empty-boot) 完了
+- [Step 02](/steps/02-empty-boot) 完了 (Tomcat 起動確認)
 
----
+## 追加するファイル (2 つ)
 
-## 🔰 Java 基礎の前置き (これがわかっていないと読めない)
-
-Java のコードは以下の 4 段で組み立てられている:
-
-```
-① パッケージ宣言   package com.example.rolemgr.domain;
-② import          import java.util.List;
-③ クラス宣言       public class User { … }
-④ クラスの中身     フィールド + メソッド (getter/setter など)
-```
-
-### ① `package` = ファイルの住所
-
-- `package com.example.rolemgr.domain;` = 「このファイルは `com.example.rolemgr.domain` という住所にある」という宣言
-- **必ずファイルのある物理フォルダと一致させる**: `src/main/java/com/example/rolemgr/domain/User.java` に置かれていれば package も `com.example.rolemgr.domain`
-- Java は「フルパス (package + クラス名)」でクラスを識別する。例: `com.example.rolemgr.domain.User`
-
-### ② `import` = 他のクラスを短い名前で呼ぶ許可
-
-- Java の標準に含まれる `java.lang.*` (String, System など) は import 不要
-- それ以外は import しないと使えない、あるいは毎回フルパスで書く必要が出る
-- 例: `import java.util.List;` があると以降 `List<User>` と書ける。無いと `java.util.List<User>` と書く必要がある
-
-### ③ `class` = 「もの」の設計図
-
-- Java の全ての コードは class の中に書く (関数だけの独立ファイルは作れない)
-- **class の名前 = ファイル名** (`User.java` なら中の class は `class User`)
-- `public class` の `public` は「他のパッケージからも見える」意味
-
-### ④ フィールド + メソッド
-
-- **フィールド (= メンバ変数)**: class が持つデータ。`private String id;` みたいなやつ
-- **メソッド**: class の中の関数。getter/setter もメソッドの一種
-
-### `private` `public` の違い
-
-| 修飾子 | 誰から見える | 使うのは |
-|---|---|---|
-| `public` | 全世界 | class のメソッド、外に公開するAPI |
-| `private` | 同じ class の中だけ | フィールド (直接触らせず getter/setter 経由に強制) |
-
-**フィールドは private が原則**。理由は「外から `user.id = null;` みたいに勝手に書き換えられないため」。値のチェックを getter/setter に集約できる。これを**カプセル化 (encapsulation)** と呼ぶ。
-
-### getter / setter とは
-
-「private なフィールドの値を、メソッド経由で取ったり入れたりする」ための決まった書き方:
-
-```java
-private String id;                              // フィールド (外からは見えない)
-
-public String getId() { return id; }            // ゲッター (値を取り出す)
-public void setId(String id) { this.id = id; }  // セッター (値を入れる)
-```
-
-**なぜこんな回りくどいことを?**
-- 将来「setter で null を弾きたい」「getter でログを出したい」等の変更を、**呼び出し側のコードを変えずに**追加できる
-- MyBatis や JSP の EL (`${user.id}`) は「`getId()` が定義されているクラス」を暗黙に期待するので、この命名規則が事実上の必須
-
-### `this.` の意味
-
-```java
-public void setId(String id) {
-    this.id = id;
-}
-```
-
-- `id` (右辺、引数の id) と `this.id` (左辺、フィールドの id) は別物
-- `this` は「今操作している this オブジェクト自身」を指す
-- 引数名とフィールド名がかぶった時、フィールドの方を指したいときに `this.` を付ける
-
----
-
-## 追加するファイル (1つ)
-
-### `User.java`
+### 1. `User.java` (Entity)
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/java/</div>
-    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
-    <div class="ft-line ft-l3">📁 domain/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1">📁 demo-domain/</div>
+    <div class="ft-line ft-l2">📁 src/main/java/</div>
+    <div class="ft-line ft-l3">📁 com/example/demo/domain/model/</div>
     <div class="ft-line ft-l4 ft-file">📄 User.java <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
+**POJO** (Plain Old Java Object)。フィールドと getter/setter だけの素朴なクラス:
+
 ```java
-package com.example.rolemgr.domain;
+package com.example.demo.domain.model;                                        // ①
+
+import java.io.Serializable;
 
 /**
- * ユーザ ドメイン (= users テーブル 1行を表す POJO)
- *
- * POJO = Plain Old Java Object = 「フレームワークに縛られない普通の Java クラス」
- * 継承・特殊アノテーションなしで、フィールドと getter/setter だけを持つ
+ * users テーブル 1 行を表す Entity。
+ * demo-domain モジュールの domain.model パッケージに配置する。
  */
-public class User {
+public class User implements Serializable {                                    // ②
 
-    // ---- フィールド (users テーブルの各カラムに対応) ----
+    private static final long serialVersionUID = 1L;
 
-    /** ユーザID (画面表示上の "ID: XXXX")、users テーブルの id カラム */
-    private String id;
-
-    /** BCrypt でハッシュ化されたパスワード、users テーブルの password カラム */
+    private String id;                                                         // ③
     private String password;
-
-    /** 役職 (部長 / 課長 / 係長 / 主任 / 一般 など)、users テーブルの role カラム */
     private String role;
 
-    // ---- getters / setters (上のフィールドは private なので、外からのアクセスはここを経由する) ----
+    /** MyBatis がインスタンス化するため、引数なしコンストラクタが必要 */
+    public User() {}                                                           // ④
 
+    // === getter / setter ===
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -144,68 +68,89 @@ public class User {
 }
 ```
 
-## この class が実際に「1行 = 1オブジェクト」になる例
+#### なぜこう書く
 
-`SELECT * FROM users;` の結果:
+- **① `package com.example.demo.domain.model`** — TERASOLUNA 規約: Entity は `domain.model` パッケージに集約。usecase 別に分けない (User は複数機能から参照されるため)
+- **② `implements Serializable`** — セッション格納や分散 cache に載る可能性を想定した TERASOLUNA 規約。付けておくのが安全
+- **③ フィールド 3 つ** — DDL (次) と 1:1 対応。カラム追加は Entity 側の追加とセット
+- **④ 引数なしコンストラクタ** — MyBatis の resultType 経由での自動マッピングに必須。省略すると `NoSuchMethodException` で落ちる
 
-| id | password | role |
-|---|---|---|
-| u001 | $2a$10$... | 部長 |
-| u002 | $2a$10$... | 課長 |
+### 2. DDL: `01-h2-schema.sql`
 
-これが MyBatis によって Java の世界に持ち込まれると:
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1">📁 demo-initdb/</div>
+    <div class="ft-line ft-l2">📁 src/main/sqls/</div>
+    <div class="ft-line ft-l3 ft-file">📄 01-h2-schema.sql <span class="ft-tag">新規</span></div>
+  </div>
+</div>
 
-```java
-User u1 = new User();
-u1.setId("u001");
-u1.setPassword("$2a$10$...");
-u1.setRole("部長");
+**DDL** (Data Definition Language、テーブル定義 SQL) を initdb モジュールに配置:
 
-User u2 = new User();
-u2.setId("u002");
-u2.setPassword("$2a$10$...");
-u2.setRole("課長");
+```sql
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id       VARCHAR(50)  PRIMARY KEY,
+    password VARCHAR(255) NOT NULL,   -- BCrypt ハッシュ 60 文字、余裕を持たせて 255
+    role     VARCHAR(50)  NOT NULL
+);
 ```
 
-**1 行 = 1 個の User オブジェクト**。テーブル ⇄ オブジェクトの変換のためだけに存在する class。
+### 3. 起動時に DDL を流す設定
 
-## よく出る初心者の疑問
+archetype の `demo-env/src/main/resources/META-INF/spring/` に、H2 の起動時初期化を仕込む。詳細は Step 04 に持ち越し (Repository 実装と一緒に確認する方が動作確認しやすい)。
 
-### Q: なぜ「Lombok」使わないの?
-A: Lombok は `@Data` 一発で getter/setter を自動生成できる便利ライブラリ。**実案件では使う**。研修中は「まず生の Java を見せる」意図であえて手書き。
+## `domain.model` パッケージの位置付け
 
-### Q: なぜ `new User()` で作れる? コンストラクタが無い
-A: **コンストラクタを 1 個も書かないと、Java は暗黙で「引数なしコンストラクタ (デフォルトコンストラクタ)」を用意してくれる**。MyBatis はこのデフォルトコンストラクタで空の User を作って setter で値を詰めていく。
+TERASOLUNA では Entity と DTO (と場合によっては値オブジェクト) を全て `domain.model` に集約する。「機能別」の分割はしない:
 
-### Q: フィールドを `public` にすれば getter/setter いらないよね?
-A: 動くけど**やらない**。理由:
-- MyBatis や JSTL の EL は getter を期待している (`user.getId()` を呼ぶ)
-- 将来のバリデーション追加が効かなくなる
-- 業界の慣習に沿っていない → チームで読めない
+```
+demo-domain/src/main/java/com/example/demo/domain/
+├── model/                     ← Entity 全部 (User, Role, ...)
+├── repository/
+│   ├── user/                  ← usecase 別に分割 (Step 04)
+│   └── role/
+└── service/
+    ├── user/                  ← usecase 別に分割 (Step 05)
+    └── role/
+```
 
-### Q: `User` という名前が Spring Security の User と被って大丈夫?
-A: パッケージが違えば別クラスとして共存できる。
-- `com.example.rolemgr.domain.User` (自作)
-- `org.springframework.security.core.userdetails.User` (Spring 側)
-- 認証コード (Step 06 で書く) では両方登場 → 片方はフルパスで書く
+**なぜ**: Entity は複数の usecase (登録・検索・変更) から参照される **共有資源**。usecase 別に置くと「どこにあるべきか」の判断が発散する。
 
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-rolemgr/src/main/java/com/example/rolemgr/
-├── RolemgrApplication.java
-└── domain/
-    └── User.java                          ← 追加
+demo/
+├── demo-env/          (Step 02 で jdbc.properties 済)
+├── demo-domain/
+│   └── src/main/java/com/example/demo/domain/
+│       └── model/
+│           └── User.java                ← 追加
+├── demo-web/          (未着手)
+├── demo-initdb/
+│   └── src/main/sqls/
+│       └── 01-h2-schema.sql             ← 追加
+└── demo-selenium/
 ```
 
 ## 動作確認
 
 ```powershell
-mvn compile
+cd demo
+mvn -pl demo-domain -am compile
 ```
 
-**`BUILD SUCCESS`** が出れば OK。まだ画面には出ない。
+`BUILD SUCCESS` で OK。まだ画面には反映されない (Repository が無いので DB は触られない)。
+
+## よくある詰まり
+
+- **package 宣言と物理パスが不一致**: `package com.example.demo.domain.model;` と書きつつ `src/main/java/com/example/demo/domain/` (`model/` の親) に置いてしまう。**必ずファイルの物理配置と package 宣言を一致させる**
+- **`Serializable` の import 忘れ**: `import java.io.Serializable;` を書かないと未解決エラー。IDE の Organize Imports で解決
+- **DDL の `DROP TABLE IF EXISTS` を書き忘れ**: 再起動時に「既存テーブルと重複」で落ちる。開発中は必ず `DROP` を先頭に
 
 ## 次
 
-→ [Step 04: Mapper](/steps/04-mapper)
+→ [Step 04: Repository (SQL 係)](/steps/04-mapper)

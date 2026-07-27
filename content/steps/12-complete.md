@@ -1,131 +1,99 @@
 ---
-title: "完成 & まとめ"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/spring]
+title: "完成 & 通し動作確認"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna]
 step: 12
 ---
 
-# Step 12 — 完成 & まとめ
+# Step 12 — 完成 & 通し動作確認
 
 ## このステップのゴール
 
-- 全画面をひととおり操作して**5画面が繋がることを確認**
-- 自分が組んだアプリの構造を**言葉で説明できる**か自己確認
+- 5 画面 (login → menu → search → user-info → edit) を通しで動かして完成を確認
+- モジュール別ファイルの一覧を目視で振り返り
+- 自己確認 (自分の言葉で説明できるか)
 
-新しいファイルは追加しない。**動作確認 + 振り返り**のステップ。
+## 完成した機能
 
-## 事前準備
+- ID/PW 認証 (BCrypt ハッシュ、Spring Security)
+- 部分一致検索 (LIKE)
+- 認証コンテキストから ID 取得 (IDOR 耐性)
+- Form → Service → Repository の 3 層呼び出し
+- PRG パターン (POST → Redirect → GET)
+- CSRF token 全 POST 埋め込み
 
-- [Step 11](/steps/11-edit) まで完了
+## 通し動作確認
 
-## 最終ディレクトリ構造
-
-```
-rolemgr/
-├── pom.xml
-└── src/main/
-    ├── java/com/example/rolemgr/
-    │   ├── RolemgrApplication.java
-    │   ├── config/
-    │   │   ├── SecurityConfig.java
-    │   │   └── DataInitializer.java
-    │   ├── controller/
-    │   │   ├── LoginController.java
-    │   │   ├── MenuController.java
-    │   │   ├── SearchController.java
-    │   │   └── UserInfoController.java
-    │   ├── domain/
-    │   │   └── User.java
-    │   ├── repository/
-    │   │   └── UserMapper.java
-    │   ├── security/
-    │   │   └── CustomUserDetailsService.java
-    │   └── service/
-    │       └── UserService.java
-    ├── resources/
-    │   ├── application.properties
-    │   ├── schema.sql
-    │   └── mapper/UserMapper.xml
-    └── webapp/WEB-INF/views/
-        ├── login.jsp
-        ├── menu.jsp
-        ├── search.jsp
-        ├── userInfo.jsp
-        ├── userInfoEdit.jsp
-        └── common/header.jsp
+```powershell
+cd demo
+mvn -pl demo-web -am cargo:run
 ```
 
-**Step 01-11 で作成したファイル: 21 個** (Java 11、JSP 6、XML 1、properties 1、SQL 1、pom.xml 1)。手で書けば 45 分〜1.5 時間、コピペなら 15-30 分。
+1. http://localhost:8080/demo-web/ → `/login` にリダイレクト
+2. ID: `u001`、パスワード: `password` → `/menu` に遷移
+3. 「役職検索」→ 「長」で検索 → 該当役職を持つ user 一覧
+4. 「自分のユーザ情報」 → ID + 役職 表示
+5. 「役職を変更する」 → 新役職入力 → 更新 → `/user-info` に戻る (URL バーが変わる = PRG)
+6. F5 リロード → 二重更新なし
+7. 「ログアウト」 → `/login?logout`
 
-## 5画面 通し確認シナリオ
+## 全ファイル一覧 (完成後)
 
-1. http://localhost:8080/ にアクセス
-2. → `/login` に自動リダイレクト → ログイン画面
-3. `u002` / `password` でログイン
-4. → メニュー画面。「u002さん」と表示、リンク 2つ
-5. 「ユーザーを検索する」→ 検索画面
-6. 「長」を入力して検索 → 3件出る (部長・課長・係長)
-7. 「メニュー」ボタン → メニュー画面に戻る
-8. 「自分のユーザ情報を見る」→ 課長 と表示
-9. 「変更する」→ 編集画面 → 「本部長」に変更 → 「変更する」ボタン
-10. → ユーザ情報画面に戻る、「本部長」になっている
-11. URL バーが `/user-info` になっている (PRG パターン動作)
-12. F5 リロード → 何も起きない (2重更新なし)
-13. 「ログアウト」→ 「ログアウトしました」でログイン画面へ
-14. http://localhost:8080/h2-console → `SELECT * FROM users WHERE id='u002';` → 「本部長」になってる
+<div class="file-location">
+  <div class="file-location-label">📍 完成品のディレクトリ (主要ファイルのみ)</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1 ft-file">📄 pom.xml (親 POM)</div>
+    <div class="ft-line ft-l1">📁 demo-env/src/main/resources/</div>
+    <div class="ft-line ft-l2 ft-file">📄 jdbc.properties</div>
+    <div class="ft-line ft-l2 ft-file">📄 logback.xml</div>
+    <div class="ft-line ft-l2 ft-file">📄 META-INF/spring/demo-env.xml</div>
+    <div class="ft-line ft-l1">📁 demo-domain/src/main/java/com/example/demo/domain/</div>
+    <div class="ft-line ft-l2 ft-file">📄 model/User.java</div>
+    <div class="ft-line ft-l2 ft-file">📄 repository/user/UserRepository.java (+ .xml は resources 側)</div>
+    <div class="ft-line ft-l2 ft-file">📄 service/user/UserService.java + UserServiceImpl.java</div>
+    <div class="ft-line ft-l2 ft-file">📄 service/userdetails/UserDetailsServiceImpl.java</div>
+    <div class="ft-line ft-l1">📁 demo-web/src/main/java/com/example/demo/app/</div>
+    <div class="ft-line ft-l2 ft-file">📄 login/LoginController.java</div>
+    <div class="ft-line ft-l2 ft-file">📄 menu/MenuController.java</div>
+    <div class="ft-line ft-l2 ft-file">📄 search/SearchController.java + UserSearchForm.java</div>
+    <div class="ft-line ft-l2 ft-file">📄 userinfo/UserInfoController.java + UserInfoUpdateForm.java</div>
+    <div class="ft-line ft-l1">📁 demo-web/src/main/webapp/WEB-INF/views/</div>
+    <div class="ft-line ft-l2 ft-file">📄 login/login.jsp</div>
+    <div class="ft-line ft-l2 ft-file">📄 menu/menu.jsp</div>
+    <div class="ft-line ft-l2 ft-file">📄 search/search.jsp</div>
+    <div class="ft-line ft-l2 ft-file">📄 userinfo/userInfo.jsp + userInfoEdit.jsp</div>
+    <div class="ft-line ft-l1">📁 demo-web/src/main/resources/META-INF/spring/</div>
+    <div class="ft-line ft-l2 ft-file">📄 applicationContext.xml</div>
+    <div class="ft-line ft-l2 ft-file">📄 spring-mvc.xml</div>
+    <div class="ft-line ft-l2 ft-file">📄 spring-security.xml</div>
+    <div class="ft-line ft-l2 ft-file">📄 demo-web.xml</div>
+    <div class="ft-line ft-l1">📁 demo-initdb/src/main/sqls/</div>
+    <div class="ft-line ft-l2 ft-file">📄 01-h2-schema.sql</div>
+    <div class="ft-line ft-l2 ft-file">📄 02-h2-dataload.sql</div>
+  </div>
+</div>
 
-## 自己確認 (この 12 個を自分の言葉で言える?)
+## 自己確認 12 問
 
-以下、実装中や他人に説明する場面で出てきそうな質問。**答えられなければ該当ステップに戻る**。
+以下 12 問を、他人に**自分の言葉**で説明できれば「理解できた」と言える:
 
-| 質問 | 該当ステップ |
-|---|---|
-| 1. `pom.xml` の `<parent>` は何のため? | Step 01 |
-| 2. なぜ `packaging=war` にした? `jar` じゃダメ? | Step 01 |
-| 3. `@SpringBootApplication` は何をしている? | Step 02 |
-| 4. なぜ `password` カラムが `VARCHAR(255)` ? | Step 02 |
-| 5. なぜ Mapper interface と XML の 2つに分ける? | Step 04 |
-| 6. `#{xxx}` と `${xxx}` の違いは? | Step 04 |
-| 7. なぜ Controller が直接 Mapper を呼ばず、Service を挟む? | Step 05 |
-| 8. `/WEB-INF/**` を permitAll しないとどうなる? | Step 06 |
-| 9. なぜ POST `/login` の Controller を書かない? | Step 07 |
-| 10. `Principal` はどこから来る? | Step 08 |
-| 11. 検索は GET、更新は POST の理由は? | Step 09 |
-| 12. PRG パターンとは? なぜ `redirect:` を付ける? | Step 11 |
+1. TERASOLUNA multi-project の 5 モジュールをそれぞれ 1 行で説明せよ
+2. 親 POM で `terasoluna-gfw-parent:5.11.0.RELEASE` を `<parent>` に指定すると何が起きる?
+3. `-web` が `-domain` に依存するのは分かる。では `-env` はいつ差し込まれる?
+4. Entity (`domain.model`) と Form (`app.<usecase>`) を分けるのはなぜか
+5. Repository の interface を `UserRepository`、SQL XML を同じパッケージパスにミラー配置する理由は?
+6. Service を interface + Impl のペアにする TERASOLUNA 規約の狙いは?
+7. `@Autowired` ではなく `@Inject` を使う理由は?
+8. spring-security.xml の `<sec:intercept-url pattern="/login" access="permitAll"/>` を書き忘れると何が起きる?
+9. IDOR 対策として、なぜ URL パラメータの id でなく `Authentication.getName()` を使うのか?
+10. CSRF token を hidden で form に埋め込まないとどうなる?
+11. PRG パターンは何を防ぐためのイディオムか?
+12. `<c:out>` を書かず `${user.role}` 直出しすると何が起きる?
 
-## 3層構造の全体図 (最終形)
+答えられない問がある場合は該当 Step に戻って読み直し。
 
-```
-[ブラウザ] ─(HTTP)→ [Filter Chain: Spring Security]
-                       │ (認証・CSRF・セッション)
-                       ▼
-                    [DispatcherServlet]
-                       │ (URLからControllerを選ぶ)
-                       ▼
-                  [Controller]  ─→ Model + View名
-                       │
-                       ▼
-                  [Service]      ─→ @Transactional 境界
-                       │
-                       ▼
-                  [Mapper (interface)]
-                       │
-                       ▼
-                  [Mapper XML]    ─→ SQL
-                       │
-                       ▼
-                       DB (H2)
-```
+## 次
 
-## この後どこへ
-
-- 実装レシピを引く: [「〜するには?」レシピ集](/how-to)
-- TERASOLUNA archetype との対応: [Boot vs TERASOLUNA](/spring-vs-terasoluna)
-- 用語の再確認: [用語集](/glossary) (Ctrl+K で全ページ検索も可能)
-- 別視点で全体像を眺める: [アーキテクチャ全体図](/architecture)
-
-## おめでとう
-
-ここまで通しで組んで動かせたなら、Spring Boot + JSP + MyBatis の基本構造は理解できています。実装で詰まった時や質問された時は、この build ガイドの該当ステップに戻って確認してください。
-
-← [目次に戻る](/steps/00-toc)
+→ [Step 12.5: 楽観ロック実演 (オプション)](/steps/12.5-optimistic-lock) — 現場でほぼ必ず出るパターン、Step 13 の前にやると理解が深まる  
+→ [Step 13: Service の単体テスト](/steps/13-service-test)

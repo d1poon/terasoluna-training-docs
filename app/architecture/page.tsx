@@ -83,9 +83,14 @@ export default function ArchitecturePage() {
             12 ステップで組み立てるアプリの<strong>全部品を一枚で見る</strong>ページ。
             「どのファイルがどの層のもので、どの Step で作ったか」を突き合わせる用。
           </p>
+          <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+            ⚠️ このアーキテクチャ図は Spring Boot 単一プロジェクト版で作られています。
+            TERASOLUNA multi-project (5 モジュール構成) の全体像は{" "}
+            <Link href="/steps/00-modules-map" className="text-brand underline">Step 00 (5 モジュールの地図)</Link> を参照。
+          </div>
         </div>
 
-        <PageMeta />
+        <PageMeta targetVersion="Spring Boot 3.4 単一プロジェクト版 (Boot 補助側)" />
 
         {/* Big picture */}
         <section className="mb-10">

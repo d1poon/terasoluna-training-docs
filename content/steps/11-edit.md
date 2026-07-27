@@ -1,238 +1,202 @@
 ---
 title: "変更画面 & PRG パターン"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/spring, tech/jsp, tech/prg-pattern]
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/spring-mvc]
 step: 11
 ---
 
-# Step 11 — 変更画面 & 更新処理 (PRG パターン)
+# Step 11 — 変更画面 & PRG パターン
 
 ## このステップのゴール
 
-- 変更フォーム (現在の役職を初期値に) を表示
-- 送信 → DB 更新 → **リダイレクト**で表示画面 (`/user-info`) に戻る
-- PRG (Post-Redirect-Get) パターンで**リロード二重更新を防ぐ**
+- 役職を変更する画面 (`/user-info/edit`) を作る
+- **PRG (Post-Redirect-Get) パターン**: POST 成功後は `redirect:` で GET に切替え、リロードで二重更新を防ぐ
+- `UserInfoUpdateForm` を新設 (Entity 直バインドしない)
 
 ## 事前準備
 
 - [Step 10](/steps/10-user-info) 完了
 
-## 追加するファイル (1つ + 1修正)
+## PRG パターンとは (1 分)
 
-### 1. `UserInfoController.java` に 2 メソッド追加
-
-<div class="file-location">
-  <div class="file-location-label">✏️ このファイルを編集 (Step 10 で作成済み)</div>
-  <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/java/</div>
-    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
-    <div class="ft-line ft-l3">📁 controller/</div>
-    <div class="ft-line ft-l4 ft-file">📄 UserInfoController.java <span class="ft-tag ft-tag--modify">修正</span></div>
+<div class="flow-vertical">
+  <div class="flow-step">
+    <span class="flow-step-badge">1</span>
+    <div class="flow-step-content">
+      <strong>GET</strong> <code>/user-info/edit</code> — 変更画面表示 (現在の役職を初期値)
+    </div>
+  </div>
+  <div class="flow-step">
+    <span class="flow-step-badge">2</span>
+    <div class="flow-step-content">
+      <strong>POST</strong> <code>/user-info/edit</code> — フォーム送信 → Service で DB 更新
+    </div>
+  </div>
+  <div class="flow-step">
+    <span class="flow-step-badge">3</span>
+    <div class="flow-step-content">
+      Controller が <code>return "redirect:/user-info"</code> を返す → ブラウザに 302
+    </div>
+  </div>
+  <div class="flow-step">
+    <span class="flow-step-badge">4</span>
+    <div class="flow-step-content">
+      ブラウザが <strong>GET</strong> <code>/user-info</code> を叩く → 表示画面が出る
+    </div>
+  </div>
+  <div class="flow-step">
+    <span class="flow-step-badge flow-step-badge--yes">5</span>
+    <div class="flow-step-content">
+      <strong>F5 リロードしても GET が再実行されるだけ</strong>、二重更新なし ✓
+    </div>
   </div>
 </div>
 
-Step 10 のファイルを開いて、`editForm` と `edit` を追加:
+**PRG が無い場合**: POST 完了後の画面を F5 したブラウザが「同じ POST を再送するか?」と警告してきて、うっかり OK 押すと 2 回更新される。事故の原因。
 
-```java
-package com.example.rolemgr.controller;
+## 追加するファイル (3 つ / 修正 1 つ)
 
-import java.security.Principal;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.example.rolemgr.domain.User;
-import com.example.rolemgr.service.UserService;
-
-@Controller
-public class UserInfoController {
-
-    private final UserService userService;
-
-    public UserInfoController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping("/user-info")
-    public String view(Principal principal, Model model) {
-        String id = principal.getName();
-        User user = userService.findById(id);
-        model.addAttribute("loginId", id);
-        model.addAttribute("user", user);
-        return "userInfo";
-    }
-
-    @GetMapping("/user-info/edit")                                   // ①
-    public String editForm(Principal principal, Model model) {
-        String id = principal.getName();
-        User user = userService.findById(id);                        // ②
-        model.addAttribute("loginId", id);
-        model.addAttribute("user", user);
-        return "userInfoEdit";
-    }
-
-    @PostMapping("/user-info/edit")                                  // ③
-    public String edit(@RequestParam String role, Principal principal) {  // ④
-        userService.updateRole(principal.getName(), role);           // ⑤
-        return "redirect:/user-info";                                // ⑥
-    }
-}
-```
-
-> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
-
-- **① `@GetMapping("/user-info/edit")`** — 変更画面の**表示**用 GET メソッド。フォームを描画するだけで、まだ DB は変更しない。
-- **② `userService.findById(id)`** — フォームの初期値として「今の役職」を表示するため、まず現在値を取得する。編集画面は必ず「現在値ロード → 表示 → ユーザ入力 → 保存」の順。
-- **③ `@PostMapping("/user-info/edit")`** — フォーム送信を受ける**同じ URL の POST 版**。GET と POST でメソッドを分けるのが Spring MVC の定石 (同名でも競合しない)。
-- **④ `@RequestParam String role`** — フォームの `<input name="role">` から値を受け取る。null は許さない (フォーム側で `required` にしてある想定)。
-- **⑤ `userService.updateRole(...)`** — Service 経由で DB を UPDATE。トランザクション境界は `@Service` の `@Transactional` に任せる。
-- **⑥ `return "redirect:/user-info";`** — **PRG パターンの核心**。View 名でなく `redirect:` 接頭辞を返すと、Spring が「302 リダイレクトレスポンス」を作ってブラウザに返し、ブラウザは自動で `GET /user-info` を叩き直す。この結果**リロードで二重更新されない**。
-
-### 2. `userInfoEdit.jsp`
+### 1. `UserInfoUpdateForm.java`
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
-    <div class="ft-line ft-l2">📁 WEB-INF/</div>
-    <div class="ft-line ft-l3">📁 views/</div>
-    <div class="ft-line ft-l4 ft-file">📄 userInfoEdit.jsp <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/demo-web/src/main/java/com/example/demo/app/userinfo/</div>
+    <div class="ft-line ft-l1 ft-file">📄 UserInfoController.java <span class="ft-tag ft-tag--modify">既存</span></div>
+    <div class="ft-line ft-l1 ft-file">📄 UserInfoUpdateForm.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
+
+```java
+package com.example.demo.app.userinfo;
+
+import java.io.Serializable;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+/**
+ * ユーザ情報変更画面の入力バインディング用 Form。
+ */
+public class UserInfoUpdateForm implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotBlank                                                                  // ①
+    @Size(max = 50)
+    private String role;
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+}
+```
+
+- **① `@NotBlank`** — 空文字を許可しない。null/空白のみを拒否。これがないとフォーム空欄で送信されて役職消去になる
+
+### 2. `UserInfoController.java` に edit + update メソッド追加
+
+<div class="file-location">
+  <div class="file-location-label">📍 既存ファイルを修正</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/demo-web/src/main/java/com/example/demo/app/userinfo/</div>
+    <div class="ft-line ft-l1 ft-file">📄 UserInfoController.java <span class="ft-tag ft-tag--modify">修正</span></div>
+  </div>
+</div>
+
+Step 10 の `view()` メソッドに 2 つ追加:
+
+```java
+@GetMapping("/user-info/edit")
+public String edit(Authentication auth, Model model) {
+    String id = auth.getName();
+    User user = userService.findById(id);
+    UserInfoUpdateForm form = new UserInfoUpdateForm();
+    form.setRole(user.getRole());                                              // ①
+    model.addAttribute("userInfoUpdateForm", form);
+    return "userinfo/userInfoEdit";
+}
+
+@PostMapping("/user-info/edit")
+public String update(
+        Authentication auth,
+        @Valid @ModelAttribute UserInfoUpdateForm form,                        // ②
+        BindingResult bindingResult,
+        RedirectAttributes redirect) {
+    if (bindingResult.hasErrors()) {
+        return "userinfo/userInfoEdit";                                        // ③
+    }
+    userService.updateRole(auth.getName(), form.getRole());
+    redirect.addFlashAttribute("message", "役職を更新しました");                 // ④
+    return "redirect:/user-info";                                              // ⑤ PRG
+}
+```
+
+追加 import:
+```java
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+```
+
+#### なぜこう書く
+
+- **① `form.setRole(user.getRole())`** — 編集画面の初期値として「今の役職」を詰める
+- **② `@Valid`** — Form の `@NotBlank` / `@Size` を発動させる
+- **③ Validation エラー時は同じ画面**: bindingResult.hasErrors() が true なら redirect せずに `userInfoEdit.jsp` を返し、エラーメッセージを出す
+- **④ `redirect.addFlashAttribute("message", "...")`** — Flash 属性はリダイレクト後の 1 リクエストだけ生存。userInfo.jsp で `${message}` として拾える
+- **⑤ `return "redirect:/user-info"`** — PRG の Redirect 部分。**"redirect:" プレフィックスを Controller の return に書くだけ**で Spring MVC が 302 を返す
+
+### 3. `userInfoEdit.jsp`
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/demo-web/src/main/webapp/WEB-INF/views/userinfo/</div>
+    <div class="ft-line ft-l1 ft-file">📄 userInfo.jsp <span class="ft-tag ft-tag--modify">既存</span></div>
+    <div class="ft-line ft-l1 ft-file">📄 userInfoEdit.jsp <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
 ```jsp
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<c:set var="showMenuButton" value="true" />
+<%@ taglib prefix="form" uri="jakarta.tags.form" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>ユーザー情報変更画面</title>
+    <meta charset="UTF-8" />
+    <title>役職変更 — demo</title>
 </head>
 <body>
-    <%@ include file="common/header.jsp" %>
+    <h1>役職を変更</h1>
 
-    <h1>ユーザー情報変更</h1>
-
-    <p>ID: ${user.id}</p>
-
-    <form action="<c:url value='/user-info/edit'/>" method="post">                      <%-- ① --%>
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />    <%-- ② --%>
-        <label>役職:
-            <input type="text" name="role" value="${user.role}" />                       <%-- ③ --%>
+    <form:form modelAttribute="userInfoUpdateForm" method="post"
+               action="${pageContext.request.contextPath}/user-info/edit">
+        <label>役職
+            <form:input path="role" />
+            <form:errors path="role" cssClass="error" />                       <%-- ① --%>
         </label>
-        <button type="submit">変更する</button>
-    </form>
+        <button type="submit">更新</button>
+    </form:form>
+
+    <a href="${pageContext.request.contextPath}/user-info">キャンセル</a>
 </body>
 </html>
 ```
 
-> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
-
-- **① `<form action="/user-info/edit" method="post">`** — 送信先は Controller の `@PostMapping("/user-info/edit")` と同じ URL、method は必ず **POST** (状態を変えるため)。GET だと URL にパスワード相当の値が乗ってしまうこともある。
-- **② `<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />`** — CSRF 対策の合言葉。**この行がないと POST が Spring Security に 403 で弾かれる**。`_csrf` は Spring Security が JSP から見える場所に自動で置いてくれるオブジェクト。
-- **③ `value="${user.role}"`** — フォームを開いた瞬間、入力欄に**現在の役職**が入っている状態にする。Controller の `editForm` メソッドが `model.addAttribute("user", user)` で詰めた値がここで拾える。ユーザが変更しない場合は現在値がそのまま送信される。
-
-## なぜこう書く
-
-### PRG (Post-Redirect-Get) パターン
-```java
-@PostMapping("/user-info/edit")
-public String edit(...) {
-    userService.updateRole(...);
-    return "redirect:/user-info";  // ← ここが肝
-}
-```
-
-**もし `return "userInfo";` にしたら:**
-- ブラウザは POST 結果として `userInfo.jsp` を表示
-- ユーザがブラウザリロードすると → **同じ POST がもう一度飛ぶ** → 更新が二重に走る
-- ブラウザは大抵「フォーム再送信しますか?」と警告するが、ユーザに毎回判断させることになりユーザ体験としてよくない
-
-**`return "redirect:/user-info";` にすると:**
-- ブラウザは 302 レスポンス + Location ヘッダを受け取る
-- ブラウザは自動的に `GET /user-info` を発行する
-- 現在の URL バーが `/user-info` になる
-- リロードしても GET なので副作用なし ✓
-
-<div class="flow-diagram flow-diagram--good">
-  <div class="flow-diagram-title">✅ PRG パターンの流れ (これが正解)</div>
-  <div class="flow-vertical">
-    <div class="flow-step">
-      <span class="flow-step-badge">1</span>
-      <div class="flow-step-content">
-        <strong>ブラウザ</strong>: フォーム送信 <code>POST /user-info/edit</code>
-      </div>
-    </div>
-    <div class="flow-step">
-      <span class="flow-step-badge">2</span>
-      <div class="flow-step-content">
-        <strong>サーバ</strong>: DB を UPDATE、レスポンスとして <code>302 Location: /user-info</code> を返す
-      </div>
-    </div>
-    <div class="flow-step">
-      <span class="flow-step-badge">3</span>
-      <div class="flow-step-content">
-        <strong>ブラウザ</strong>: 302 を受けて自動で <code>GET /user-info</code> を送る (URL バーが <code>/user-info</code> に変わる)
-      </div>
-    </div>
-    <div class="flow-step">
-      <span class="flow-step-badge">4</span>
-      <div class="flow-step-content">
-        <strong>サーバ</strong>: 表示画面用の userInfo.jsp を返す (SELECT だけ、副作用なし)
-      </div>
-    </div>
-    <div class="flow-step">
-      <span class="flow-step-badge flow-step-badge--yes">✓</span>
-      <div class="flow-step-content">
-        ユーザが F5 リロード → <code>GET /user-info</code> がもう 1 回飛ぶだけ、二重更新なし
-      </div>
-    </div>
-  </div>
-</div>
-
-これは**Web アプリのイディオム**。POST の後は必ずリダイレクト。
-
-### `redirect:` 接頭辞
-Spring MVC 独自の記法。View名の代わりに書くと、内部で `HttpServletResponse.sendRedirect(...)` が呼ばれる。
-
-### `forward:` との違い
-
-| 種類 | HTTP レベル | ブラウザから見える URL |
-|---|---|---|
-| `redirect:` | 302 レスポンス → ブラウザが再リクエスト (**2回目のリクエスト**) | 変わる (`/user-info` に) |
-| `forward:` | サーバ内で別ハンドラに投げる (**1回目のリクエストのまま**) | 変わらない (`/user-info/edit` のまま) |
-
-**PRG では redirect を使う**。forward だとリロード対策にならない。
-
-### 入力の初期値 `value="${user.role}"`
-- フォームを開いた時に現在の役職が入っている
-- 空欄で送信すると空文字で更新される (バリデーション未実装の状態)。実案件では `<c:if test="${empty role}">` などで検証必須
-
-## ディレクトリ構造 (このステップ完了時)
-
-```
-rolemgr/src/main/
-├── java/com/example/rolemgr/controller/
-│   └── UserInfoController.java            ← 3メソッドに (view + editForm + edit)
-└── webapp/WEB-INF/views/
-    └── userInfoEdit.jsp                   ← 追加
-```
+- **① `<form:errors path="role" />`** — バリデーションエラーメッセージを表示
 
 ## 動作確認
 
-再起動 → ログイン → メニュー → 「自分のユーザ情報を見る」→ 「変更する」
+Tomcat 起動 → ログイン → メニュー → 自分のユーザ情報 → 「役職を変更する」 → 変更画面が表示 → 役職を書き換え → 更新 → **URL が `/user-info` に戻る (PRG)** → 「役職を更新しました」表示 → F5 で更新画面ではなく `/user-info` の GET が再実行される (二重更新なし) → OK。
 
-- 現在の役職が入力欄に入っている
-- 「社長」に書き換えて送信 → **URL バーが `/user-info` に変わる (PRG 動作)** → 表示画面に戻り、役職が「社長」になっている
-- **F5 リロード** → 何も起きない (GET なので安全)。ユーザ情報画面がリロードされるだけ
+## よくある詰まり
+
+- **F5 で「フォーム再送信を確認」のダイアログが出る**: `redirect:` プレフィックスを書き忘れ、または `return "redirect:/user-info"` の代わりに `return "userinfo/userInfo"` を書いた
+- **Flash メッセージが表示されない**: `model.addAttribute()` (通常属性) と `redirect.addFlashAttribute()` (Flash) を混同。**リダイレクトを跨ぐなら Flash**
+- **Validation エラーが出ない**: `@Valid` の付け忘れ、または `BindingResult` の引数位置が Form の**直後**でないと動かない (Spring MVC の仕様)
+- **`role` が空欄で送信されてもエラー無く更新される**: `@NotBlank` の import 誤り (`jakarta.validation.constraints.NotBlank` が正、Hibernate Validator 独自の org.hibernate は Deprecated)
 
 ## 次
 
-→ [Step 12: 完成 & まとめ](/steps/12-complete)
+→ [Step 12: 完成 & 通し動作確認](/steps/12-complete)

@@ -1,135 +1,179 @@
 ---
-title: "Service (業務ロジック係)"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/spring]
+title: "Service (interface + Impl)"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/spring, tech/di]
 step: 05
 ---
 
-# Step 05 — Service (業務ロジック係)
+# Step 05 — Service (interface + Impl)
 
 ## このステップのゴール
 
-- 3層アーキテクチャの**中間層** (Service) を作る
-- Controller が Service を呼び、Service が Mapper を呼ぶ、という**呼び出し方向**を確立
-- トランザクション境界をここに置く
+- 3 層アーキテクチャの**中間層** (Service) を作る
+- **TERASOLUNA 規約**: interface (`UserService`) + 実装 (`UserServiceImpl`) の**ペア**で作る
+- **`@Service` / `@Transactional` は Impl 側** に付ける
+- DI は **`@Inject`** (Boot 版の `@Autowired` から改める)
 
 ## 事前準備
 
-- [Step 04](/steps/04-mapper) 完了
+- [Step 04](/steps/04-mapper) 完了 (Repository が動き、テーブルが作られている)
 
-## 追加するファイル (1つ)
+## なぜ interface + Impl のペアで作るのか (TERASOLUNA 規約の理由)
 
-### `UserService.java`
+- **DI コンテナの疎結合**: interface を型として持ち回るので、実装差し替え (テスト時のスタブ / モック) がしやすい
+- **同名 Impl が意図せず継承されるのを防ぐ**: `UserService` を継承したい場合、interface 実装を書き足すか、Impl を継承するかを明示的に選ぶ
+- **公開 API と実装を分離**: Controller は `UserService` (interface) だけ import すれば良い、Impl の具体は隠せる
+
+Spring 単体ならクラス直でも動くが、TERASOLUNA ではこの方針を全 Service に適用する。
+
+## 追加するファイル (2 つ)
+
+### 1. `UserService.java` (interface)
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/java/</div>
-    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
-    <div class="ft-line ft-l3">📁 service/ <span class="ft-tag">新規</span></div>
-    <div class="ft-line ft-l4 ft-file">📄 UserService.java <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1">📁 demo-domain/</div>
+    <div class="ft-line ft-l2">📁 src/main/java/</div>
+    <div class="ft-line ft-l3">📁 com/example/demo/domain/service/</div>
+    <div class="ft-line ft-l4">📁 user/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l5 ft-file">📄 UserService.java <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
 ```java
-package com.example.rolemgr.service;
+package com.example.demo.domain.service.user;                                  // ①
 
 import java.util.List;
+import com.example.demo.domain.model.User;
+
+/**
+ * User 関連の業務ロジック interface。
+ * 実装は同一パッケージの UserServiceImpl。
+ */
+public interface UserService {                                                 // ②
+    User findById(String id);
+    List<User> searchByRole(String role);
+    void updateRole(String id, String newRole);
+}
+```
+
+#### なぜこう書く
+
+- **① `package com.example.demo.domain.service.user`** — TERASOLUNA 規約: Service は `domain.service.<usecase>` パッケージ
+- **② interface で公開 API を定義** — Controller や別 Service からは interface 経由でしか呼べない
+
+### 2. `UserServiceImpl.java` (実装)
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成 (interface と同じディレクトリ)</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1">📁 demo-domain/</div>
+    <div class="ft-line ft-l2">📁 src/main/java/com/example/demo/domain/service/user/</div>
+    <div class="ft-line ft-l3 ft-file">📄 UserService.java <span class="ft-tag ft-tag--modify">既存</span></div>
+    <div class="ft-line ft-l3 ft-file">📄 UserServiceImpl.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
+
+```java
+package com.example.demo.domain.service.user;
+
+import java.util.List;
+import jakarta.inject.Inject;                                                  // ①
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.rolemgr.domain.User;
-import com.example.rolemgr.repository.UserMapper;
+import com.example.demo.domain.model.User;
+import com.example.demo.domain.repository.user.UserRepository;
 
-@Service                                                      // ①
-@Transactional                                                // ②
-public class UserService {
+@Service                                                                       // ②
+@Transactional                                                                 // ③
+public class UserServiceImpl implements UserService {                          // ④
 
-    private final UserMapper userMapper;                      // ③
+    @Inject                                                                    // ⑤
+    UserRepository userRepository;
 
-    /** コンストラクタ注入 (Spring 4.3+ なら @Autowired 省略可) */
-    public UserService(UserMapper userMapper) {               // ④
-        this.userMapper = userMapper;
-    }
-
-    @Transactional(readOnly = true)                           // ⑤
+    @Override
+    @Transactional(readOnly = true)                                            // ⑥
     public User findById(String id) {
-        return userMapper.findById(id);
+        return userRepository.findById(id);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<User> searchByRole(String role) {
-        return userMapper.findByRole(role == null ? "" : role);
+        return userRepository.findByRole(role == null ? "" : role);
     }
 
-    public void updateRole(String id, String newRole) {       // ⑥
-        userMapper.updateRole(id, newRole);
+    @Override
+    public void updateRole(String id, String newRole) {
+        userRepository.updateRole(id, newRole);
     }
 }
 ```
 
-> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+#### なぜこう書く
 
-- **① `@Service`** — このクラスを Spring MVC の「業務ロジック係」として登録するラベル。実際の挙動は `@Component` と同じ (Bean 登録) だが、役割を名前で明示する。
-- **② `@Transactional` (クラス全体)** — このクラスの**全 public メソッド**をトランザクション境界で包む。メソッド開始で BEGIN、正常終了で COMMIT、例外で ROLLBACK が自動で行われる。個別メソッドの `@Transactional` は上書き。
-- **③ `private final UserMapper userMapper;`** — `final` で「後から差し替え不能」を宣言。null を許さないコンストラクタ注入の相棒。
-- **④ `public UserService(UserMapper userMapper)`** — コンストラクタ引数に書くだけで Spring が Bean を渡してくれる (**コンストラクタ注入**、DI の推奨形式)。テストで `new UserService(mockMapper)` と書けば単体テストできる。
-- **⑤ `@Transactional(readOnly = true)`** — 参照系メソッドの最適化ヒント。DB によっては読み取りロックを緩めるなどの高速化が働く (H2 では効果薄いが「意図の明示」として書く)。
-- **⑥ `public void updateRole(...)`** — 更新系はクラス全体の `@Transactional` (readOnly=false) が適用され、SQL 例外時に自動でロールバックされる。
+- **① `import jakarta.inject.Inject`** — TERASOLUNA 規約: DI は **JSR-330 の `@Inject`** を使う。Spring 独自の `@Autowired` は使わない (Boot 版と大きく違う点)
+- **② `@Service`** — 業務ロジック層の Bean と Spring に伝える。**Impl 側にのみ付ける** (interface には付けない)
+- **③ `@Transactional` (クラス全体)** — このクラスの全 public メソッドをトランザクション境界に。**Impl 側にのみ付ける** (interface には付けない)
+- **④ `implements UserService`** — interface を確実に実装。`@Override` を全メソッドに付けて実装漏れをコンパイル時に検出
+- **⑤ `@Inject UserRepository userRepository`** — フィールド注入 (TERASOLUNA デフォルト)。コンストラクタ注入も許容だが、規約はフィールド + `@Inject`
+- **⑥ `@Transactional(readOnly = true)`** — 参照系メソッドの最適化ヒント。書き込みしないことを DB に伝える
 
-## なぜ Service を分けるか (よくある疑問)
+### `@Inject` vs `@Autowired` (よくある疑問)
 
-Controller で直接 Mapper を呼べば動くのに、なぜ Service を挟むのか?
+| 観点 | `@Inject` (TERASOLUNA) | `@Autowired` (Spring) |
+|---|---|---|
+| 出所 | JSR-330 標準 (`jakarta.inject`) | Spring 独自 |
+| 挙動 | Spring/CDI/Guice で同一に動く | Spring 専用 |
+| `required` 属性 | 無い (Optional 化は Java 8 の `Optional` で) | あり |
+| TERASOLUNA 規約 | ⭕ こちらを使う | ✕ 使わない |
 
-1. **トランザクション境界**を明示できる。`@Transactional` は Service に付けるのが定石
-2. **業務ロジック**をここに集約 (例: 「役職が空文字なら全件検索扱い」のような判定)
-3. **テストしやすい**: Controller は HTTP 変換のテスト、Service はロジックのテストと分離できる
-4. **複数の Mapper を跨ぐ処理**をここに書ける (例: users と roles を JOIN 検索)
+**理由**: TERASOLUNA は将来的な DI コンテナ差し替え可能性 + 標準準拠を重視。「Spring 6/7 の @Autowired」→「別コンテナ」への移行が起きても Java 標準の `@Inject` は動く。
 
-「今回は Mapper を素通しするだけじゃん」と思うかもしれないが、**将来ロジックが増える場所を先に用意しておく**のが正解。
+### 3. `applicationContext.xml` の `context:component-scan` を確認
 
-## `@Transactional(readOnly = true)` の意味
+archetype 生成品 `demo-web/src/main/resources/META-INF/spring/applicationContext.xml` に、以下があるはず:
 
-- 参照系メソッドに付ける最適化ヒント
-- 一部の DB (Oracle など) は「更新なし」と分かると内部でロックを緩めたりする
-- H2 では大きな効果はないが、**書き方の慣習として身につける**
-
-## コンストラクタ注入 vs フィールド注入
-
-```java
-// フィールド注入 (見かけるが非推奨)
-@Autowired
-private UserMapper userMapper;
-
-// コンストラクタ注入 (推奨、これを使う)
-private final UserMapper userMapper;
-public UserService(UserMapper userMapper) {
-    this.userMapper = userMapper;
-}
+```xml
+<context:component-scan base-package="com.example.demo.domain.service" />
 ```
 
-コンストラクタ注入の利点:
-- **`final`** にできる → 後から差し替えられない = 意図しない書き換え防止
-- **`null` を許さない**依存を明示 (必須依存だとわかる)
-- **テストで簡単にモック注入**できる (`new UserService(mockMapper)`)
+**これが `@Service` を付けた Impl を Bean 登録している**。Boot の `@ComponentScan` 相当を XML で書く形。
 
 ## ディレクトリ構造 (このステップ完了時)
 
 ```
-rolemgr/src/main/java/com/example/rolemgr/
-├── RolemgrApplication.java
-├── domain/User.java
-├── repository/UserMapper.java
-└── service/
-    └── UserService.java                   ← 追加
+demo/demo-domain/src/main/java/com/example/demo/domain/
+├── model/User.java
+├── repository/user/
+│   └── UserRepository.java (+ .xml は resources 側)
+└── service/user/
+    ├── UserService.java              ← 追加
+    └── UserServiceImpl.java          ← 追加
 ```
 
 ## 動作確認
 
-`mvn compile` → **`BUILD SUCCESS`**
+```powershell
+cd demo
+mvn -pl demo-domain -am compile
+```
+
+`BUILD SUCCESS` で OK。
+
+## よくある詰まり
+
+- **`@Autowired` を書いてしまう**: 動きはするが TERASOLUNA 規約違反。コードレビューで指摘される。**規約に則って `@Inject` に統一**
+- **`@Service` を interface 側に付けてしまう**: interface は Bean 登録できない (Spring がインスタンス化できない)。必ず Impl 側
+- **`@Transactional` を Impl に付け忘れ**: SQL 例外が rollback されず、部分更新が残る事故に。**クラス全体に付ける**のが安全
+- **`UserRepository` が Bean 登録されていない (NoSuchBeanDefinitionException)**: `<mybatis:scan>` の base-package (Step 04) が repository を含んでいない
+- **Impl と interface のメソッドシグネチャがズレる**: `@Override` を全メソッドに付けて、実装漏れをコンパイル時に検出する
 
 ## 次
 
-→ [Step 06: 認証基盤](/steps/06-auth-foundation)
+→ [Step 06: 認証基盤 (spring-security.xml + BCrypt)](/steps/06-auth-foundation)

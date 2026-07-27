@@ -16,52 +16,72 @@ export default function HomePage() {
           {/* Hero */}
           <div className="mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
-              「なぜこう書くか」まで理解しながら組み立てる Spring 教材
+              TERASOLUNA multi-project 研修教材 — 5.11.0.RELEASE 準拠
             </div>
             <h1 className="text-2xl md:text-4xl font-bold mt-2 text-slate-900 leading-tight">
               役職編集アプリを
               <br className="md:hidden" />
-              15 ステップで組み立てる
-              <span className="ml-2 text-sm text-slate-500 font-normal align-middle">(+ 補助 1)</span>
+              TERASOLUNA multi-project で組み立てる
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
-              <strong>単に動くコードを写経するのではなく、各行の「なぜこう書くか」まで納得しながら進める構成のガイド</strong>。
-              Java・JSP の基本文法から入って、Spring Boot + JSP + MyBatis + H2 で
-              ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリを、
-              部品ごとに順番通りに組み立てます。独学の学習者にも、他人に教える立場の方にも役立つ構成です。
+              <strong>研修環境で実際に使う TERASOLUNA archetype (blank-jsp-mybatis3) の 5 モジュール構成</strong>を軸に、
+              ログイン → メニュー → 検索 → ユーザ情報 → 変更 の 5 画面アプリを「なぜこう書くか」まで理解しながら組み立てます。
+              単に写経するのでなく、各行の意図を自分の言葉で説明できる状態を目指します。
             </p>
             <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-              <strong>TERASOLUNA</strong> は日本の SIer 現場で広く使われる Spring ベースの開発フレームワーク。
-              本教材は先に Spring Boot でシンプルに組んでから TERASOLUNA スタイルへの読み替えを提供する構成なので、両者を初めて触る人でも順に理解できます。
+              <strong>TERASOLUNA</strong> は日本の SIer 現場で広く使われる Spring ベースの開発フレームワーク。本教材は{" "}
+              <code className="text-xs bg-slate-100 px-1 rounded">terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE</code>{" "}
+              (Spring Boot 4.0.2 / JDK 17 / MyBatis 3.5.19 / Tomcat 11) を"正"として書かれています。
+              先に Boot 単一版で本質を掴みたい人向けに <Link href="/steps-boot/00-toc" className="text-brand underline">補助: Boot 版</Link> も用意しています。
             </p>
           </div>
 
           {/* Primary CTA — "Start here" recommended route */}
           <div className="mb-3">
             <div className="inline-block text-[10px] uppercase tracking-wider font-bold bg-brand text-white px-2 py-0.5 rounded">
-              👉 初めての方はこちら
+              👉 まずここから
             </div>
           </div>
           <Link
-            href="/preface"
-            className="block bg-gradient-to-br from-brand to-brand-dark text-white rounded-2xl p-6 md:p-8 mb-10 hover:shadow-lg transition-shadow"
+            href="/steps/00-modules-map"
+            className="block bg-gradient-to-br from-brand to-brand-dark text-white rounded-2xl p-6 md:p-8 mb-4 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start gap-4">
-              <div aria-hidden="true" className="text-4xl md:text-5xl leading-none">📗</div>
+              <div aria-hidden="true" className="text-4xl md:text-5xl leading-none">🗺</div>
               <div className="flex-1 min-w-0">
                 <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-                  まず最初に読む · 推奨ルート
+                  Step 00 · 5 モジュールの地図
                 </div>
                 <div className="text-xl md:text-2xl font-bold mt-1">
-                  Web アプリって何をしてるの?
+                  demo-web / -domain / -env / -initdb / -selenium
                 </div>
                 <p className="mt-2 text-sm md:text-base text-white/90 leading-relaxed">
-                  「Controller → どこに行くの?」レベルからでも読めるように、レストランに例えて全体像を掴む。
-                  <strong className="text-white">先にこれを読んでから Step 01 に進むと理解が早い。</strong>
+                  archetype 生成物の 5 モジュールがそれぞれ何を持つか、依存方向、「新しいファイルはどこに作るか」の判断フローを掴む。
+                  <strong className="text-white">Step 01 以降で迷わないための土台。</strong>
                 </p>
                 <span className="inline-block mt-3 text-sm bg-white text-brand-dark font-semibold px-3 py-1.5 rounded">
-                  はじめにを読む →
+                  地図を見る →
                 </span>
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/preface"
+            className="block bg-white border-2 border-brand/40 rounded-xl p-4 md:p-5 mb-10 hover:border-brand hover:shadow-sm transition-all"
+          >
+            <div className="flex items-start gap-3">
+              <div aria-hidden="true" className="text-2xl leading-none">📗</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs uppercase tracking-wider text-brand font-semibold">
+                  Web アプリって何?レベルの人はまずここ
+                </div>
+                <div className="text-base md:text-lg font-bold mt-0.5 text-slate-900">
+                  はじめに (レストランメタファーで全体像)
+                </div>
+                <p className="mt-1 text-sm text-slate-600 leading-snug">
+                  「Controller → どこに行くの?」レベルからでも読めるフロー解説。Step 00 と併読推奨。
+                </p>
               </div>
             </div>
           </Link>
@@ -204,22 +224,24 @@ export default function HomePage() {
               前提
             </h2>
             <ul className="space-y-1.5 text-slate-700 text-sm md:text-base">
-              <li>• JDK 17+ (JDK 24 でも動く)</li>
-              <li>• Maven (3.8+)</li>
+              <li>• JDK 17+ (24 でも動作、TERASOLUNA 5.11.0 系は 17 必須)</li>
+              <li>• Maven 3.9+</li>
+              <li>• Tomcat 11 (Cargo プラグインが自動 DL、手動セットアップ不要)</li>
               <li>• 好きなエディタ (STS4 / VSCode / IntelliJ どれでも)</li>
+              <li>• 詳細な使用バージョンは <Link href="/versions" className="text-brand underline">バージョン一覧</Link> 参照</li>
             </ul>
           </section>
 
           {/* Step list */}
           <section>
             <h2 className="text-xl md:text-2xl font-bold mb-2 text-slate-900">
-              15 ステップ一覧 (+ 補助 1)
+              Step 一覧 (TERASOLUNA multi-project)
             </h2>
             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-              Step 01-12 は「動くアプリを組む」フェーズ (通しで 1〜3 時間)。
+              Step 00 で 5 モジュールの地図を掴んでから、Step 01-12 で動くアプリを組む (通しで 2〜4 時間)。
               Step 13-15 は「JUnit5 + Mockito + MockMvc で自動テストを書く」フェーズ (追加 1〜2 時間)。
               前のステップに依存するので、上から順に進めてください。
-              なお <strong>Step 02.5</strong> は Step 03-06 のバックエンド積み上げ期に入る前に画面を出す成功体験を挟むための<strong>オプションのステップ</strong>で、飛ばしても Step 03 に進めます。
+              なお <strong>Step 02.5 / 12.5</strong> は<strong>オプションのステップ</strong>で、飛ばしても次に進めます。
             </p>
             <div className="grid gap-2">
               {stepsExceptToc.map((step) => (

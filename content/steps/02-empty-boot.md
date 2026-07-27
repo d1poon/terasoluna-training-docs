@@ -1,138 +1,148 @@
 ---
-title: "空アプリ起動 & DB 準備"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/terasoluna, tech/spring, tech/h2]
+title: "空アプリ起動 (Tomcat デプロイ確認)"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/tomcat, tech/spring]
 step: 02
 ---
 
-# Step 02 — 空アプリ起動 & DB 準備
+# Step 02 — 空アプリ起動 (Tomcat デプロイ確認)
 
 ## このステップのゴール
 
-- Spring Boot が起動して、http://localhost:8080/ にアクセスできる状態にする
-- H2 in-memory DB が立ち上がり、`users` テーブルが空で用意される
-- `/h2-console` から中身が覗ける
+- Step 01 で生成した 5 モジュールを Tomcat 11 (embedded/standalone) にデプロイして「白い画面」が出るところまで持っていく
+- `web.xml` / `demo-web.xml` / `spring-mvc.xml` の役割を目視で確認する
+- H2 in-memory DB が起動時にテーブルを持った状態になる (次 Step 03 の準備)
 
-まだ画面もロジックもない。**「箱が動くこと」を確認する**段階。
+まだ Controller も画面も無い。**枠だけが動くこと**を確認する段階。
 
 ## 事前準備
 
-- [Step 01](/steps/01-project-skeleton) 完了 (`mvn compile` が通る)
+- [Step 01](/steps/01-project-skeleton) 完了 (`mvn clean install` が全モジュールで SUCCESS)
 
-## 追加するファイル (2つ)
+## 追加するファイル (2 つ / 内容差し替え)
 
-### 1. `RolemgrApplication.java`
+archetype 生成物にある空ファイルを、H2 で動く最小構成にする。
+
+### 1. `demo-env/src/main/resources/jdbc.properties` を編集
 
 <div class="file-location">
-  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-location-label">📍 このファイルを編集</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/java/</div>
-    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
-    <div class="ft-line ft-l3 ft-file">📄 RolemgrApplication.java <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1">📁 demo-env/</div>
+    <div class="ft-line ft-l2">📁 src/main/resources/</div>
+    <div class="ft-line ft-l3 ft-file">📄 jdbc.properties <span class="ft-tag ft-tag--modify">修正</span></div>
   </div>
 </div>
 
-**アプリのエントリポイント**。ここから起動する。
+archetype デフォルトは PostgreSQL の想定コメント。H2 in-memory に切り替える:
 
-```java
-package com.example.rolemgr;
+```properties
+# H2 in-memory 開発用 (Step 10 で PostgreSQL に切替)
+database=H2
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+# Connection Pool (HikariCP 想定)
+cp.maxActive=10
+cp.maxIdle=8
+cp.minIdle=2
+cp.maxWait=60000
 
-@SpringBootApplication
-public class RolemgrApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(RolemgrApplication.class, args);
-    }
-}
+# JDBC 接続情報
+jdbc.driverClassName=org.h2.Driver
+jdbc.url=jdbc:h2:mem:demo;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+jdbc.username=sa
+jdbc.password=
 ```
 
 #### なぜこう書く
 
-- **`@SpringBootApplication`**: 3つの機能をまとめた便利アノテーション
-  - `@Configuration`: このクラスを Bean 定義の起点にする
-  - `@EnableAutoConfiguration`: Spring Boot が pom.xml の依存を見て自動で設定してくれる (Tomcat 起動、DataSource 準備、etc)
-  - `@ComponentScan`: このクラスと同じパッケージ (`com.example.rolemgr`) 以下を全部スキャンして `@Controller` / `@Service` / `@Repository` を Bean 登録
-- **`SpringApplication.run(...)`**: 起動して、埋め込み Tomcat が上がる。それだけ
+- **`jdbc:h2:mem:demo`** — メモリ上の DB。JVM 停止で消える
+- **`DB_CLOSE_DELAY=-1`** — 接続が全部切れても DB を保持 (プールが再接続しても同じ DB を見る)
+- **`MODE=PostgreSQL`** — H2 に「PostgreSQL の方言で動作」と指示。将来 PostgreSQL に切り替える時の SQL 差分を最小化
+- **`sa` / 空パスワード** — H2 のデフォルト。開発用のみ、本番は絶対避ける
 
-### 2. `schema.sql`
+### 2. H2 依存を `demo-env/pom.xml` に追加
 
-<div class="file-location">
-  <div class="file-location-label">📍 このファイルをここに作成</div>
-  <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/resources/</div>
-    <div class="ft-line ft-l2 ft-file">📄 schema.sql <span class="ft-tag">新規</span></div>
-  </div>
-</div>
+`demo-env/pom.xml` の `<dependencies>` に H2 を明示追加 (archetype 生成物では PostgreSQL/Oracle がコメントアウト):
 
-**起動時に実行される DDL**。`users` テーブルを作る。
+```xml
+<dependencies>
+    <!-- 既存の TERASOLUNA + Spring 依存はそのまま -->
 
-> 💡 **DDL** = Data Definition Language (データ定義言語)。テーブルの作成 (`CREATE TABLE`) や削除 (`DROP TABLE`) など、DB の「箱の形」を定義する SQL のこと。データ本体を出し入れする `SELECT` / `INSERT` (これは DML と呼ぶ) と区別される。
-
-```sql
-DROP TABLE IF EXISTS users;
-
-CREATE TABLE users (
-    id       VARCHAR(50)  PRIMARY KEY,
-    password VARCHAR(255) NOT NULL,   -- BCrypt ハッシュ 60文字 → 余裕もって 255
-    role     VARCHAR(50)  NOT NULL
-);
+    <!-- H2 in-memory DB (dev only) -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
 ```
 
-#### なぜこう書く
+> Version は親 POM (`terasoluna-gfw-parent`) が管理しているので**書かない**。
 
-- **`DROP TABLE IF EXISTS`**: 開発中の再起動で衝突しないように毎回作り直す
-- **`VARCHAR(255)`**: BCrypt ハッシュは 60文字だが余裕を持たせる。50 にすると桁溢れでハッシュが切れ、認証が通らなくなる
-- 課題仕様には `password` はないが、**認証には必要**。実装で追加
+### 3. `demo-web/src/main/webapp/WEB-INF/web.xml` は archetype 生成品でそのまま OK
+
+`web.xml` は Tomcat が最初に読むエントリポイント。archetype が生成する内容:
+
+- `ContextLoaderListener` → `applicationContext.xml` を読み、`demo-web.xml` / `demo-domain.xml` / `demo-infra.xml` を集約ロード
+- `DispatcherServlet` → `spring-mvc.xml` を読み、`/**` を受ける
+- `springSecurityFilterChain` (Filter) → `spring-security.xml` に紐付き
+
+このステップでは編集不要。中身の詳細は Step 06 (認証基盤) で扱う。
 
 ## ディレクトリ構造 (このステップ完了時)
 
-```
-rolemgr/
-├── pom.xml
-└── src/main/
-    ├── java/com/example/rolemgr/
-    │   └── RolemgrApplication.java        ← 追加
-    └── resources/
-        ├── application.properties
-        └── schema.sql                     ← 追加
-```
+Step 01 の生成物 + `jdbc.properties` を H2 用に書き換えた状態。
 
 ## 動作確認
 
+### 3-a. ローカルの Tomcat 11 にデプロイ (Cargo プラグイン経由)
+
+Cargo プラグインが `terasoluna-gfw-parent` の pluginManagement に用意されている。ルート `demo/` で:
+
 ```powershell
-mvn spring-boot:run
+mvn -pl demo-web -am cargo:run
 ```
 
-期待するログ:
+- `-pl demo-web` — この module だけ実行
+- `-am` — 依存モジュール (`demo-domain`, `demo-env`) も一緒にビルド
+- `cargo:run` — Tomcat 11.0.15 を自動 DL して起動、`demo-web.war` をデプロイ、フォアグラウンドで実行
+
+期待するログ (末尾):
+
 ```
-Tomcat started on port 8080 (http)
-Started RolemgrApplication in X.XXX seconds
+[INFO] [beddedLocalContainer] Tomcat 11.x started on port [8080]
 ```
 
-### ブラウザ確認 (2つ)
+### 3-b. ブラウザ確認
 
-1. **http://localhost:8080/** → Spring Security の**デフォルトログイン画面** (灰色の UI) が出る。まだ自分の login.jsp を書いてないので Spring Security 提供のフォーム。**これで OK**
-2. **http://localhost:8080/h2-console** → H2 のログイン画面
-   - JDBC URL: `jdbc:h2:mem:rolemgr`
-   - User: `sa`
-   - Password: (空)
-   - Connect → `SELECT * FROM users;` → 空テーブルが表示されれば成功
+http://localhost:8080/demo-web/ にアクセス:
 
-### 止める
+- **Spring Security のデフォルトログイン画面** (灰色の UI) が出る → OK。次 Step 07 で自作 login.jsp に置き換える
+- ログを見て `Started ... in X seconds` が出ていれば起動成功
 
-`Ctrl + C` で停止。
+### 3-c. 停止
+
+`Ctrl + C` で cargo:run を停止。
+
+### 3-d. スタンドアロン Tomcat 11 に手動デプロイする場合
+
+`demo-web` を war パッケージング:
+
+```powershell
+mvn -pl demo-web -am package
+```
+
+生成物: `demo-web/target/demo-web.war`。これを Tomcat の `webapps/` に配置してサーバ起動。
 
 ## よくある詰まり
 
-- **`Whitelabel Error Page`**: 正常。まだ Controller がないから
-- **`Failed to determine a suitable driver class`**: `application.properties` の `spring.datasource.*` が抜けている
-- **`Table "USERS" not found`**: `schema.sql` の場所が違う。必ず `src/main/resources/` 直下
-- **H2 コンソールで「JDBC URL が不正」と表示される**: 入力した URL のスペルミス。`jdbc:h2:mem:rolemgr` を正確にコピーする
+- **`Table "USERS" not found`** — 起動時に schema.sql が実行されていない。**このステップではまだテーブルが無い**ので想定内。Step 04 で `demo-initdb` に schema.sql を配置してから解消する
+- **`Failed to load driver class`** — `demo-env/pom.xml` に H2 依存を書き忘れ。上記 2 を追加
+- **ポート 8080 が使用中** — 別プロセスが 8080 を掴んでいる。`cargo.servlet.port` を上書きするか、既存プロセスを停止 (詳細 [[/troubleshoot]])
+- **`ContextLoaderListener` が `applicationContext.xml` を見つけられない** — Maven の resources ディレクトリ (`demo-web/src/main/resources/META-INF/spring/`) に置かれているか確認
+- **Windows でパスに全角が含まれる**: `mvn cargo:run` が Tomcat の起動時 classpath 解決で失敗することがある。ワークスペースは半角パスに
 
 ## 次
 
-→ [Step 03: User ドメイン](/steps/03-user-domain)
+→ [Step 03: User ドメイン (Entity)](/steps/03-user-domain)

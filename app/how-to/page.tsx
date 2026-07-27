@@ -624,9 +624,15 @@ export default function HowToPage() {
               実装中に「これどうやるの?」となった時に開くページ。
               <strong>「1 行の答え + 実物コード」</strong>で並べてあります。全 {totalRecipes} レシピ。
             </p>
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+              ⚠️ 現在このレシピ集の多くは Spring Boot 単一プロジェクト版の書き方で書かれています。
+              TERASOLUNA multi-project 版に読み替えるときの規約差分は{" "}
+              <Link href="/spring-vs-terasoluna" className="text-brand underline">Boot からの読み替え表</Link> を参照。
+              段階的に multi-project 版レシピを追加予定。
+            </div>
           </div>
 
-          <PageMeta />
+          <PageMeta targetVersion="Spring Boot 3.4 (現状)、TERASOLUNA 対応は段階追加" />
 
           {/* Category chips */}
           <div className="mb-8 flex flex-wrap gap-2">

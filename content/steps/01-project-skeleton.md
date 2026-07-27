@@ -1,194 +1,215 @@
 ---
-title: "プロジェクト骨組み"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/terasoluna, tech/spring, tech/maven]
+title: "プロジェクト骨組み (親 POM + 5 子モジュール)"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/maven]
 step: 01
 ---
 
-# Step 01 — プロジェクト骨組み
+# Step 01 — プロジェクト骨組み (親 POM + 5 子モジュール)
 
 ## このステップのゴール
 
-- Maven でビルドできる**空プロジェクト**を作る
-- 依存関係 (Spring Boot / Security / MyBatis / H2 / JSP) を pom.xml に宣言
-- アプリ設定を application.properties に書く
+- `mvn archetype:generate` で TERASOLUNA blank archetype (5.11.0.RELEASE) から 5 モジュール構成のプロジェクトを生成する
+- 生成物のファイル配置を目視で確認し、[[/steps/00-modules-map|Step 00 の地図]]と照合する
+- ルートで `mvn clean install` を通し、5 モジュール全てが `BUILD SUCCESS` することを確認する
 
-まだアプリコードは書かない。**部品を並べるための台**を作る段階。
+まだアプリコードは書かない。**空の 5 モジュールが立ち上がる状態**を作る。
 
 ## 事前準備
 
-- JDK 17+ が入っている (`java -version` で確認)
-- Maven 3.8+ にパスが通っている (`mvn -v` でバージョンが表示される)
+- JDK 17+ が入っている (`java -version`)
+- Maven 3.9+ にパスが通っている (`mvn -v`)
+- インターネット接続 (初回だけ Maven Central + TERASOLUNA 依存を DL する)
+- 社内プロキシ環境の場合は `~/.m2/settings.xml` にプロキシ設定 (詳細は [[/troubleshoot|トラブルシュート]] 参照)
 
-## 追加するファイル (2つ)
+## 用語 (プレースホルダについて)
 
-### 1. `pom.xml`
+- `projectName` = あなたのプロジェクト名。実プロジェクトでは社内命名規則に従う
+- 本教材は具体例として `demo` を採用: `demo/`, `demo-web/`, `com.example.demo` のように登場する
+- `<groupId>` `<artifactId>` は自プロジェクトのものに差し替えて使う
+
+## 追加するファイル (0 個 / archetype 生成物を確認)
+
+新規に手で書くファイルはこのステップにはない。archetype に生成させる。
+
+### 1. archetype 生成コマンド
 
 <div class="file-location">
-  <div class="file-location-label">📍 このファイルをここに作成 (プロジェクト直下)</div>
+  <div class="file-location-label">📍 実行する場所: 任意のワークスペースディレクトリ (例: <code>C:\workspace\</code>)</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1 ft-file">📄 pom.xml <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 workspace/</div>
+    <div class="ft-line ft-l1">└ (このディレクトリで下のコマンドを実行、demo/ が生成される)</div>
   </div>
 </div>
 
-Maven の心臓部。**どの依存ライブラリを使うか**、**どの Java バージョンで動かすか**をここで宣言する。
+**PowerShell:**
+
+```powershell
+mvn archetype:generate `
+    "-DarchetypeGroupId=org.terasoluna.gfw.blank" `
+    "-DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype" `
+    "-DarchetypeVersion=5.11.0.RELEASE" `
+    "-DgroupId=com.example.demo" `
+    "-DartifactId=demo" `
+    "-Dversion=1.0.0-SNAPSHOT" `
+    "-DinteractiveMode=false"
+```
+
+**bash / zsh:**
+
+```bash
+mvn archetype:generate \
+    -DarchetypeGroupId=org.terasoluna.gfw.blank \
+    -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype \
+    -DarchetypeVersion=5.11.0.RELEASE \
+    -DgroupId=com.example.demo \
+    -DartifactId=demo \
+    -Dversion=1.0.0-SNAPSHOT \
+    -DinteractiveMode=false
+```
+
+#### なぜこう書く
+
+- **`-DarchetypeGroupId=org.terasoluna.gfw.blank`** — TERASOLUNA 公式の blank archetype 群を指す groupId
+- **`-DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype`** — JSP + MyBatis3 の multi-project 版 archetype。他に `-thymeleaf-` / `-jpa-` バリアントがある
+- **`-DarchetypeVersion=5.11.0.RELEASE`** — 今回は 5.11.0.RELEASE を使う。バージョンを固定しないと将来最新に引きずられる
+- **`-DgroupId=com.example.demo`** — 自プロジェクトのパッケージ prefix。**実プロジェクトでは会社の命名規則に従う** (`jp.co.<company>.<project>` 等)
+- **`-DartifactId=demo`** — Maven 上のプロジェクト名。生成されるディレクトリ名がこれになる (`demo/`)
+- **`-Dversion=1.0.0-SNAPSHOT`** — バージョンは自由。SNAPSHOT を付けると変更頻度が高い間 Maven ローカルへのインストールが上書きになる
+- **`-DinteractiveMode=false`** — 対話モード無効。CI やスクリプトでも回せる
+
+> 💡 5.11.0.RELEASE 系の archetype は Java 17 前提。JDK 11 では起動でコケる。 [[/versions|バージョン一覧]] を参照。
+
+### 2. 生成物の確認
+
+コマンド実行後、`demo/` ディレクトリが作られる。中身:
+
+<div class="file-location">
+  <div class="file-location-label">📍 archetype 生成後のディレクトリ構造</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 workspace/</div>
+    <div class="ft-line ft-l1">📁 demo/</div>
+    <div class="ft-line ft-l2 ft-file">📄 pom.xml <span class="ft-tag">親 POM</span></div>
+    <div class="ft-line ft-l2">📁 demo-env/</div>
+    <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
+    <div class="ft-line ft-l3">📁 src/main/resources/</div>
+    <div class="ft-line ft-l4 ft-file">📄 jdbc.properties</div>
+    <div class="ft-line ft-l4 ft-file">📄 logback.xml</div>
+    <div class="ft-line ft-l2">📁 demo-domain/</div>
+    <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
+    <div class="ft-line ft-l3">📁 src/main/java/com/example/demo/domain/</div>
+    <div class="ft-line ft-l4">📁 model/ (空)</div>
+    <div class="ft-line ft-l4">📁 repository/ (空)</div>
+    <div class="ft-line ft-l4">📁 service/ (空)</div>
+    <div class="ft-line ft-l3">📁 src/main/resources/META-INF/spring/</div>
+    <div class="ft-line ft-l4 ft-file">📄 demo-domain.xml</div>
+    <div class="ft-line ft-l4 ft-file">📄 demo-infra.xml <span class="ft-tag">MyBatis 設定</span></div>
+    <div class="ft-line ft-l2">📁 demo-web/</div>
+    <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
+    <div class="ft-line ft-l3">📁 src/main/java/com/example/demo/app/ (空)</div>
+    <div class="ft-line ft-l3">📁 src/main/webapp/</div>
+    <div class="ft-line ft-l4">📁 WEB-INF/</div>
+    <div class="ft-line ft-l5 ft-file">📄 web.xml <span class="ft-tag">DispatcherServlet 起動点</span></div>
+    <div class="ft-line ft-l5">📁 views/ (JSP を置く)</div>
+    <div class="ft-line ft-l3">📁 src/main/resources/META-INF/spring/</div>
+    <div class="ft-line ft-l4 ft-file">📄 applicationContext.xml</div>
+    <div class="ft-line ft-l4 ft-file">📄 demo-web.xml <span class="ft-tag">Web 設定</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 spring-mvc.xml <span class="ft-tag">MVC 設定</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 spring-security.xml <span class="ft-tag">セキュリティ設定</span></div>
+    <div class="ft-line ft-l2">📁 demo-initdb/</div>
+    <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
+    <div class="ft-line ft-l3">📁 src/main/sqls/ (DDL / データ SQL を置く)</div>
+    <div class="ft-line ft-l2">📁 demo-selenium/</div>
+    <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
+    <div class="ft-line ft-l3">📁 src/test/ (研修では触らない)</div>
+  </div>
+</div>
+
+### 3. 親 POM の要点
+
+`demo/pom.xml` を開くと、次のような構造:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" ...>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example.demo</groupId>
+    <artifactId>demo</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>                          <!-- ① -->
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
-        <relativePath/>
+    <modules>
+        <module>demo-env</module>                        <!-- ② -->
+        <module>demo-domain</module>
+        <module>demo-web</module>
+        <module>demo-initdb</module>
+        <module>demo-selenium</module>
+    </modules>
+
+    <parent>                                             <!-- ③ -->
+        <groupId>org.terasoluna.gfw</groupId>
+        <artifactId>terasoluna-gfw-parent</artifactId>
+        <version>5.11.0.RELEASE</version>
+        <relativePath />
     </parent>
 
-    <groupId>com.example</groupId>
-    <artifactId>rolemgr</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
-
     <properties>
-        <java.version>17</java.version>
-        <mybatis-spring-boot.version>3.0.4</mybatis-spring-boot.version>
+        <encoding>UTF-8</encoding>
+        <java-version>17</java-version>                  <!-- ④ -->
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis-spring-boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.servlet.jsp.jstl</groupId>
-            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    <!-- ... dependencyManagement で子モジュール間の version 参照 ... -->
 </project>
 ```
 
 #### なぜこう書く
 
-- **`<parent>`**: Spring Boot が「これ使うと安定するよ」というライブラリバージョンを一括継承。個別に version を書かなくていい
-- **`<packaging>war</packaging>`**: JSP を使うので war 必須 (jar だと `src/main/webapp/` が認識されない)
-- **`tomcat-embed-jasper`**: JSP を解釈するために必要。これがないと画面真っ白
-- **`jakarta.servlet.jsp.jstl-api` + `-jstl`**: `<c:if>` などの JSTL タグを使うため。**API と実装は別依存**なことに注意
-
-### 2. `application.properties`
-
-<div class="file-location">
-  <div class="file-location-label">📍 このファイルをここに作成</div>
-  <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/resources/</div>
-    <div class="ft-line ft-l2 ft-file">📄 application.properties <span class="ft-tag">新規</span></div>
-  </div>
-</div>
-
-Spring Boot の**設定ファイル**。値を並べるだけ。
-
-```properties
-server.port=8080
-
-# JSP のパス解決
-spring.mvc.view.prefix=/WEB-INF/views/
-spring.mvc.view.suffix=.jsp
-
-# H2 in-memory DB
-spring.datasource.url=jdbc:h2:mem:rolemgr;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
-spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-
-spring.sql.init.mode=always
-
-# H2 コンソール (開発用)
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
-
-# MyBatis
-mybatis.mapper-locations=classpath:mapper/*.xml
-mybatis.configuration.map-underscore-to-camel-case=true
-
-# ログ
-logging.level.com.example.rolemgr=DEBUG
-logging.level.org.springframework.security=INFO
-```
-
-#### なぜこう書く
-
-- `spring.mvc.view.prefix/suffix`: Controller が `"login"` と返したら `/WEB-INF/views/login.jsp` に forward する仕組み。**この設定がないと画面が出ない**
-- `spring.datasource.url` の `MODE=PostgreSQL`: H2 に PostgreSQL 方言で動いてもらう。将来 PostgreSQL に切り替える時に SQL 差分を小さくする布石
-- `spring.sql.init.mode=always`: `schema.sql` を毎回実行 (embedded DB でなくても)
-- `map-underscore-to-camel-case=true`: DB カラム `user_id` を Java の `userId` にマッピング
-
-## ディレクトリ構造 (このステップ完了時)
-
-```
-rolemgr/
-├── pom.xml                               ← 追加
-└── src/
-    └── main/
-        └── resources/
-            └── application.properties     ← 追加
-```
+- **① `<packaging>pom</packaging>`** — 親モジュールは Java コードを持たない、ビルド指令 (`modules` の集約) だけ持つ
+- **② `<modules>`** — 実行順序に意味がある。`demo-env` を最初に、`demo-web` を後に (依存解決順)
+- **③ `<parent>` = `terasoluna-gfw-parent:5.11.0.RELEASE`** — このバージョンが Spring Boot 4.0.2 / MyBatis 3.5.19 / Jakarta EE 系のバージョンを一括管理する
+- **④ `<java-version>17</java-version>`** — 5.11.0 系は Java 17 が必須
 
 ## 動作確認
 
-作業フォルダ (プロジェクトルート) に移動して:
+### 3-a. ルートで初回 `mvn clean install`
 
 ```powershell
-mvn compile
+cd demo
+mvn clean install
 ```
 
-出るべきメッセージ: **`BUILD SUCCESS`**
+**期待するメッセージ (末尾):**
 
-エラーが出たら:
-- `pom.xml` の XML タグ閉じ忘れ (`</dependency>` など)
-- インデントは動作に影響しないので、閉じ忘れだけをチェック
-- `mvn: command not found` → Maven の `bin/` に PATH が通っていない。`$env:PATH` (PowerShell) または `$PATH` (bash/zsh) に Maven の `bin/` ディレクトリを追加
+```
+[INFO] Reactor Summary for demo 1.0.0-SNAPSHOT:
+[INFO]
+[INFO] demo ............................................... SUCCESS
+[INFO] demo-env ........................................... SUCCESS
+[INFO] demo-domain ........................................ SUCCESS
+[INFO] demo-web ........................................... SUCCESS
+[INFO] demo-initdb ........................................ SUCCESS
+[INFO] demo-selenium ...................................... SUCCESS
+[INFO] BUILD SUCCESS
+```
+
+5 モジュール全てが SUCCESS なら OK。**初回は 5-10 分かかる** (TERASOLUNA + Spring Boot + Jakarta EE の依存を DL するため)。
+
+### 3-b. STS / Eclipse に import
+
+- **File → Import → Existing Maven Projects**
+- Root Directory に `demo/` を指定
+- 6 個 (親 + 5 子) すべてにチェック
+- **Finish**
+
+Package Explorer に **6 個のプロジェクト**が並べば成功。
 
 ## よくある詰まり
 
-- **`mvn` が動かない** → `$env:MAVEN_HOME` と `$env:PATH` の両方が同じ PowerShell セッション内で設定されているか確認
-- **依存解決で止まる** → 社内プロキシで maven central にアクセスできない場合あり。`~/.m2/settings.xml` にプロキシ設定が必要
-- **Java version が違うと言われる** → `<java.version>17</java.version>` は「17以上ならOK」。JDK 24 でも動く
+- **archetype:generate で `-DarchetypeVersion` を省略**: 最新版が引かれてこの手順書と齟齬が出る。必ず明示
+- **社内プロキシで DL がタイムアウト**: `~/.m2/settings.xml` にプロキシ設定 (Nexus/JFrog がある場合はそちらをミラーに)。詳細 → [[/troubleshoot]]
+- **`mvn clean install` を子モジュールで先に流す**: 例えばルートで install する前に `cd demo-web && mvn install` すると、`demo-domain` / `demo-env` が Maven ローカルに未配布で解決失敗する。**必ずルート → 子** の順
+- **`java-version` エラー**: JDK 11 or 8 だと `-source/-target 17 is not supported` で失敗。JDK 17+ に切り替える
+- **`error creating archetype` (社内 CA 証明書 PKIX エラー)**: 社内 CA 未信頼で SSL 検証失敗。トラブルシュートページ [[/troubleshoot]] の PKIX セクション参照
 
 ## 次
 
-→ [Step 02: 空アプリ起動](/steps/02-empty-boot)
+→ [Step 02: 空アプリ起動 (Tomcat デプロイ動作確認)](/steps/02-empty-boot)

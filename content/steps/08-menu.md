@@ -1,174 +1,106 @@
 ---
-title: "メニュー画面"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/spring, tech/jsp]
+title: "メニュー画面 (MenuController + menu.jsp)"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/jsp]
 step: 08
 ---
 
-# Step 08 — メニュー画面 & 共通ヘッダ
+# Step 08 — メニュー画面 (MenuController + menu.jsp)
 
 ## このステップのゴール
 
-- ログイン後の**メニュー画面** (2つのリンク) を表示
-- 全画面で使いまわす**共通ヘッダ** (ユーザ名 + ログアウト + メニューボタン) を分離
-- ログアウトも動く
+- ログイン後に着地する `/menu` 画面を作る
+- 認証済みユーザ ID を JSP 側で表示する
+- 検索画面 (Step 09) とユーザ情報画面 (Step 10) へのリンクを設置
 
 ## 事前準備
 
-- [Step 07](/steps/07-login) 完了
+- [Step 07](/steps/07-login) 完了 (u001 でログインが通る状態)
 
-## 追加するファイル (3つ)
+## 追加するファイル (2 つ)
 
 ### 1. `MenuController.java`
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/java/</div>
-    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
-    <div class="ft-line ft-l3">📁 controller/</div>
-    <div class="ft-line ft-l4 ft-file">📄 MenuController.java <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/demo-web/src/main/java/com/example/demo/app/</div>
+    <div class="ft-line ft-l1">📁 menu/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l2 ft-file">📄 MenuController.java <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
 ```java
-package com.example.rolemgr.controller;
-
-import java.security.Principal;
+package com.example.demo.app.menu;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MenuController {
 
-    @GetMapping({"/", "/menu"})
-    public String menu(Principal principal, Model model) {
-        model.addAttribute("loginId", principal.getName());
-        return "menu";
+    @GetMapping("/menu")                                                       // ①
+    public String view() {
+        return "menu/menu";
     }
 }
 ```
 
-### 2. `header.jsp` (共通ヘッダ)
+- **① `/menu`** — Spring Security の `default-target-url="/menu"` (Step 06) と対応。ログイン成功後にここに飛んでくる
+
+### 2. `menu.jsp`
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
-    <div class="ft-line ft-l2">📁 WEB-INF/</div>
-    <div class="ft-line ft-l3">📁 views/</div>
-    <div class="ft-line ft-l4">📁 common/ <span class="ft-tag">新規</span></div>
-    <div class="ft-line ft-l5 ft-file">📄 header.jsp <span class="ft-tag">新規</span></div>
-  </div>
-</div>
-
-**全画面共通のヘッダ**。他の JSP から `<%@ include %>` される。
-
-```jsp
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<div style="border-bottom:1px solid #ccc; padding:8px; margin-bottom:16px;">
-    <span>${loginId}さん</span>
-
-    <form action="<c:url value='/logout'/>" method="post" style="display:inline; margin-left:16px;">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <button type="submit">ログアウト</button>
-    </form>
-
-    <c:if test="${not empty showMenuButton}">
-        <a href="<c:url value='/menu'/>" style="margin-left:8px;">
-            <button type="button">メニュー</button>
-        </a>
-    </c:if>
-</div>
-```
-
-### 3. `menu.jsp`
-
-<div class="file-location">
-  <div class="file-location-label">📍 このファイルをここに作成</div>
-  <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
-    <div class="ft-line ft-l2">📁 WEB-INF/</div>
-    <div class="ft-line ft-l3">📁 views/</div>
-    <div class="ft-line ft-l4 ft-file">📄 menu.jsp <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/demo-web/src/main/webapp/WEB-INF/views/</div>
+    <div class="ft-line ft-l1">📁 menu/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l2 ft-file">📄 menu.jsp <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
 ```jsp
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  <%-- ① --%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>メニュー画面</title>
+    <meta charset="UTF-8" />
+    <title>メニュー — demo</title>
 </head>
 <body>
-    <%-- メニュー画面自体にはメニューボタン不要 --%>
-    <%@ include file="common/header.jsp" %>
-
     <h1>メニュー</h1>
+    <p>こんにちは、<sec:authentication property="principal.username" /> さん</p>  <%-- ② --%>
 
-    <ul>
-        <li><a href="<c:url value='/search'/>">ユーザーを検索する</a></li>
-        <li><a href="<c:url value='/user-info'/>">自分のユーザ情報を見る</a></li>
-    </ul>
+    <nav>
+        <ul>
+            <li><a href="${pageContext.request.contextPath}/search">役職検索</a></li>
+            <li><a href="${pageContext.request.contextPath}/user-info">自分のユーザ情報</a></li>
+        </ul>
+    </nav>
+
+    <form action="${pageContext.request.contextPath}/logout" method="post">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <button type="submit">ログアウト</button>
+    </form>
 </body>
 </html>
 ```
 
-## なぜこう書く
-
-### `Principal principal` を Controller の引数に書くだけ
-Spring MVC が自動で「今ログインしているユーザ情報」を注入してくれる。**セッションを直接触らない**のが正解。
-
-### `@GetMapping({"/", "/menu"})`
-`/` と `/menu` の**両方**でメニュー画面を出す。アプリのトップページとしても機能する。
-
-### 共通ヘッダの `<%@ include file="..." %>` (静的 include)
-
-| 種類 | 書き方 | 挙動 |
-|---|---|---|
-| **静的 include** | `<%@ include file="common/header.jsp" %>` | プリコンパイル時に**テキスト連結**。親の taglib 宣言を共有 |
-| **動的 include** | `<jsp:include page="common/header.jsp" />` | 実行時に**別リクエスト**として実行。速度は落ちる |
-
-今回はテンプレの共通化なので**静的 include** で十分。
-
-### `${loginId}さん` の EL 式
-- `${変数名}` は Servlet の request/session/application スコープから探して埋め込む
-- Controller が `model.addAttribute("loginId", ...)` で置いた値がここで拾える
-- **サーバ側の変数を HTML に埋め込む**のが JSP の本業
-
-### ログアウトが POST の理由
-GET だと「他サイトから `<img src='.../logout'>` を仕込まれる」だけでログアウトされてしまう (CSRF 攻撃)。POST + CSRF トークンで守る。
-
-## ディレクトリ構造 (このステップ完了時)
-
-```
-rolemgr/src/main/
-├── java/com/example/rolemgr/
-│   └── controller/
-│       ├── LoginController.java
-│       └── MenuController.java            ← 追加
-└── webapp/WEB-INF/views/
-    ├── login.jsp
-    ├── menu.jsp                           ← 追加
-    └── common/
-        └── header.jsp                     ← 追加
-```
+- **① Spring Security の JSP タグ** — TERASOLUNA の web-jsp 依存で使えるようになる
+- **② `<sec:authentication property="principal.username" />`** — 認証コンテキストから現在ログイン中の user ID を表示。**URL パラメータからでなく認証コンテキストから取る**のがセキュリティ的に正しい (詳細は [[/security-checklist#idor|IDOR 対策]] 参照)
 
 ## 動作確認
 
-再起動 → http://localhost:8080/login → ログイン → `/menu` に遷移 → **「○○さん / ログアウト」** + **「ユーザーを検索する」「自分のユーザ情報を見る」の 2 リンク**が出る。
+Tomcat 起動 → ログイン → `/menu` に着地 → 「こんにちは、u001 さん」が表示 → OK。検索/ユーザ情報リンクは 404 (次の Step で作る)。
 
-- 「ログアウト」ボタン → ログイン画面に戻る + 「ログアウトしました」の緑字
-- リンクは 2 つとも 404 or Whitelabel (次のステップで作る)
+## よくある詰まり
+
+- **`<sec:authentication>` タグが未定義**: `<%@ taglib prefix="sec" ... %>` の宣言忘れ、または demo-web の pom に `terasoluna-gfw-security-web-dependencies` が入っていない
+- **CSRF 403 (ログアウト時)**: ログアウトフォームにも CSRF token を埋め込む必要あり (`sec:csrf` が有効な限り)
+- **`principal.username` が null**: 認証が通っていない (Spring Security のフィルタが働いていない) → spring-security.xml と web.xml の filter 設定を確認
 
 ## 次
 
-→ [Step 09: 検索画面](/steps/09-search)
+→ [Step 09: 検索画面 (SearchController + Form + LIKE 検索)](/steps/09-search)

@@ -1,178 +1,122 @@
 ---
-title: "ユーザ情報画面"
-date: 2026-07-21
-tags: [type/learning, type/training, tech/spring, tech/jsp]
+title: "ユーザ情報画面 (認証コンテキストから ID 取得)"
+date: 2026-07-28
+tags: [type/learning, type/training, tech/terasoluna, tech/spring-security]
 step: 10
 ---
 
-# Step 10 — ユーザ情報画面
+# Step 10 — ユーザ情報画面 (認証コンテキストから ID 取得)
 
 ## このステップのゴール
 
-- 自分の ID と役職を表示する画面を作る
-- 「変更する」ボタンを付けて、次のステップに繋げる
-
-**セキュリティの要点**: URL に user_id を含めない。**サーバ側で「ログイン中のユーザ ID」を確定**する。他人の情報が漏れない設計。
+- 自分のユーザ情報 (ID + 役職) を表示する画面を作る
+- **IDOR 対策**: URL パラメータからでなく **認証コンテキスト** (`Authentication`) から現在ユーザ ID を取る
+- Step 11 の変更画面 (POST + PRG パターン) に向けた素材を揃える
 
 ## 事前準備
 
 - [Step 09](/steps/09-search) 完了
 
-## 追加するファイル (2つ)
+## 追加するファイル (2 つ)
 
-### 1. `UserInfoController.java`
+### 1. `UserInfoController.java` (view メソッド)
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/java/</div>
-    <div class="ft-line ft-l2">📁 com/example/rolemgr/</div>
-    <div class="ft-line ft-l3">📁 controller/</div>
-    <div class="ft-line ft-l4 ft-file">📄 UserInfoController.java <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/demo-web/src/main/java/com/example/demo/app/</div>
+    <div class="ft-line ft-l1">📁 userinfo/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l2 ft-file">📄 UserInfoController.java <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
-**Step 11 で編集メソッドも追加する**ので、今は表示メソッドだけ書く。
-
 ```java
-package com.example.rolemgr.controller;
+package com.example.demo.app.userinfo;
 
-import java.security.Principal;
+import jakarta.inject.Inject;
 
+import org.springframework.security.core.Authentication;                       // ①
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.rolemgr.domain.User;
-import com.example.rolemgr.service.UserService;
+import com.example.demo.domain.model.User;
+import com.example.demo.domain.service.user.UserService;
 
 @Controller
 public class UserInfoController {
 
-    private final UserService userService;
+    @Inject
+    UserService userService;
 
-    public UserInfoController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping("/user-info")                                        // ①
-    public String view(Principal principal, Model model) {           // ②
-        String id = principal.getName();                             // ③
-        User user = userService.findById(id);                        // ④
-        model.addAttribute("loginId", id);
-        model.addAttribute("user", user);                            // ⑤
-        return "userInfo";
+    @GetMapping("/user-info")
+    public String view(Authentication auth, Model model) {                     // ②
+        String id = auth.getName();                                            // ③
+        User user = userService.findById(id);
+        model.addAttribute("user", user);
+        return "userinfo/userInfo";
     }
 }
 ```
 
-> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
+#### なぜこう書く
 
-- **① `@GetMapping("/user-info")`** — 見るだけの画面なので GET。**URL パラメータで userId を受けない**のがこのアプリの重要な設計 (下記 ③ で決まる)。
-- **② `Principal principal`** — 引数に書くだけで Spring Security が「今ログインしているユーザ情報」を注入してくれる。**手動でセッションを触らない**のが Spring MVC 流。
-- **③ `String id = principal.getName();`** — ログイン時に入力した ID を取得。URL に載っていないので**他人の ID に書き換えられない** (IDOR 脆弱性回避)。
-- **④ `userService.findById(id);`** — Service 経由で DB からユーザ 1 件を取得。Controller が直接 Mapper を呼ばず Service を挟むのは 3 層構造の原則。
-- **⑤ `model.addAttribute("user", user);`** — 取ってきた User オブジェクトを丸ごと Model に詰める。JSP 側では `${user.id}` `${user.role}` で各フィールドを EL 式で参照できる。
+- **① `import org.springframework.security.core.Authentication`** — Spring Security の認証情報オブジェクト。DispatcherServlet が引数として自動で渡してくれる
+- **② `Authentication auth`** — メソッド引数に取るだけで DI される
+- **③ `auth.getName()`** — 現在ログイン中のユーザ ID (Spring Security の principal.username)。**URL パラメータの id は信用しない** — この違いが IDOR 対策の核
+
+**IDOR 脆弱性の説明**: もし `@GetMapping("/user-info/{id}")` にして URL の id をそのまま使ったら、`u001` のセッションで `/user-info/u003` を叩けば他人の情報が見られてしまう。認証コンテキストから取れば、URL に何が来ようと自分の情報しか見られない。詳細は [[/security-checklist#idor|セキュリティチェックリスト IDOR 節]] 参照。
 
 ### 2. `userInfo.jsp`
 
 <div class="file-location">
   <div class="file-location-label">📍 このファイルをここに作成</div>
   <div class="file-tree">
-    <div class="ft-line">📁 rolemgr/</div>
-    <div class="ft-line ft-l1">📁 src/main/webapp/</div>
-    <div class="ft-line ft-l2">📁 WEB-INF/</div>
-    <div class="ft-line ft-l3">📁 views/</div>
-    <div class="ft-line ft-l4 ft-file">📄 userInfo.jsp <span class="ft-tag">新規</span></div>
+    <div class="ft-line">📁 demo/demo-web/src/main/webapp/WEB-INF/views/</div>
+    <div class="ft-line ft-l1">📁 userinfo/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l2 ft-file">📄 userInfo.jsp <span class="ft-tag">新規</span></div>
   </div>
 </div>
 
 ```jsp
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<c:set var="showMenuButton" value="true" />
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>ユーザー情報画面</title>
+    <meta charset="UTF-8" />
+    <title>ユーザ情報 — demo</title>
 </head>
 <body>
-    <%@ include file="common/header.jsp" %>
+    <h1>ユーザ情報</h1>
 
-    <h1>ユーザー情報</h1>
+    <c:if test="${not empty message}">
+        <div class="info"><c:out value="${message}" /></div>                    <%-- ① --%>
+    </c:if>
 
-    <p>ID: ${user.id}</p>                                        <%-- ① --%>
-    <p>役職: ${user.role}</p>
+    <table>
+        <tr><th>ID</th><td><c:out value="${user.id}" /></td></tr>
+        <tr><th>役職</th><td><c:out value="${user.role}" /></td></tr>
+    </table>
 
-    <a href="<c:url value='/user-info/edit'/>">                  <%-- ② --%>
-        <button type="button">変更する</button>
-    </a>
+    <a href="${pageContext.request.contextPath}/user-info/edit">役職を変更する</a>
+    <a href="${pageContext.request.contextPath}/menu">メニューに戻る</a>
 </body>
 </html>
 ```
 
-> 💡 コード内の丸数字を押すと、その行の説明がポップアップで表示されます。
-
-- **① `${user.id}`** — EL 式 (Expression Language)。**JavaBean 規約**に従って裏で `user.getId()` が呼ばれ、その戻り値がここに埋め込まれる。User クラスに `getId()` を書き忘れていると空表示になるのが典型的な詰まりどころ。
-- **② `<a href="<c:url value='/user-info/edit'/>">`** — 変更画面 (Step 11) へのリンク。`<c:url>` はコンテキストパスを自動で付けてくれるヘルパー (アプリの deploy パスが変わってもリンク切れしない)。
-
-## なぜこう書く
-
-### URL に user_id を含めない
-悪い設計例:
-```
-GET /user-info?userId=u001
-```
-→ ブラウザで手動で `u001` を `u002` に書き換えるだけで**他人の情報が見える** (IDOR 脆弱性)。
-
-正しい設計:
-```java
-String id = principal.getName();  // サーバが「認証済みユーザ」を決定
-```
-→ URL パラメータでは指定不可。書き換え不能。
-
-### `${user.role}` の EL 式
-- `user` は Model に addAttribute した `com.example.rolemgr.domain.User`
-- `user.role` は自動的に `user.getRole()` を呼び出す (**JavaBean 規約**)
-- **getter がないと空表示になる**。getter を書き忘れると詰まる
-
-### 「変更する」ボタンをリンクにする
-教材では見た目のわかりやすさを優先して `<a href="..."><button>変更する</button></a>` の入れ子を使っている。ただし **HTML5 の仕様では `<a>` の中に `<button>` を置くのは invalid**。
-
-厳密に正しい書き方は以下のどちらか:
-```html
-<!-- ① <a> だけを使い、CSS でボタン風に装飾する -->
-<a href="<c:url value='/user-info/edit'/>" class="btn">変更する</a>
-
-<!-- ② form + POST で遷移する (状態を変えない画面遷移でも許容される) -->
-<form action="<c:url value='/user-info/edit'/>" method="get">
-    <button type="submit">変更する</button>
-</form>
-```
-
-実案件のコードレビューでは、**この違いを指摘するのが定番のポイント**。
-
-## ディレクトリ構造 (このステップ完了時)
-
-```
-rolemgr/src/main/
-├── java/com/example/rolemgr/controller/
-│   └── UserInfoController.java            ← 追加
-└── webapp/WEB-INF/views/
-    └── userInfo.jsp                       ← 追加
-```
+- **① Flash メッセージの表示** — Step 11 で PRG 後の "更新しました" を Flash 経由で受け取る想定。今 Step では常に空
 
 ## 動作確認
 
-再起動 → ログイン → メニュー → 「自分のユーザ情報を見る」
+Tomcat 起動 → ログイン → メニュー → 「自分のユーザ情報」 → `/user-info` に自分の ID / 役職が表示 → OK。「役職を変更する」リンクは Step 11 で作るまで 404。
 
-- `u001` でログインなら:
-  - ID: u001
-  - 役職: 部長
-- 「変更する」ボタンを押す → `/user-info/edit` に飛ぶ → 404 or Whitelabel (Step 11 で作る)
+## よくある詰まり
+
+- **`user` が null**: DB に該当 ID がない (initdb で投入した u001-u005 以外でログイン試みた等)。実際にはあり得ないが、防御的に `if (user == null)` を Controller に追加する選択肢もある
+- **`auth` が null**: Spring Security が動いていない、または `permitAll` になっている URL でこのメソッドが呼ばれた → spring-security.xml の `intercept-url` を確認
+- **`principal.username` と `auth.getName()` の値が違う**: 認証プロバイダの実装依存。通常は同一だが、カスタム UserDetails で override している場合は要確認
 
 ## 次
 
-→ [Step 11: 変更画面](/steps/11-edit)
+→ [Step 11: 変更画面 (POST + PRG パターン)](/steps/11-edit)
