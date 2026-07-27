@@ -20,7 +20,7 @@ export default function HomePage() {
             <h1 className="text-2xl md:text-4xl font-bold mt-2 text-slate-900 leading-tight">
               役職編集アプリを
               <br className="md:hidden" />
-              12 ステップで組み立てる
+              15 ステップで組み立てる
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
               <strong>単に動くコードを写経するのではなく、各行の「なぜこう書くか」まで納得しながら進める構成のガイド</strong>。
@@ -209,10 +209,11 @@ export default function HomePage() {
           {/* Step list */}
           <section>
             <h2 className="text-xl md:text-2xl font-bold mb-2 text-slate-900">
-              12 ステップ一覧
+              15 ステップ一覧
             </h2>
             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-              各ステップ 5〜15 分、通しで 1〜3 時間 (コピペしていくだけなら短め、理解しながらだと長め)。
+              Step 01-12 は「動くアプリを組む」フェーズ (通しで 1〜3 時間)。
+              Step 13-15 は「JUnit5 + Mockito + MockMvc で自動テストを書く」フェーズ (追加 1〜2 時間)。
               前のステップに依存するので、上から順に進めてください。
             </p>
             <div className="grid gap-2">

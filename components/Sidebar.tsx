@@ -41,6 +41,13 @@ const PHASE_GROUPS: PhaseGroup[] = [
     desc: "12",
     stepNumbers: [12],
   },
+  {
+    key: "test",
+    emoji: "🧪",
+    name: "テスト",
+    desc: "13-15",
+    stepNumbers: [13, 14, 15],
+  },
 ];
 
 function findPhaseForStep(stepNum: number | undefined): string | null {
@@ -168,6 +175,26 @@ export function Sidebar({
             >
               <span className="text-base">🔌</span>
               <span>DB 接続の仕組み</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/oracle-diff"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span className="text-base">🏛</span>
+              <span>H2 → Oracle の落とし穴</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/mentor"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-rose-50 text-rose-900 font-semibold hover:bg-rose-100"
+            >
+              <span className="text-base">🧑‍🏫</span>
+              <span>メンター向けガイド</span>
             </Link>
           </li>
         </ul>

@@ -28,9 +28,9 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 
 ---
 
-## 12 ステップ一覧
+## 15 ステップ一覧
 
-各ステップの目安時間 = **5〜15分**（コピペしていくだけなら早い、理解しながらだと長め）。
+**Step 01-12: 動くアプリを組む**フェーズ (通しで 1〜3 時間、コピペしていくだけなら早い)
 
 | # | タイトル | 追加するファイル | このステップでできること |
 |---|---|---|---|
@@ -46,6 +46,14 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 | 10 | ユーザ情報画面 | `UserInfoController.java` (view), `userInfo.jsp` | 自分の ID/役職が表示される |
 | 11 | 変更画面 | `UserInfoController.java` (edit + POST), `userInfoEdit.jsp` | 役職を書き換えて DB 更新できる、PRG パターンで画面が戻る |
 | 12 | 完成 & まとめ | (なし、動作確認だけ) | 5画面全部つながる、他人に説明できる状態 |
+
+**Step 13-15: 自動テストを書く**フェーズ (追加 1〜2 時間、実装した機能に「壊れないことを機械的に保証する網」を張る)
+
+| # | タイトル | 追加するファイル | このステップでできること |
+|---|---|---|---|
+| 13 | Service 単体テスト | `UserServiceTest.java` | Mockito で Mapper をモック、`@ParameterizedTest` で同値分割 |
+| 14 | Mapper 統合テスト | `UserMapperTest.java` | `@MybatisTest` で H2 に実 SQL、`Invalid bound statement` 系を検出 |
+| 15 | Controller テスト | `SearchControllerTest.java` | `MockMvc` + `@WebMvcTest` で URL / Model / View / Security 検証 |
 
 ---
 
@@ -69,6 +77,9 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 - [Step 10 → ユーザ情報画面](/steps/10-user-info)
 - [Step 11 → 変更画面](/steps/11-edit)
 - [Step 12 → 完成 & まとめ](/steps/12-complete)
+- [Step 13 → Service 単体テスト (JUnit5 + Mockito)](/steps/13-service-test)
+- [Step 14 → Mapper 統合テスト (@MybatisTest)](/steps/14-mapper-test)
+- [Step 15 → Controller テスト (MockMvc)](/steps/15-controller-test)
 
 ## 参考
 
