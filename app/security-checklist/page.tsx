@@ -354,12 +354,7 @@ export default function SecurityChecklistPage() {
                 label: "H2 → Oracle 落とし穴",
                 desc: "本番 DB 移行時の類似地雷リスト",
               },
-              {
-                href: "/mentor",
-                emoji: "🧑‍🏫",
-                label: "メンター向けガイド",
-                desc: "教える側の詰まりポイント一覧",
-              },
+              // /mentor は 2026-07-28 に非表示化
             ]}
           />
 

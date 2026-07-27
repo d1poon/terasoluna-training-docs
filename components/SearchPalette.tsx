@@ -21,7 +21,7 @@ const INDEX: Entry[] = [
   { category: "リファレンス", title: "DB 接続の仕組み", href: "/db-connection", desc: "jdbc.properties → -env.xml → -infra.xml、Connection Pool、エラー診断" },
   { category: "リファレンス", title: "セキュリティチェックリスト", href: "/security-checklist", desc: "ログイン失敗漏洩 / セッション固定 / CSRF / IDOR / XSS / SQLi / BCrypt など 10 項目" },
   { category: "リファレンス", title: "H2 → Oracle 落とし穴 10 選", href: "/oracle-diff", desc: "空文字 = NULL / SYSDATE / MERGE / 予約語 / ROWNUM など" },
-  { category: "リファレンス", title: "メンター向けガイド", href: "/mentor", desc: "「答えを言わずに気付かせる」ためのステップ別ハマりどころ集" },
+  // /mentor は 2026-07-28 に非表示化 (コード保持、Sidebar/SearchPalette から除外、URL は 404)
   { category: "リファレンス", title: "バージョン一覧", href: "/versions", desc: "TERASOLUNA 5.11.0 / Spring Boot 4.0.2 / JDK 17 / Tomcat 11 等" },
   // TERASOLUNA
   { category: "TERASOLUNA", title: "マルチプロジェクト構造", href: "/terasoluna-multi-project", desc: "5 モジュール (-web / -domain / -env / -initdb / -selenium) の中身" },

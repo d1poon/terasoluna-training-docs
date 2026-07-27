@@ -189,16 +189,7 @@ export function Sidebar({
               <span>H2 → Oracle の落とし穴</span>
             </Link>
           </li>
-          <li>
-            <Link
-              href="/mentor"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-rose-50 text-rose-900 font-semibold hover:bg-rose-100"
-            >
-              <span aria-hidden="true" className="text-base">🧑‍🏫</span>
-              <span>メンター向けガイド</span>
-            </Link>
-          </li>
+          {/* /mentor は 2026-07-28 に非表示化 — コードは app/mentor/page.tsx に保持、HIDDEN フラグで復活可能 */}
           <li>
             <Link
               href="/security-checklist"

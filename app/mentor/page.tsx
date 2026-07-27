@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { RelatedLinks } from "@/components/RelatedLinks";
@@ -6,6 +7,15 @@ import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "メンター向けガイド | TERASOLUNA 研修" };
+
+// ==========================================================================
+// 【非表示化: 2026-07-28】
+// このページはユーザ判断で「非表示」扱い。コード本体 (PITFALLS 配列、
+// レンダリング等) は削除せず保持したまま、URL 直叩き時に 404 を返す。
+// Sidebar / SearchPalette / RelatedLinks からのリンクも同時に除去済み。
+// 再公開する時は、下の HIDDEN フラグを false にするだけで復活する。
+// ==========================================================================
+const HIDDEN = true;
 
 /* ============== データ ============== */
 
@@ -114,6 +124,7 @@ const CHECKLIST_STEP12 = [
 ];
 
 export default function MentorPage() {
+  if (HIDDEN) notFound();  // ← 非表示中: /mentor は 404 を返す
   const steps = getAllSteps();
 
   return (

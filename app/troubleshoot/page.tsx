@@ -240,7 +240,7 @@ export default function TroubleshootPage() {
               { href: "/steps/00-modules-map", emoji: "🗺", label: "Step 00 5 モジュールの地図", desc: "配置先の判断フロー" },
               { href: "/security-checklist", emoji: "🔒", label: "セキュリティチェックリスト", desc: "設定漏れの網羅" },
               { href: "/versions", emoji: "📦", label: "バージョン一覧", desc: "使用中のバージョン確認" },
-              { href: "/mentor", emoji: "🧑‍🏫", label: "メンター向けガイド", desc: "教える側のハマりどころ集" },
+              // /mentor は 2026-07-28 に非表示化
             ]}
           />
 

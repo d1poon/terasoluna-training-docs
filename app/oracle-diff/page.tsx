@@ -316,7 +316,7 @@ export default function OracleDiffPage() {
             { href: "/steps/04-mapper", emoji: "🗄", label: "Step 04: Mapper (SQL 係)", desc: "本教材の Mapper 実装 (H2 前提)" },
             { href: "/db-connection", emoji: "🔌", label: "DB 接続の仕組み", desc: "TERASOLUNA multi-project の DB 設定" },
             { href: "/how-to", emoji: "🍳", label: "「〜するには?」レシピ集", desc: "実装レシピ 20 個" },
-            { href: "/mentor", emoji: "🧑‍🏫", label: "メンター向けガイド", desc: "教える側の早見表" },
+            // /mentor は 2026-07-28 に非表示化
           ]} />
 
           <PageFooter pageTitle="H2 → Oracle 移行時の落とし穴 10 選" slug="oracle-diff" />
