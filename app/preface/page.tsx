@@ -3,6 +3,8 @@ import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { T } from "@/components/TermPopover";
 import { RelatedLinks } from "@/components/RelatedLinks";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "はじめに | TERASOLUNA 研修" };
 
@@ -182,6 +184,8 @@ export default function PrefacePage() {
               このページを読むだけで、「そもそも Web アプリって何を繰り返しているのか?」を自分の言葉で説明できるようになります。
             </p>
           </div>
+
+          <PageMeta />
 
           {/* Section: Metaphor */}
           <section className="mb-10">
@@ -415,6 +419,8 @@ public String view(Principal principal,       // ②
               />
             </div>
           </section>
+
+          <PageFooter pageTitle="はじめに — Web アプリって何をしてるの?" slug="preface" />
         </main>
       </div>
     </div>
@@ -439,7 +445,7 @@ function NextCard({
       href={href}
       className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm transition-all"
     >
-      <div className="text-2xl">{emoji}</div>
+      <div aria-hidden="true" className="text-2xl">{emoji}</div>
       <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
         {label}
       </div>

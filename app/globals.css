@@ -456,3 +456,117 @@
   .file-tree { font-size: 0.9rem; }
   .ft-line { font-size: inherit; }
 }
+
+/* --- 印刷 / PDF 出力 ---
+ * ブラウザの「印刷」→「PDF 保存」で読める形にするための調整。
+ * Sidebar / モバイルヘッダ / popover / SearchPalette / 検索アイコン等は非表示。
+ * 本文はモノクロ + 余白追加。コードブロックは折り返し + 改行禁止解除。
+ */
+@media print {
+  html, body {
+    background: white !important;
+    color: black !important;
+    overflow-x: visible !important;
+    max-width: none !important;
+    font-size: 11pt;
+  }
+
+  /* Sidebar / モバイルヘッダ / モバイルドロワー / 全 sticky を非表示 */
+  aside,
+  .lg\:hidden {
+    display: none !important;
+  }
+
+  /* サイドバーの sticky を解除 */
+  .lg\:sticky, .lg\:h-screen, .lg\:overflow-y-auto {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* main を全幅に */
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .lg\:flex { display: block !important; }
+  .flex-1 { flex: none !important; }
+
+  /* popover 完全非表示 */
+  .anno-popover,
+  [role="dialog"] {
+    display: none !important;
+  }
+
+  /* 検索パレット (通常時は inline) */
+  input[type="search"],
+  input[placeholder*="検索"] {
+    display: none !important;
+  }
+
+  /* リンクは URL を後ろに出す (a[href^="#"] は内部リンク、URL 表示不要) */
+  .prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+  }
+
+  /* コードブロック: 印刷用に背景白 + 枠線、折り返しあり */
+  .prose pre {
+    background: #f5f5f5 !important;
+    color: black !important;
+    border: 1px solid #ccc;
+    padding: 0.6em !important;
+    page-break-inside: avoid;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow: visible !important;
+  }
+  .prose pre code {
+    color: black !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+  }
+
+  /* 見出しはページ跨ぎしない、後続に付いてくる */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  h2 { margin-top: 1.5em !important; }
+  .prose blockquote, .prose table, .file-location, .flow-diagram, .flow-vertical {
+    page-break-inside: avoid;
+  }
+
+  /* anno-badge は印刷では通常のインライン文字 (①〜⑩ の見た目で通じる) */
+  .anno-badge {
+    background: transparent !important;
+    color: black !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 0.15em !important;
+    font-weight: 700;
+  }
+
+  /* file-tree はモノクロ */
+  .file-location {
+    background: #f8f8f8 !important;
+    border-left: 3px solid #999 !important;
+  }
+  .ft-tag { background: #666 !important; }
+  .ft-tag--modify { background: #999 !important; }
+
+  /* flow-diagram: 色を落として枠線ベースに */
+  .flow-diagram, .flow-node, .flow-step {
+    background: white !important;
+    border-color: #999 !important;
+    box-shadow: none !important;
+  }
+
+  /* PageFooter / footer は非表示 (誤り報告リンクは印刷不要) */
+  .print\:hidden {
+    display: none !important;
+  }
+}

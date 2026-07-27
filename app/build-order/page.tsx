@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { RelatedLinks } from "@/components/RelatedLinks";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 // このページはビルド時 (SSG) にはステップメタを埋め込まないので、
 // サイドバー用のダミー steps を作る (実行時に何も参照しないため)
@@ -186,10 +188,15 @@ export default function BuildOrderPage() {
               作成順チェックリスト
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
-              <strong>1 番から順に作れば必ず動く</strong> — 全 {TOTAL_ITEMS} 項目、目安 {TOTAL_MINUTES} 分。
+              <strong>1 番から順に作ればひと通り動くところまで到達できる構成</strong>
+              (動かなかった時は <Link href="/how-to" className="text-brand underline">レシピ集</Link> や
+              各 Step の「よくあるハマり」節を参照)
+              — 全 {TOTAL_ITEMS} 項目、目安 {TOTAL_MINUTES} 分。
               チェック状態はこのブラウザに保存されます。
             </p>
           </div>
+
+          <PageMeta />
 
           {/* Progress bar */}
           <div className="mb-8 bg-white rounded-xl border border-slate-200 p-4">
@@ -336,7 +343,7 @@ export default function BuildOrderPage() {
           {/* Bottom summary */}
           {completedCount === TOTAL_ITEMS && (
             <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
-              <div className="text-4xl mb-2">🎉</div>
+              <div aria-hidden="true" className="text-4xl mb-2">🎉</div>
               <div className="text-lg font-bold text-emerald-900">完成おめでとうございます!</div>
               <p className="mt-2 text-sm text-emerald-800">
                 全 {TOTAL_ITEMS} 項目を組み終わりました。次は{" "}
@@ -354,6 +361,8 @@ export default function BuildOrderPage() {
             { href: "/db-connection", emoji: "🔌", label: "DB 接続の仕組み", desc: "Step 02 で DB が動かない時はここ" },
             { href: "/architecture", emoji: "🏛", label: "アーキテクチャ全体図", desc: "22 ファイルが層の中でどこに位置するか" },
           ]} />
+
+          <PageFooter pageTitle="作成順チェックリスト" slug="build-order" />
         </main>
       </div>
     </div>

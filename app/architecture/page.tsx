@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 type LayerRow = {
   icon: string;
@@ -82,6 +84,8 @@ export default function ArchitecturePage() {
             「どのファイルがどの層のもので、どの Step で作ったか」を突き合わせる用。
           </p>
         </div>
+
+        <PageMeta />
 
         {/* Big picture */}
         <section className="mb-10">
@@ -271,6 +275,8 @@ export default function ArchitecturePage() {
             </Link>
           </div>
         </section>
+
+        <PageFooter pageTitle="アーキテクチャ全体図" slug="architecture" />
         </main>
       </div>
     </div>

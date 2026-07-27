@@ -1,6 +1,8 @@
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { RelatedLinks } from "@/components/RelatedLinks";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "H2 → Oracle 移行時の落とし穴 10 選 | TERASOLUNA 研修" };
 
@@ -224,6 +226,8 @@ export default function OracleDiffPage() {
             </div>
           </div>
 
+          <PageMeta targetVersion="H2 2.x / Oracle 19c+ / MyBatis 3.5.x" />
+
           {/* パターン集 */}
           <div className="space-y-6">
             {PATTERNS.map((p) => (
@@ -314,6 +318,8 @@ export default function OracleDiffPage() {
             { href: "/how-to", emoji: "🍳", label: "「〜するには?」レシピ集", desc: "実装レシピ 20 個" },
             { href: "/mentor", emoji: "🧑‍🏫", label: "メンター向けガイド", desc: "教える側の早見表" },
           ]} />
+
+          <PageFooter pageTitle="H2 → Oracle 移行時の落とし穴 10 選" slug="oracle-diff" />
         </main>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
-import { getAllSteps, getStep } from "@/lib/steps";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
+import { getAllSteps, getStep, formatStepNumber } from "@/lib/steps";
 import { renderMarkdown } from "@/lib/markdown";
 
 export async function generateStaticParams() {
@@ -32,17 +34,21 @@ export default async function StepPage({
         <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           <div className="mb-6 md:mb-8">
             <div className="text-sm text-brand font-mono">
-              Step {String(step.number).padStart(2, "0")}
+              Step {formatStepNumber(step.number)}
             </div>
             <h1 className="text-2xl md:text-3xl font-bold mt-1 text-slate-900 leading-tight">
               {step.title}
             </h1>
           </div>
 
+          <PageMeta updated={step.date} />
+
           <article
             className="prose max-w-none"
             dangerouslySetInnerHTML={{ __html: html }}
           />
+
+          <PageFooter pageTitle={`Step ${formatStepNumber(step.number)} — ${step.title}`} slug={`steps/${slug}`} />
 
           <nav className="mt-10 pt-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-3">
             {prev ? (
@@ -52,7 +58,7 @@ export default async function StepPage({
               >
                 <div className="text-xs text-slate-500">← 前へ</div>
                 <div className="text-slate-900 font-semibold mt-1 text-sm md:text-base">
-                  {String(prev.number).padStart(2, "0")}. {prev.title}
+                  {formatStepNumber(prev.number)}. {prev.title}
                 </div>
               </Link>
             ) : (
@@ -71,7 +77,7 @@ export default async function StepPage({
               >
                 <div className="text-xs text-slate-500">次へ →</div>
                 <div className="text-slate-900 font-semibold mt-1 text-sm md:text-base">
-                  {String(next.number).padStart(2, "0")}. {next.title}
+                  {formatStepNumber(next.number)}. {next.title}
                 </div>
               </Link>
             ) : (

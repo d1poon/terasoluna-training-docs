@@ -1,6 +1,8 @@
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { RelatedLinks } from "@/components/RelatedLinks";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 import { GlossarySearch } from "./GlossarySearch";
 import { TERMS } from "@/lib/glossary-terms";
 
@@ -30,6 +32,8 @@ export default function GlossaryPage() {
               上部の検索ボックスに単語を入れると絞り込めます。
             </p>
           </div>
+
+          <PageMeta />
 
           <GlossarySearch />
 
@@ -65,6 +69,8 @@ export default function GlossaryPage() {
           <div className="mt-8 text-sm text-slate-600 text-center">
             分からない用語があっても、まずは Step ページで実際のコードと照らし合わせながら読むと理解が進みます
           </div>
+
+          <PageFooter pageTitle="用語集" slug="glossary" />
         </main>
       </div>
     </div>

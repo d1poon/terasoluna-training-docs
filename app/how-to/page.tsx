@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { RelatedLinks } from "@/components/RelatedLinks";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "「〜するには?」レシピ集 | TERASOLUNA 研修" };
 
@@ -624,6 +626,8 @@ export default function HowToPage() {
             </p>
           </div>
 
+          <PageMeta />
+
           {/* Category chips */}
           <div className="mb-8 flex flex-wrap gap-2">
             <span className="text-xs text-slate-500 mr-1 self-center">
@@ -764,6 +768,8 @@ export default function HowToPage() {
               言葉での説明よりコードで通じやすくなります。
             </p>
           </section>
+
+          <PageFooter pageTitle="「〜するには?」レシピ集" slug="how-to" />
         </main>
       </div>
     </div>

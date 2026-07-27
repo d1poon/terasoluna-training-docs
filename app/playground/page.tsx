@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export default function PlaygroundIndex() {
   const steps = getAllSteps();
@@ -24,6 +26,8 @@ export default function PlaygroundIndex() {
           </p>
         </div>
 
+        <PageMeta />
+
         <div className="grid gap-4">
           <PlaygroundCard
             href="/playground/login"
@@ -44,6 +48,8 @@ export default function PlaygroundIndex() {
             desc="役職を書き換えて送信 → 更新後に URL バーが /user-info に変わる (PRG) の動きを可視化"
           />
         </div>
+
+        <PageFooter pageTitle="触ってみるデモ" slug="playground" />
         </main>
       </div>
     </div>

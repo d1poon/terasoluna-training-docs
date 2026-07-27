@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { StepMeta } from "@/lib/steps";
+import { formatStepNumber } from "@/lib/step-format";
 import { SearchPalette } from "./SearchPalette";
 
 type PhaseGroup = {
@@ -17,8 +18,8 @@ const PHASE_GROUPS: PhaseGroup[] = [
     key: "setup",
     emoji: "🔧",
     name: "セットアップ",
-    desc: "01-02",
-    stepNumbers: [0, 1, 2],
+    desc: "01-02.5",
+    stepNumbers: [0, 1, 2, 2.5],
   },
   {
     key: "backend",
@@ -38,8 +39,8 @@ const PHASE_GROUPS: PhaseGroup[] = [
     key: "wrap",
     emoji: "✅",
     name: "動作確認",
-    desc: "12",
-    stepNumbers: [12],
+    desc: "12-12.5",
+    stepNumbers: [12, 12.5],
   },
   {
     key: "test",
@@ -116,7 +117,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-brand/10 text-brand-dark font-semibold hover:bg-brand/20"
             >
-              <span className="text-base">📗</span>
+              <span aria-hidden="true" className="text-base">📗</span>
               <span>まず最初に読む</span>
             </Link>
           </li>
@@ -126,7 +127,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-indigo-50 text-indigo-900 font-semibold hover:bg-indigo-100"
             >
-              <span className="text-base">📚</span>
+              <span aria-hidden="true" className="text-base">📚</span>
               <span>教科書 (ゼロから)</span>
             </Link>
           </li>
@@ -136,7 +137,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
-              <span className="text-base">📖</span>
+              <span aria-hidden="true" className="text-base">📖</span>
               <span>用語集</span>
             </Link>
           </li>
@@ -153,7 +154,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
-              <span className="text-base">✅</span>
+              <span aria-hidden="true" className="text-base">✅</span>
               <span>作成順チェックリスト</span>
             </Link>
           </li>
@@ -163,7 +164,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-orange-50 text-orange-900 font-semibold hover:bg-orange-100"
             >
-              <span className="text-base">🍳</span>
+              <span aria-hidden="true" className="text-base">🍳</span>
               <span>「〜するには?」レシピ集</span>
             </Link>
           </li>
@@ -173,7 +174,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-cyan-50 text-cyan-900 font-semibold hover:bg-cyan-100"
             >
-              <span className="text-base">🔌</span>
+              <span aria-hidden="true" className="text-base">🔌</span>
               <span>DB 接続の仕組み</span>
             </Link>
           </li>
@@ -183,7 +184,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
-              <span className="text-base">🏛</span>
+              <span aria-hidden="true" className="text-base">🏛</span>
               <span>H2 → Oracle の落とし穴</span>
             </Link>
           </li>
@@ -193,8 +194,28 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-rose-50 text-rose-900 font-semibold hover:bg-rose-100"
             >
-              <span className="text-base">🧑‍🏫</span>
+              <span aria-hidden="true" className="text-base">🧑‍🏫</span>
               <span>メンター向けガイド</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/security-checklist"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span aria-hidden="true" className="text-base">🔒</span>
+              <span>セキュリティ チェック</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/versions"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <span aria-hidden="true" className="text-base">📦</span>
+              <span>バージョン一覧</span>
             </Link>
           </li>
         </ul>
@@ -210,7 +231,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
-              <span className="text-base">⚖️</span>
+              <span aria-hidden="true" className="text-base">⚖️</span>
               <span>Boot vs TERASOLUNA</span>
             </Link>
           </li>
@@ -220,7 +241,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
-              <span className="text-base">🧱</span>
+              <span aria-hidden="true" className="text-base">🧱</span>
               <span>マルチプロジェクト構造</span>
             </Link>
           </li>
@@ -237,7 +258,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
-              <span className="text-base">🏛</span>
+              <span aria-hidden="true" className="text-base">🏛</span>
               <span>アーキテクチャ全体図</span>
             </Link>
           </li>
@@ -247,7 +268,7 @@ export function Sidebar({
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100"
             >
-              <span className="text-base">🕹</span>
+              <span aria-hidden="true" className="text-base">🕹</span>
               <span>触ってみるデモ</span>
             </Link>
           </li>
@@ -278,7 +299,7 @@ export function Sidebar({
                       : "text-slate-700 hover:bg-slate-100")
                   }
                 >
-                  <span className="text-base leading-none">{phase.emoji}</span>
+                  <span aria-hidden="true" className="text-base leading-none">{phase.emoji}</span>
                   <span className="flex-1 text-left leading-tight">
                     {phase.name}
                   </span>
@@ -317,7 +338,7 @@ export function Sidebar({
                                 (active ? "text-white/80" : "text-slate-400")
                               }
                             >
-                              {String(step.number).padStart(2, "0")}
+                              {formatStepNumber(step.number)}
                             </span>
                             <span className="leading-tight">{step.title}</span>
                           </Link>

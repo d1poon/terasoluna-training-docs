@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { RelatedLinks } from "@/components/RelatedLinks";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "メンター向けガイド | TERASOLUNA 研修" };
 
@@ -134,6 +136,8 @@ export default function MentorPage() {
               まず<strong>質問で場所を絞らせて</strong>、それでも詰まったら助け舟を出す。
             </p>
           </div>
+
+          <PageMeta />
 
           {/* 使い方 */}
           <section className="mb-10 bg-white rounded-xl border border-slate-200 p-5 md:p-6">
@@ -268,6 +272,8 @@ export default function MentorPage() {
             { href: "/glossary", emoji: "📖", label: "用語集", desc: "55 用語、Ctrl+K で全ページ検索も可能" },
             { href: "/architecture", emoji: "🏛", label: "アーキテクチャ全体図", desc: "22 ファイルの層構造を 1 枚で" },
           ]} />
+
+          <PageFooter pageTitle="メンター向けガイド" slug="mentor" />
         </main>
       </div>
     </div>

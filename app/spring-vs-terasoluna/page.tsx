@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "Spring Boot vs TERASOLUNA | TERASOLUNA 研修" };
 
@@ -151,7 +153,7 @@ mybatis.configuration.map-underscore-to-camel-case=true`,
 </bean>
 <mybatis:scan base-package="com.example.rolemgr.repository" />`,
     },
-    note: "Mapper XML の中身 (SQL) は 1 文字も変わらない",
+    note: "Mapper XML の中身 (SQL) はそのままコピーできる (差分はほぼ設定側のみ)",
   },
   {
     n: 6,
@@ -264,6 +266,8 @@ export default function SpringVsTerasolunaPage() {
             </p>
           </div>
 
+          <PageMeta targetVersion="Boot 3.4 / TERASOLUNA archetype 5.11.0" />
+
           {/* Callout: multi-project pointer */}
           <div className="mb-8 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5">
             <div className="flex items-start gap-3">
@@ -302,7 +306,8 @@ export default function SpringVsTerasolunaPage() {
               </p>
               <p className="mt-3 text-sm md:text-base text-slate-700 leading-relaxed">
                 つまり — 本質的な API (Controller / Service / Bean / DI / MyBatis / JSP) は
-                <strong>完全に同じ</strong>。違いは「設定の書き方」「起動方法」「初期プロジェクトの構造」だけ。
+                <strong>ほぼ同じ</strong>。違いは「設定の書き方」「起動方法」「初期プロジェクトの構造」に集中する
+                (バージョンや現場の追加規約により細部の作法は変わることがある)。
               </p>
             </div>
           </section>
@@ -416,11 +421,13 @@ export default function SpringVsTerasolunaPage() {
           {/* Section 3: 同じもの */}
           <section className="mb-10">
             <h2 className="text-xl md:text-2xl font-bold mb-3 text-slate-900">
-              3. 同じもの (Boot でも TERASOLUNA でも 1 文字も変わらない)
+              3. 同じもの (Boot でも TERASOLUNA でもコードはそのまま流用できる)
             </h2>
             <p className="text-slate-700 mb-4 text-sm md:text-base leading-relaxed">
-              以下は Spring Boot で書いても TERASOLUNA で書いても<strong>まったく同じ書き方</strong>。
-              このガイドで書いた Controller / Service / Mapper / JSP のコードはそのまま TERASOLUNA プロジェクトにコピペしても動く。
+              以下は Spring Boot で書いても TERASOLUNA で書いても<strong>基本の書き方はほぼ同じ</strong>。
+              このガイドで書いた Controller / Service / Mapper / JSP のコードは、
+              パッケージ名・namespace 等を揃えれば TERASOLUNA プロジェクトにそのままコピーして動かせるケースが多い
+              (プロジェクト固有の親クラス継承等がある場合はその部分を差し替え)。
             </p>
             <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
               <table className="w-full text-sm md:text-base">
@@ -582,9 +589,9 @@ export default function SpringVsTerasolunaPage() {
                     ["spring.mvc.view.prefix プロパティ", "spring-mvc.xml の InternalResourceViewResolver"],
                     ["mvn spring-boot:run (埋め込み Tomcat)", "war ビルド → Tomcat の webapps/ に配置"],
                     ["Java 17 + Spring Boot 3.4", "Java 11 + Spring 5.7 (TERASOLUNA 5.7 系の場合)"],
-                    ["Controller / Service / Mapper のコード", "1 文字も変わらない"],
-                    ["JSP + JSTL + EL 式", "1 文字も変わらない"],
-                    ["MyBatis Mapper XML", "1 文字も変わらない"],
+                    ["Controller / Service / Mapper のコード", "そのままコピーで動くケースが多い"],
+                    ["JSP + JSTL + EL 式", "書き方は共通 (Jakarta EE 名前空間の差だけ注意)"],
+                    ["MyBatis Mapper XML", "SQL 部分は共通、namespace のみプロジェクトに合わせる"],
                   ].map(([boot, tera], i) => (
                     <tr key={i} className="border-b border-slate-100 last:border-b-0">
                       <td className="px-3 md:px-4 py-3 font-mono text-xs md:text-sm text-slate-800">
@@ -625,7 +632,7 @@ export default function SpringVsTerasolunaPage() {
                 href="/architecture"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm transition-all"
               >
-                <div className="text-2xl">🏛</div>
+                <div aria-hidden="true" className="text-2xl">🏛</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Overview
                 </div>
@@ -642,7 +649,7 @@ export default function SpringVsTerasolunaPage() {
                 rel="noopener noreferrer"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm transition-all"
               >
-                <div className="text-2xl">📚</div>
+                <div aria-hidden="true" className="text-2xl">📚</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Official
                 </div>
@@ -655,6 +662,8 @@ export default function SpringVsTerasolunaPage() {
               </a>
             </div>
           </section>
+
+          <PageFooter pageTitle="Spring Boot vs TERASOLUNA" slug="spring-vs-terasoluna" />
         </main>
       </div>
     </div>

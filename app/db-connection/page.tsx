@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "DB 接続の仕組み | TERASOLUNA 研修" };
 
@@ -31,6 +33,8 @@ export default function DbConnectionPage() {
               まで細かく解説。読み終えると <code>jdbc.properties</code> がどこで何をしているかがわかります。
             </p>
           </div>
+
+          <PageMeta targetVersion="TERASOLUNA archetype 5.11.0 / Boot 3.4 / MyBatis 3.5.x" />
 
           {/* Section 1: なぜ難しい */}
           <Section id="why" title="1. なぜ DB 接続は難しく感じるのか">
@@ -495,7 +499,7 @@ database.driverClassName=org.postgresql.Driver`} />
                 href="/terasoluna-multi-project"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm"
               >
-                <div className="text-2xl">🧱</div>
+                <div aria-hidden="true" className="text-2xl">🧱</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Related
                 </div>
@@ -510,7 +514,7 @@ database.driverClassName=org.postgresql.Driver`} />
                 href="/glossary#cat-mybatis"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm"
               >
-                <div className="text-2xl">📖</div>
+                <div aria-hidden="true" className="text-2xl">📖</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Ref
                 </div>
@@ -523,6 +527,8 @@ database.driverClassName=org.postgresql.Driver`} />
               </Link>
             </div>
           </section>
+
+          <PageFooter pageTitle="DB 接続の仕組み" slug="db-connection" />
         </main>
       </div>
     </div>

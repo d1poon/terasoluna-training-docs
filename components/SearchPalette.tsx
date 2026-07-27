@@ -20,6 +20,10 @@ const INDEX: Entry[] = [
   { category: "リファレンス", title: "作成順チェックリスト", href: "/build-order", desc: "全 22 ファイル通し番号 + localStorage 進捗" },
   { category: "リファレンス", title: "「〜するには?」レシピ集", href: "/how-to", desc: "20 レシピ (画面遷移 / リンク / Service 作成 / フォーム / DB / 認証 …)" },
   { category: "リファレンス", title: "DB 接続の仕組み", href: "/db-connection", desc: "jdbc.properties → -env.xml → -infra.xml、Connection Pool、エラー診断" },
+  { category: "リファレンス", title: "セキュリティチェックリスト", href: "/security-checklist", desc: "ログイン失敗漏洩 / セッション固定 / CSRF / IDOR / XSS / SQLi / BCrypt など 10 項目" },
+  { category: "リファレンス", title: "H2 → Oracle 落とし穴 10 選", href: "/oracle-diff", desc: "空文字 = NULL / SYSDATE / MERGE / 予約語 / ROWNUM など" },
+  { category: "リファレンス", title: "メンター向けガイド", href: "/mentor", desc: "「答えを言わずに気付かせる」ためのステップ別ハマりどころ集" },
+  { category: "リファレンス", title: "バージョン一覧", href: "/versions", desc: "Boot / archetype / JDK / Tomcat / MyBatis 等のバージョン集約" },
   // TERASOLUNA
   { category: "TERASOLUNA", title: "Boot vs TERASOLUNA", href: "/spring-vs-terasoluna", desc: "8 箇所のサイドバイサイド比較 + 12 概念の共通点" },
   { category: "TERASOLUNA", title: "マルチプロジェクト構造", href: "/terasoluna-multi-project", desc: "5 モジュール (-web / -domain / -env / -initdb / -selenium) の中身" },
@@ -33,6 +37,7 @@ const INDEX: Entry[] = [
   { category: "Steps", title: "Step 00 - 目次", href: "/steps/00-toc", desc: "12 ステップの目次" },
   { category: "Steps", title: "Step 01 - プロジェクト骨組み", href: "/steps/01-project-skeleton", desc: "pom.xml + application.properties" },
   { category: "Steps", title: "Step 02 - 空アプリ起動 & DB 準備", href: "/steps/02-empty-boot", desc: "RolemgrApplication + schema.sql" },
+  { category: "Steps", title: "Step 02.5 - はじめての Controller + JSP (オプション)", href: "/steps/02.5-hello-controller", desc: "画面に自分の文字を出す最小の Controller + JSP。Step 03-06 の連続 BUILD SUCCESS 前の成功体験" },
   { category: "Steps", title: "Step 03 - User ドメイン", href: "/steps/03-user-domain", desc: "POJO + Java 基礎 (class/package/private/getter-setter)" },
   { category: "Steps", title: "Step 04 - Mapper (SQL 係)", href: "/steps/04-mapper", desc: "MyBatis interface + XML" },
   { category: "Steps", title: "Step 05 - Service", href: "/steps/05-service", desc: "@Service + @Transactional" },
@@ -43,6 +48,10 @@ const INDEX: Entry[] = [
   { category: "Steps", title: "Step 10 - ユーザ情報画面", href: "/steps/10-user-info", desc: "Principal からログイン ID を取る" },
   { category: "Steps", title: "Step 11 - 変更画面 (PRG パターン)", href: "/steps/11-edit", desc: "POST → redirect → GET のイディオム" },
   { category: "Steps", title: "Step 12 - 完成 & まとめ", href: "/steps/12-complete", desc: "5画面通し確認 + 自己確認 12 問" },
+  { category: "Steps", title: "Step 12.5 - 楽観ロック (オプション)", href: "/steps/12.5-optimistic-lock", desc: "version カラム + WHERE version + 影響行数 0 → BusinessException" },
+  { category: "Steps", title: "Step 13 - Service 単体テスト", href: "/steps/13-service-test", desc: "JUnit5 + Mockito + @ParameterizedTest" },
+  { category: "Steps", title: "Step 14 - Mapper 統合テスト", href: "/steps/14-mapper-test", desc: "@MybatisTest で H2 に実 SQL" },
+  { category: "Steps", title: "Step 15 - Controller テスト", href: "/steps/15-controller-test", desc: "MockMvc + @WebMvcTest" },
 ];
 
 // 曖昧マッチ (小文字化 + 部分文字列)

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "TERASOLUNA マルチプロジェクト構造 | TERASOLUNA 研修" };
 
@@ -134,6 +136,8 @@ export default function TerasolunaMultiProjectPage() {
               このリファレンス実装 (Spring Boot 単一プロジェクト) との違いと対応を整理します。
             </p>
           </div>
+
+          <PageMeta targetVersion="TERASOLUNA archetype 5.11.0 / Boot 3.4 (比較対象)" />
 
           {/* Section 1: One-line */}
           <section className="mb-10">
@@ -429,7 +433,7 @@ export default function TerasolunaMultiProjectPage() {
                 href="/spring-vs-terasoluna"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm transition-all"
               >
-                <div className="text-2xl">⚖️</div>
+                <div aria-hidden="true" className="text-2xl">⚖️</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Compare
                 </div>
@@ -446,7 +450,7 @@ export default function TerasolunaMultiProjectPage() {
                 rel="noopener noreferrer"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm transition-all"
               >
-                <div className="text-2xl">📚</div>
+                <div aria-hidden="true" className="text-2xl">📚</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Official
                 </div>
@@ -459,6 +463,8 @@ export default function TerasolunaMultiProjectPage() {
               </a>
             </div>
           </section>
+
+          <PageFooter pageTitle="TERASOLUNA マルチプロジェクト構造" slug="terasoluna-multi-project" />
         </main>
       </div>
     </div>

@@ -128,7 +128,7 @@ export function GlossarySearch() {
       {/* Empty state */}
       {hitCount === 0 && (
         <div className="text-center py-16 text-slate-500">
-          <div className="text-4xl mb-2">🔍</div>
+          <div aria-hidden="true" className="text-4xl mb-2">🔍</div>
           <div className="text-base">「{query}」に一致する用語がありません</div>
           <button
             type="button"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
-import { getAllSteps } from "@/lib/steps";
+import { getAllSteps, formatStepNumber } from "@/lib/steps";
+import { PageFooter } from "@/components/PageFooter";
 
 export default function HomePage() {
   const steps = getAllSteps();
@@ -21,6 +22,7 @@ export default function HomePage() {
               役職編集アプリを
               <br className="md:hidden" />
               15 ステップで組み立てる
+              <span className="ml-2 text-sm text-slate-500 font-normal align-middle">(+ 補助 1)</span>
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
               <strong>単に動くコードを写経するのではなく、各行の「なぜこう書くか」まで納得しながら進める構成のガイド</strong>。
@@ -45,7 +47,7 @@ export default function HomePage() {
             className="block bg-gradient-to-br from-brand to-brand-dark text-white rounded-2xl p-6 md:p-8 mb-10 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start gap-4">
-              <div className="text-4xl md:text-5xl leading-none">📗</div>
+              <div aria-hidden="true" className="text-4xl md:text-5xl leading-none">📗</div>
               <div className="flex-1 min-w-0">
                 <div className="text-xs uppercase tracking-wider opacity-80 font-semibold">
                   まず最初に読む · 推奨ルート
@@ -124,7 +126,7 @@ export default function HomePage() {
               href="/steps/01-project-skeleton"
               className="block bg-white border border-slate-200 rounded-xl p-5 hover:border-brand hover:shadow-sm transition-all"
             >
-              <div className="text-3xl">🚀</div>
+              <div aria-hidden="true" className="text-3xl">🚀</div>
               <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                 Start
               </div>
@@ -140,7 +142,7 @@ export default function HomePage() {
               href="/glossary"
               className="block bg-white border border-slate-200 rounded-xl p-5 hover:border-brand hover:shadow-sm transition-all"
             >
-              <div className="text-3xl">📖</div>
+              <div aria-hidden="true" className="text-3xl">📖</div>
               <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                 Glossary
               </div>
@@ -156,7 +158,7 @@ export default function HomePage() {
               href="/playground"
               className="block bg-white border border-slate-200 rounded-xl p-5 hover:border-brand hover:shadow-sm transition-all"
             >
-              <div className="text-3xl">🕹</div>
+              <div aria-hidden="true" className="text-3xl">🕹</div>
               <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                 Try
               </div>
@@ -179,7 +181,9 @@ export default function HomePage() {
                 <strong>Java・JSP の基本文法から</strong>始まる。初見でも読める粒度
               </Bullet>
               <Bullet>
-                各ステップは <strong>5〜15 分</strong>。順番通りに進めれば必ず動く
+                各ステップは <strong>5〜15 分</strong>。順番通りに進めれば動くところまで到達する構成
+                (詰まった時は <Link href="/how-to" className="text-brand underline">レシピ集</Link>
+                や各 Step の「動作確認」節を参照)
               </Bullet>
               <Bullet>
                 コードは <strong>コピペOK</strong>。すべて手打ちしなくていい
@@ -209,12 +213,13 @@ export default function HomePage() {
           {/* Step list */}
           <section>
             <h2 className="text-xl md:text-2xl font-bold mb-2 text-slate-900">
-              15 ステップ一覧
+              15 ステップ一覧 (+ 補助 1)
             </h2>
             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
               Step 01-12 は「動くアプリを組む」フェーズ (通しで 1〜3 時間)。
               Step 13-15 は「JUnit5 + Mockito + MockMvc で自動テストを書く」フェーズ (追加 1〜2 時間)。
               前のステップに依存するので、上から順に進めてください。
+              なお <strong>Step 02.5</strong> は Step 03-06 のバックエンド積み上げ期に入る前に画面を出す成功体験を挟むための<strong>オプションのステップ</strong>で、飛ばしても Step 03 に進めます。
             </p>
             <div className="grid gap-2">
               {stepsExceptToc.map((step) => (
@@ -223,11 +228,14 @@ export default function HomePage() {
                   href={`/steps/${step.slug}`}
                   className="flex items-baseline gap-3 bg-white rounded-lg border border-slate-200 px-4 py-3 hover:border-brand hover:shadow-sm transition-all"
                 >
-                  <span className="text-brand font-mono font-bold text-sm md:text-base w-8 shrink-0">
-                    {String(step.number).padStart(2, "0")}
+                  <span className="text-brand font-mono font-bold text-sm md:text-base w-12 shrink-0">
+                    {formatStepNumber(step.number)}
                   </span>
                   <span className="text-slate-900 font-semibold text-sm md:text-base">
                     {step.title}
+                    {!Number.isInteger(step.number) && (
+                      <span className="ml-2 text-xs text-slate-500 font-normal">(オプション)</span>
+                    )}
                   </span>
                 </Link>
               ))}
@@ -237,6 +245,8 @@ export default function HomePage() {
           <div className="mt-12 pt-6 border-t border-slate-200 text-xs text-slate-500 text-center">
             Built for TERASOLUNA training · Spring Boot 3.4 · 2026
           </div>
+
+          <PageFooter pageTitle="トップページ" slug="" />
         </main>
       </div>
     </div>
@@ -280,7 +290,7 @@ function SecondaryCard({
       }
     >
       <div className="flex items-start gap-3">
-        <div className="text-3xl leading-none shrink-0">{emoji}</div>
+        <div aria-hidden="true" className="text-3xl leading-none shrink-0">{emoji}</div>
         <div className="flex-1 min-w-0">
           <span
             className={

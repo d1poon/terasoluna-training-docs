@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
+import { PageMeta } from "@/components/PageMeta";
+import { PageFooter } from "@/components/PageFooter";
 
 export const metadata = { title: "ゼロから始める 教科書 | TERASOLUNA 研修" };
 
@@ -40,6 +42,8 @@ export default function TextbookPage() {
               や <Link href="/how-to" className="text-brand underline">レシピ集</Link> の方が先に読むと効率的です。
             </div>
           </div>
+
+          <PageMeta />
 
           {/* Table of contents */}
           <section className="mb-10 bg-white rounded-xl border border-slate-200 p-5 md:p-6">
@@ -589,7 +593,7 @@ public class UserInfoController {
                 href="/preface"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm"
               >
-                <div className="text-2xl">📗</div>
+                <div aria-hidden="true" className="text-2xl">📗</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Start
                 </div>
@@ -601,7 +605,7 @@ public class UserInfoController {
                 href="/glossary"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm"
               >
-                <div className="text-2xl">📖</div>
+                <div aria-hidden="true" className="text-2xl">📖</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Ref
                 </div>
@@ -613,7 +617,7 @@ public class UserInfoController {
                 href="/steps/01-project-skeleton"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm"
               >
-                <div className="text-2xl">🚀</div>
+                <div aria-hidden="true" className="text-2xl">🚀</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Do
                 </div>
@@ -625,7 +629,7 @@ public class UserInfoController {
                 href="/playground"
                 className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-brand hover:shadow-sm"
               >
-                <div className="text-2xl">🕹</div>
+                <div aria-hidden="true" className="text-2xl">🕹</div>
                 <div className="mt-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                   Try
                 </div>
@@ -635,6 +639,8 @@ public class UserInfoController {
               </Link>
             </div>
           </section>
+
+          <PageFooter pageTitle="ゼロから始める 教科書" slug="textbook" />
         </main>
       </div>
     </div>
