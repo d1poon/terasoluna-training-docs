@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { VERSIONS } from "@/lib/versions";
 
 export const metadata = { title: "DB 接続の仕組み | TERASOLUNA 研修" };
 
@@ -34,7 +35,9 @@ export default function DbConnectionPage() {
             </p>
           </div>
 
-          <PageMeta targetVersion="TERASOLUNA archetype 5.11.0 / Boot 3.4 / MyBatis 3.5.x" />
+          <PageMeta
+            targetVersion={`TERASOLUNA ${VERSIONS.terasolunaGfw} / MyBatis ${VERSIONS.mybatis}`}
+          />
 
           {/* Section 1: なぜ難しい */}
           <Section id="why" title="1. なぜ DB 接続は難しく感じるのか">

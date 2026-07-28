@@ -137,7 +137,7 @@ export default function TerasolunaMultiProjectPage() {
             </p>
           </div>
 
-          <PageMeta targetVersion="TERASOLUNA archetype 5.11.0 / Boot 3.4 (比較対象)" />
+          <PageMeta />
 
           {/* Section 1: One-line */}
           <section className="mb-10">

@@ -268,7 +268,7 @@ export const TERMS: Record<string, TermInfo> = {
   springBoot: {
     term: "Spring Boot",
     short: "Spring を「設定ほぼ無しで」使えるようにしたもの",
-    detail: "生の Spring は XML 設定が大量に必要だったが、Spring Boot は「デフォルトで動く」構成を最初から持っている。start.spring.io で雛形生成 → 起動すれば動く。このガイドは Spring Boot 3.4。",
+    detail: "生の Spring は XML 設定が大量に必要だったが、Spring Boot は「デフォルトで動く」構成を最初から持っている。主軸の TERASOLUNA 5.11.0.RELEASE は BOM 経由で Spring Boot 4.0.2 を使う (設定は XML)。補助の Boot 版は 3.4 の単一プロジェクト。正確な値は /versions を参照。",
     href: "/glossary#cat-spring",
   },
   springBootApp: {

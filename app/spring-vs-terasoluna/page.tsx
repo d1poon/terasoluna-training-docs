@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { TARGET_LABEL, VERSIONS } from "@/lib/versions";
 
 export const metadata = { title: "Spring Boot vs TERASOLUNA | TERASOLUNA 研修" };
 
@@ -270,7 +271,7 @@ export default function SpringVsTerasolunaPage() {
             </div>
           </div>
 
-          <PageMeta targetVersion="TERASOLUNA 5.11.0.RELEASE (主軸) / Boot 3.4 (補助対比)" />
+          <PageMeta targetVersion={TARGET_LABEL.compare} />
 
           {/* Callout: multi-project pointer */}
           <div className="mb-8 bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5">
@@ -361,10 +362,10 @@ export default function SpringVsTerasolunaPage() {
                   ラッパー ①
                 </div>
                 <div className="text-lg font-bold text-slate-900">
-                  🚀 Spring Boot 3
+                  🚀 Spring Boot {VERSIONS.bootMainVersion}
                 </div>
                 <div className="text-sm text-slate-600 mt-1 mb-3">
-                  最小設定で使うラッパー
+                  最小設定で使うラッパー (本教材では<strong>補助版</strong>で採用)
                 </div>
                 <ul className="space-y-1.5 text-sm text-slate-700">
                   <li className="flex gap-2">
@@ -391,10 +392,10 @@ export default function SpringVsTerasolunaPage() {
                   ラッパー ②
                 </div>
                 <div className="text-lg font-bold text-slate-900">
-                  🧱 TERASOLUNA 5
+                  🧱 TERASOLUNA {VERSIONS.terasolunaGfw}
                 </div>
                 <div className="text-sm text-slate-600 mt-1 mb-3">
-                  日本の SIer 案件向けテンプレート集
+                  日本の SIer 案件向けテンプレート集 (本教材の<strong>主軸</strong>)
                 </div>
                 <ul className="space-y-1.5 text-sm text-slate-700">
                   <li className="flex gap-2">
@@ -592,7 +593,10 @@ export default function SpringVsTerasolunaPage() {
                     ["mybatis.mapper-locations プロパティ", "applicationContext-mybatis.xml の SqlSessionFactoryBean"],
                     ["spring.mvc.view.prefix プロパティ", "spring-mvc.xml の InternalResourceViewResolver"],
                     ["mvn spring-boot:run (埋め込み Tomcat)", "war ビルド → Tomcat の webapps/ に配置"],
-                    ["Java 17 + Spring Boot 3.4", "Java 17 + Spring Boot 4.0.2 (TERASOLUNA 5.11.0 系、BOM 管理)"],
+                    [
+                      `Java 17 + Spring Boot ${VERSIONS.bootMainVersion}`,
+                      `Java 17 + Spring Boot ${VERSIONS.springBoot} / Framework ${VERSIONS.springFramework} (TERASOLUNA ${VERSIONS.terasolunaGfw}、BOM 管理)`,
+                    ],
                     ["Controller / Service / Mapper のコード", "そのままコピーで動くケースが多い"],
                     ["JSP + JSTL + EL 式", "書き方は共通 (Jakarta EE 名前空間の差だけ注意)"],
                     ["MyBatis Mapper XML", "SQL 部分は共通、namespace のみプロジェクトに合わせる"],

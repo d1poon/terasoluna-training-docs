@@ -173,7 +173,7 @@ export default function TroubleshootPage() {
             </p>
           </div>
 
-          <PageMeta targetVersion="TERASOLUNA 5.11.0.RELEASE" />
+          <PageMeta />
 
           <div className="mb-8 flex flex-wrap gap-2">
             <span className="text-xs text-slate-500 mr-1 self-center">目次:</span>

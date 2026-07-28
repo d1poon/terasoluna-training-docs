@@ -1,16 +1,66 @@
 # TERASOLUNA 研修 — 役職編集アプリ 組立ガイド (公開版)
 
-Spring Boot 3.4 + JSP + MyBatis + H2 で「役職編集アプリ」を 12 ステップで組み立てるガンプラ式ガイドの公開ホームページ。
+TERASOLUNA multi-project 構成で「役職編集アプリ」を組み立てる学習ガイドの公開サイト。
 
-- **プロダクション**: https://terasoluna-training.vercel.app (デプロイ後有効)
-- **元コンテンツ**: Obsidian vault `05_Learning/terasoluna-build-*.md` (Claudian が管理)
-- **リファレンス実装**: `C:\Users\donpa\Workspace\terasoluna-training\reference-app\`
+- **プロダクション**: https://terasoluna-training-docs.vercel.app
+- **リポジトリ**: https://github.com/d1poon/terasoluna-training-docs
 
-## Stack
+## 2 つのトラック
 
-- Next.js 15 (App Router) + React 19
+| トラック | ルート | 位置付け | 対象スタック |
+|---|---|---|---|
+| **主軸** | `/steps/` | 研修環境で実際に使う構成 | TERASOLUNA GFW 5.11.0.RELEASE (multi-project、5 モジュール) |
+| **補助** | `/steps-boot/` | 先に本質だけ掴みたい人向け | Spring Boot 3.4 (単一プロジェクト) |
+
+主軸の TERASOLUNA 側は `terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE` が生成する
+`-web` / `-domain` / `-env` / `-initdb` / `-selenium` の 5 モジュール構成を「正」として書かれている。
+
+## バージョンの単一の真実源
+
+**バージョン数値をページに直書きしないこと。** 必ず `lib/versions.ts` を参照する。
+
+- `VERSIONS.*` — 個別の値 (`springBoot`, `springFramework`, `terasolunaGfw` など)
+- `TARGET_LABEL.terasoluna` / `.boot` / `.compare` — `PageMeta` の `targetVersion` に渡す定型ラベル
+
+値は公式 pom.xml から取得した確定値。出典は `lib/versions.ts` のコメントおよび `TERASOLUNA_OFFICIAL` を参照。
+サイト上の一覧は `/versions` に表示される。
+
+現在の主要バージョン (詳細は `/versions`):
+
+- TERASOLUNA GFW 5.11.0.RELEASE (parent BOM 5.11.0.RELEASE + dependencies BOM 3.0.0.RELEASE)
+- Spring Boot 4.0.2 / Spring Framework 7.0.3 / Spring Security 7.0.2 (BOM 経由)
+- JDK 17 / Tomcat 11.0.15 / MyBatis 3.5.19
+
+## Stack (このサイト自体)
+
+- Next.js 16 (App Router, Turbopack) + React 19
 - Tailwind CSS 3
-- Markdown (`content/steps/`) + `unified` + `rehype-highlight`
+- Markdown (`content/steps/`, `content/steps-boot/`) + `unified` + `rehype-highlight`
+
+## ディレクトリ構成
+
+```
+app/
+├── steps/[slug]/          主軸: TERASOLUNA multi-project 版
+├── steps-boot/[slug]/     補助: Boot 単一プロジェクト版
+├── versions/              バージョン一覧 (lib/versions.ts の表示)
+├── troubleshoot/          詰まりどころ 10 項目
+├── security-checklist/    セキュリティ観点 10 項目
+└── (その他 解説ページ)
+content/
+├── steps/                 主軸コンテンツ (Markdown)
+└── steps-boot/            補助コンテンツ (Markdown)
+lib/
+├── versions.ts            ★ バージョンの単一の真実源
+├── steps.ts               主軸 Step 読込 (server only, node:fs)
+├── steps-boot.ts          補助 Step 読込 (server only, node:fs)
+├── step-format.ts         client-safe な整形関数
+└── boot-steps-list.ts     client-safe な補助 Step 一覧
+```
+
+> ⚠️ `lib/steps.ts` / `lib/steps-boot.ts` は `node:fs` を使う **server only**。
+> Client Component (`"use client"`) からは import しないこと (Turbopack のビルドが落ちる)。
+> クライアント側で Step 番号の整形が要る場合は `lib/step-format.ts` を使う。
 
 ## Local Dev
 
@@ -26,9 +76,3 @@ http://localhost:3000
 ```powershell
 git push  # Vercel が GitHub 連携で自動デプロイ
 ```
-
-## コンテンツ更新フロー
-
-1. Vault 側 `05_Learning/terasoluna-build-XX.md` を編集
-2. `scripts/sync-content.ps1` を実行して `content/steps/` に反映 (前置 `terasoluna-build-` を除去 + `title` frontmatter を追加)
-3. `git commit && git push` → 自動デプロイ

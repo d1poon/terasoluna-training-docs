@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps, formatStepNumber } from "@/lib/steps";
 import { PageFooter } from "@/components/PageFooter";
+import { VERSIONS } from "@/lib/versions";
 
 export default function HomePage() {
   const steps = getAllSteps();
@@ -16,7 +17,7 @@ export default function HomePage() {
           {/* Hero */}
           <div className="mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
-              TERASOLUNA multi-project 研修教材 — 5.11.0.RELEASE 準拠
+              TERASOLUNA multi-project 研修教材 — {VERSIONS.terasolunaGfw} 準拠
             </div>
             <h1 className="text-2xl md:text-4xl font-bold mt-2 text-slate-900 leading-tight">
               役職編集アプリを
@@ -30,8 +31,11 @@ export default function HomePage() {
             </p>
             <p className="mt-3 text-sm text-slate-600 leading-relaxed">
               <strong>TERASOLUNA</strong> は日本の SIer 現場で広く使われる Spring ベースの開発フレームワーク。本教材は{" "}
-              <code className="text-xs bg-slate-100 px-1 rounded">terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE</code>{" "}
-              (Spring Boot 4.0.2 / JDK 17 / MyBatis 3.5.19 / Tomcat 11) を主軸に書かれています。
+              <code className="text-xs bg-slate-100 px-1 rounded">
+                terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype {VERSIONS.terasolunaGfw}
+              </code>{" "}
+              (Spring Boot {VERSIONS.springBoot} / Spring Framework {VERSIONS.springFramework} / JDK 17 /
+              MyBatis {VERSIONS.mybatis} / Tomcat 11) を主軸に書かれています。
               先に Boot 単一版で本質を掴みたい人向けに <Link href="/steps-boot/00-toc" className="text-brand underline">補助: Boot 版</Link> も用意しています。
             </p>
           </div>
@@ -266,7 +270,8 @@ export default function HomePage() {
           </section>
 
           <div className="mt-12 pt-6 border-t border-slate-200 text-xs text-slate-500 text-center">
-            Built for TERASOLUNA training · Spring Boot 3.4 · 2026
+            Built for TERASOLUNA training · TERASOLUNA {VERSIONS.terasolunaGfw} · Spring Boot{" "}
+            {VERSIONS.springBoot} · 2026
           </div>
 
           <PageFooter pageTitle="トップページ" slug="" />

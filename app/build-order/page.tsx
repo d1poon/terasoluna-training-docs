@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { TARGET_LABEL } from "@/lib/versions";
 
 // このページはビルド時 (SSG) にはステップメタを埋め込まないので、
 // サイドバー用のダミー steps を作る (実行時に何も参照しないため)
@@ -202,7 +203,7 @@ export default function BuildOrderPage() {
             </div>
           </div>
 
-          <PageMeta targetVersion="Spring Boot 3.4 単一プロジェクト版 (Boot 補助側の参照用)" />
+          <PageMeta targetVersion={TARGET_LABEL.boot} />
 
           {/* Progress bar */}
           <div className="mb-8 bg-white rounded-xl border border-slate-200 p-4">

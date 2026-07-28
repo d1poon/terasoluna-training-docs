@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { TARGET_LABEL } from "@/lib/versions";
 
 type LayerRow = {
   icon: string;
@@ -90,7 +91,7 @@ export default function ArchitecturePage() {
           </div>
         </div>
 
-        <PageMeta targetVersion="Spring Boot 3.4 単一プロジェクト版 (Boot 補助側)" />
+        <PageMeta targetVersion={TARGET_LABEL.boot} />
 
         {/* Big picture */}
         <section className="mb-10">

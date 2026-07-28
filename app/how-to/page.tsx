@@ -4,6 +4,7 @@ import { getAllSteps } from "@/lib/steps";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { TARGET_LABEL } from "@/lib/versions";
 
 export const metadata = { title: "「〜するには?」レシピ集 | TERASOLUNA 研修" };
 
@@ -632,7 +633,7 @@ export default function HowToPage() {
             </div>
           </div>
 
-          <PageMeta targetVersion="Spring Boot 3.4 (現状)、TERASOLUNA 対応は段階追加" />
+          <PageMeta targetVersion={TARGET_LABEL.boot} />
 
           {/* Category chips */}
           <div className="mb-8 flex flex-wrap gap-2">

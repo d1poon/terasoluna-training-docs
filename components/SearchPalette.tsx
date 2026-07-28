@@ -22,7 +22,7 @@ const INDEX: Entry[] = [
   { category: "リファレンス", title: "セキュリティチェックリスト", href: "/security-checklist", desc: "ログイン失敗漏洩 / セッション固定 / CSRF / IDOR / XSS / SQLi / BCrypt など 10 項目" },
   { category: "リファレンス", title: "H2 → Oracle 落とし穴 10 選", href: "/oracle-diff", desc: "空文字 = NULL / SYSDATE / MERGE / 予約語 / ROWNUM など" },
   // /mentor は 2026-07-28 に非表示化 (コード保持、Sidebar/SearchPalette から除外、URL は 404)
-  { category: "リファレンス", title: "バージョン一覧", href: "/versions", desc: "TERASOLUNA 5.11.0 / Spring Boot 4.0.2 / JDK 17 / Tomcat 11 等" },
+  { category: "リファレンス", title: "バージョン一覧", href: "/versions", desc: "TERASOLUNA 5.11.0 / Spring Boot 4.0.2 / Framework 7.0.3 / JDK 17 / Tomcat 11 等" },
   // TERASOLUNA
   { category: "TERASOLUNA", title: "マルチプロジェクト構造", href: "/terasoluna-multi-project", desc: "5 モジュール (-web / -domain / -env / -initdb / -selenium) の中身" },
   { category: "TERASOLUNA", title: "Boot からの読み替え表 (補助)", href: "/spring-vs-terasoluna", desc: "Boot 補助版で本質を掴んだあとの TERASOLUNA 版への対応表" },

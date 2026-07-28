@@ -165,7 +165,7 @@ mvn archetype:generate \
 
 - **① `<packaging>pom</packaging>`** — 親モジュールは Java コードを持たない、ビルド指令 (`modules` の集約) だけ持つ
 - **② `<modules>`** — 実行順序に意味がある。`demo-env` を最初に、`demo-web` を後に (依存解決順)
-- **③ `<parent>` = `terasoluna-gfw-parent:5.11.0.RELEASE`** — このバージョンが Spring Boot 4.0.2 / MyBatis 3.5.19 / Jakarta EE 系のバージョンを一括管理する
+- **③ `<parent>` = `terasoluna-gfw-parent:5.11.0.RELEASE`** — このバージョンが Spring Boot 4.0.2 (= Spring Framework 7.0.3 / Spring Security 7.0.2) / MyBatis 3.5.19 / Jakarta EE 系のバージョンを一括管理する
 - **④ `<java-version>17</java-version>`** — 5.11.0 系は Java 17 が必須
 
 ## 動作確認

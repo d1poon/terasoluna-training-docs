@@ -130,7 +130,7 @@ export const TERMS: GlossaryTerm[] = [
     term: "Spring Boot",
     category: "Spring",
     short: "Spring を「設定ほぼ無しで」使えるようにしたもの",
-    detail: "生の Spring は XML 設定が大量に必要だったが、Spring Boot は「デフォルトで動く」構成を最初から持っている。start.spring.io で雛形生成 → 起動すれば動く。このガイドは Spring Boot 3.4 を採用。",
+    detail: "生の Spring は XML 設定が大量に必要だったが、Spring Boot は「デフォルトで動く」構成を最初から持っている。start.spring.io で雛形生成 → 起動すれば動く。本教材の主軸である TERASOLUNA 5.11.0.RELEASE は BOM 経由で Spring Boot 4.0.2 を使う (設定は XML)。補助の /steps-boot/ 版では Spring Boot 3.4 を単一プロジェクトで使う。正確な値は /versions を参照。",
   },
   {
     term: "@SpringBootApplication",

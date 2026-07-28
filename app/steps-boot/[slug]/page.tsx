@@ -6,6 +6,7 @@ import { PageFooter } from "@/components/PageFooter";
 import { getAllSteps, formatStepNumber } from "@/lib/steps";
 import { getAllBootSteps, getBootStep } from "@/lib/steps-boot";
 import { renderMarkdown } from "@/lib/markdown";
+import { TARGET_LABEL } from "@/lib/versions";
 
 export async function generateStaticParams() {
   return getAllBootSteps().map((s) => ({ slug: s.slug }));
@@ -52,7 +53,7 @@ export default async function BootStepPage({
             </h1>
           </div>
 
-          <PageMeta updated={step.date} targetVersion="Spring Boot 3.4 (補助教材)" />
+          <PageMeta updated={step.date} targetVersion={TARGET_LABEL.boot} />
 
           <article
             className="prose max-w-none"

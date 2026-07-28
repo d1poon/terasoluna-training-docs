@@ -15,12 +15,14 @@ export const VERSIONS = {
   terasolunaDependenciesBom: "3.0.0.RELEASE (terasoluna-dependencies)",
 
   // 依存 BOM から transitively 管理される Spring 系
-  // terasoluna-dependencies 3.0.0.RELEASE が spring-boot-dependencies 4.0.2 を import しているため
-  springBoot: "4.0.2 (managed via terasoluna-dependencies BOM)",
-  springFramework: "7.x (Spring Boot 4.0.2 経由で管理)",
-  springSecurity: "7.x (Spring Boot 4.0.2 経由で管理)",
+  // terasoluna-dependencies 3.0.0.RELEASE が spring-boot-dependencies 4.0.2 を import。
+  // 以下は spring-boot-dependencies 4.0.2 の pom から取得した確定値。
+  springBoot: "4.0.2",
+  springFramework: "7.0.3",
+  springSecurity: "7.0.2",
 
   // Web / JSP / Validation
+  jakartaServlet: "6.1.0",
   jakartaServletJspApi: "4.0.0",
   jakartaElApi: "6.0.1",
   jakartaJstl: "3.0 (Jakarta EE 準拠、glassfish 実装同梱)",
@@ -46,16 +48,31 @@ export const VERSIONS = {
   lombok: "1.18.42",
 
   // === 補助: Boot 単一プロジェクト版 (先に本質を理解したい人向けに残す) ===
+  // 注意: これは /steps-boot/ 配下の補助教材のみが対象。主軸 (/steps/) は上の
+  // TERASOLUNA スタックを使う。両者を混同しないこと。
   bootMainVersion: "3.4.x",
   bootMainSpringSecurity: "6.x",
   bootMainMybatisStarter: "3.0.4 (mybatis-spring-boot-starter)",
 
   // docs-site 自体
-  siteVersion: "0.12.x",
+  siteVersion: "0.13.x",
   siteStack: "Next.js 16 + React 19 + Tailwind CSS 3",
 
   // 最終更新
   lastUpdated: "2026-07-28",
+} as const;
+
+/**
+ * PageMeta 等で使う「対象バージョン」の定型文字列。
+ * 各ページで手書きせず、必ずここを参照する (表記揺れ防止)。
+ */
+export const TARGET_LABEL = {
+  /** 主軸: TERASOLUNA multi-project (/steps/ 配下、および TERASOLUNA 中心の解説ページ) */
+  terasoluna: `TERASOLUNA ${VERSIONS.terasolunaGfw} / Spring Boot ${VERSIONS.springBoot} / JDK 17`,
+  /** 補助: Boot 単一プロジェクト (/steps-boot/ 配下、および Boot 前提の旧ページ) */
+  boot: `補助: Spring Boot ${VERSIONS.bootMainVersion} 単一プロジェクト版`,
+  /** TERASOLUNA を主、Boot を対比で扱うページ */
+  compare: `TERASOLUNA ${VERSIONS.terasolunaGfw} (主軸) / Spring Boot ${VERSIONS.bootMainVersion} (補助対比)`,
 } as const;
 
 // カテゴリ別の表示グルーピング (VersionsPage / VersionsSummary で使う)
@@ -89,9 +106,21 @@ export const VERSION_GROUPS: {
     desc:
       "terasoluna-dependencies 3.0.0.RELEASE が spring-boot-dependencies 4.0.2 を import しているため、Spring Framework / Spring Security の実バージョンはそこから決まる。",
     rows: [
-      { label: "Spring Boot BOM", value: VERSIONS.springBoot },
-      { label: "Spring Framework", value: VERSIONS.springFramework },
-      { label: "Spring Security", value: VERSIONS.springSecurity },
+      {
+        label: "Spring Boot BOM",
+        value: VERSIONS.springBoot,
+        note: "terasoluna-dependencies 3.0.0.RELEASE が import",
+      },
+      {
+        label: "Spring Framework",
+        value: VERSIONS.springFramework,
+        note: "spring-boot-dependencies 4.0.2 の spring-framework.version",
+      },
+      {
+        label: "Spring Security",
+        value: VERSIONS.springSecurity,
+        note: "spring-boot-dependencies 4.0.2 の spring-security.version",
+      },
     ],
   },
   {
@@ -99,6 +128,7 @@ export const VERSION_GROUPS: {
     title: "Web / View / Validation",
     desc: "JSP + JSTL + Bean Validation (Jakarta EE 系)。",
     rows: [
+      { label: "Jakarta Servlet API", value: VERSIONS.jakartaServlet },
       { label: "Jakarta Servlet JSP API", value: VERSIONS.jakartaServletJspApi },
       { label: "Jakarta EL API", value: VERSIONS.jakartaElApi },
       { label: "Jakarta JSTL", value: VERSIONS.jakartaJstl },

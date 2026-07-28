@@ -158,7 +158,7 @@ mvn test
 
 ## 次
 
-これで rolemgr / demo は完成 + テスト網が張られた状態。実務では:
+これで demo (役職編集アプリ) は完成 + テスト網が張られた状態。実務では:
 
 - CI (GitHub Actions / Jenkins) で PR 毎に `mvn test` 自動実行
 - カバレッジは JaCoCo で計測、Coveralls に送る (`terasoluna-gfw-parent` に設定あり)

@@ -1,12 +1,15 @@
 import Link from "next/link";
-import { VERSIONS } from "@/lib/versions";
+import { VERSIONS, TARGET_LABEL } from "@/lib/versions";
 
 /**
  * ページヘッダ下に表示する「最終更新日 / 対象バージョン」バー。
- * デフォルトで rolemgr スタック (Boot 3.4 + JDK 17) を対象とし、
- * バージョン欄は /versions ページへリンクさせて "詳しくはこちら" 導線にする。
  *
- * オプションで targetVersion を渡すと、そのページ固有の対象バージョン (例: "TERASOLUNA 5.11.0") を表示できる。
+ * デフォルトは**主軸の TERASOLUNA multi-project スタック**を対象とする。
+ * Boot 補助版 (/steps-boot/ 配下や Boot 前提の旧ページ) では
+ * `targetVersion={TARGET_LABEL.boot}` を明示的に渡すこと。
+ *
+ * バージョン数値をここに直接書かない — 必ず lib/versions.ts の
+ * VERSIONS / TARGET_LABEL を参照する (表記揺れ防止)。
  */
 export function PageMeta({
   updated,
@@ -14,12 +17,11 @@ export function PageMeta({
 }: {
   /** ページ本体の最終更新日。省略時は VERSIONS.lastUpdated */
   updated?: string;
-  /** そのページで扱う技術の対象バージョン (省略時: rolemgr スタック要約) */
+  /** そのページで扱う技術の対象バージョン。省略時は TERASOLUNA 主軸スタック */
   targetVersion?: string;
 }) {
   const updatedStr = updated ?? VERSIONS.lastUpdated;
-  const target =
-    targetVersion ?? `Spring Boot ${VERSIONS.springBoot} / JDK 17 / Maven ${VERSIONS.maven}`;
+  const target = targetVersion ?? TARGET_LABEL.terasoluna;
   return (
     <div className="mb-6 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 border-b border-slate-100 pb-3">
       <span>

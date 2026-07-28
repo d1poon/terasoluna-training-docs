@@ -4,6 +4,7 @@ import { getAllSteps } from "@/lib/steps";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { VERSIONS } from "@/lib/versions";
 
 export const metadata = {
   title: "セキュリティチェックリスト | TERASOLUNA 研修",
@@ -47,9 +48,9 @@ http.formLogin(f -> f
     id: "session-fixation",
     title: "2. セッション固定攻撃対策 (ログイン成功時にセッション再生成)",
     bad: "ログイン前後で同じセッション ID を使い続ける → 攻撃者が事前に自分の JSESSIONID を被害者に踏ませ、被害者ログイン後にそのまま乗っ取れる",
-    good: "ログイン成功時にセッション ID を **再生成 (rotate)** する。Spring Security 6 のデフォルト動作は changeSessionId なので、明示指定は不要だが確認しておく",
+    good: "ログイン成功時にセッション ID を **再生成 (rotate)** する。Spring Security 6 以降のデフォルト動作は changeSessionId なので、明示指定は不要だが確認しておく",
     codeLang: "java",
-    code: `// SecurityConfig.java (Spring Security 6 のデフォルトは changeSessionId、確認のため明示)
+    code: `// SecurityConfig.java (Spring Security 6 以降のデフォルトは changeSessionId、確認のため明示)
 http.sessionManagement(s -> s
     .sessionFixation(f -> f.changeSessionId())   // ← ログイン成功時に ID rotate
     .maximumSessions(1)                          // ← 同時ログイン制御が要るなら
@@ -261,7 +262,9 @@ export default function SecurityChecklistPage() {
             </div>
           </div>
 
-          <PageMeta targetVersion="Spring Security 6.x / Spring Boot 3.4" />
+          <PageMeta
+            targetVersion={`Spring Security ${VERSIONS.springSecurity} / Spring Boot ${VERSIONS.springBoot}`}
+          />
 
           {/* TOC chips */}
           <div className="mb-8 flex flex-wrap gap-2">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { StepMeta } from "@/lib/steps";
 import { formatStepNumber } from "@/lib/step-format";
 import { BOOT_STEPS } from "@/lib/boot-steps-list";
+import { VERSIONS } from "@/lib/versions";
 import { SearchPalette } from "./SearchPalette";
 
 type PhaseGroup = {
@@ -397,9 +398,13 @@ export function Sidebar({
       </nav>
 
       <div className="p-4 border-t border-slate-200 text-xs text-slate-500">
-        <p>TERASOLUNA GFW 5.11.0.RELEASE</p>
-        <p className="mt-1">multi-project + JSP + MyBatis + Tomcat 11</p>
-        <p className="mt-1 text-slate-400">補助: Spring Boot 3.4 単一プロジェクト版</p>
+        <p>TERASOLUNA GFW {VERSIONS.terasolunaGfw}</p>
+        <p className="mt-1">
+          multi-project + JSP + MyBatis · Spring Boot {VERSIONS.springBoot}
+        </p>
+        <p className="mt-1 text-slate-400">
+          補助: Spring Boot {VERSIONS.bootMainVersion} 単一プロジェクト版
+        </p>
       </div>
     </>
   );

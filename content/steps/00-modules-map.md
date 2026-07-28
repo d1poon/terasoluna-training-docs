@@ -39,7 +39,7 @@ demo/                      ← 親 POM (packaging: pom)。ビルドの入口
 
 - `<packaging>pom</packaging>` — このモジュール自体はビルド成果物を持たない
 - `<modules>` に 5 つの子モジュールを列挙 (`demo-env` を先に、`demo-web` を後にすると依存解決が素直)
-- `<parent>` に `org.terasoluna.gfw:terasoluna-gfw-parent:5.11.0.RELEASE` を指定 → **Spring Boot 4.0.2 / MyBatis 3.5.19 / Jakarta EE 系のバージョンをここが管理**
+- `<parent>` に `org.terasoluna.gfw:terasoluna-gfw-parent:5.11.0.RELEASE` を指定 → **Spring Boot 4.0.2 (= Spring Framework 7.0.3 / Spring Security 7.0.2) / MyBatis 3.5.19 / Jakarta EE 系のバージョンをここが管理**
 - 詳細バージョンは [[/versions|バージョン一覧]] を参照
 
 ### 各モジュールの役割 1 行サマリ
