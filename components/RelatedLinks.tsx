@@ -22,7 +22,7 @@ export function RelatedLinks({
   return (
     <section className="mt-12 pt-8 border-t border-slate-200">
       <h2 className="text-lg md:text-xl font-bold mb-4 text-slate-900">
-        📎 {title}
+        <span aria-hidden="true">📎</span> {title}
       </h2>
       <div className="grid gap-3 md:grid-cols-2">
         {items.map((it) => (

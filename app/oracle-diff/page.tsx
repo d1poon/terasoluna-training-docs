@@ -4,7 +4,13 @@ import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 
-export const metadata = { title: "H2 → Oracle 移行時の落とし穴 10 選 | TERASOLUNA 研修" };
+export const metadata = {
+  // 末尾の「| TERASOLUNA 研修」は root layout の title template
+  // ("%s | TERASOLUNA 研修ガイド") が付与するため、ここでは重複させない
+  title: "H2 → Oracle 移行時の落とし穴 10 選",
+  description:
+    "本教材は H2 in-memory DB で完結するが、現場では Oracle に切り替わることが多い。空文字=NULL / LIMIT vs FETCH FIRST / NVL / VARCHAR2 バイト数など、H2 で動いても Oracle で落ちる典型パターン 10 個の早見表。",
+};
 
 type Pattern = {
   n: number;
@@ -207,7 +213,7 @@ export default function OracleDiffPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">

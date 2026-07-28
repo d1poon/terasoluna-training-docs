@@ -15,7 +15,7 @@ step: 11
 
 ## 事前準備
 
-- [Step 10](/steps/10-user-info) 完了
+- [Step 10](/steps-boot/10-user-info) 完了
 
 ## 追加するファイル (1つ + 1修正)
 
@@ -235,4 +235,4 @@ rolemgr/src/main/
 
 ## 次
 
-→ [Step 12: 完成 & まとめ](/steps/12-complete)
+→ [Step 12: 完成 & まとめ](/steps-boot/12-complete)

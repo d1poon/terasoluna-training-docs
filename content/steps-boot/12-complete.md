@@ -16,7 +16,7 @@ step: 12
 
 ## 事前準備
 
-- [Step 11](/steps/11-edit) まで完了
+- [Step 11](/steps-boot/11-edit) まで完了
 
 ## 最終ディレクトリ構造
 
@@ -128,4 +128,4 @@ rolemgr/
 
 ここまで通しで組んで動かせたなら、Spring Boot + JSP + MyBatis の基本構造は理解できています。実装で詰まった時や質問された時は、この build ガイドの該当ステップに戻って確認してください。
 
-← [目次に戻る](/steps/00-toc)
+← [目次に戻る](/steps-boot/00-toc)

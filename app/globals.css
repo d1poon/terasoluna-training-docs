@@ -17,6 +17,19 @@
   }
 }
 
+/* prefers-reduced-motion: モーション低減設定のユーザーには
+ * アニメーション/トランジション/スムーススクロールをほぼ即時化する。
+ * サイト全体の anno-badge の transform、annoPopIn / annoSlideUp 等のキーフレームすべてに適用。
+ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Markdown 記事本文の見た目 */
 .prose h1 { @apply text-3xl font-bold mt-8 mb-4 text-slate-900; }
 .prose h2 { @apply text-2xl font-bold mt-10 mb-3 text-slate-900 border-b border-slate-200 pb-1; }
@@ -114,6 +127,14 @@
 @keyframes annoPopIn {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* TermPopover.tsx のポップオーバー フェードイン。
+ * tailwindcss-animate 未導入のため animate-in/fade-in は死んだ指定になっていた代替。
+ * .anno-popover と同じ annoPopIn キーフレームを再利用する。
+ */
+.term-popover-enter {
+  animation: annoPopIn 0.12s ease-out;
 }
 .anno-popover-body {
   padding-right: 1.25rem;

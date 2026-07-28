@@ -137,17 +137,18 @@ archetype 生成品の `demo-domain/src/main/resources/META-INF/spring/demo-doma
 
 **これが Repository interface を Bean 登録している核心**。`base-package` 以下の interface を自動走査し、XML と紐付けて Bean を生成する。Boot 版の `@Mapper` に相当する仕組み。
 
-### 4. 起動時 DDL 実行の設定 (demo-env 側)
+### 4. 起動時 DDL 実行の設定 (demo-env 側・確認のみ)
 
-archetype 生成品 `demo-env/src/main/resources/META-INF/spring/demo-env.xml` に、initdb SQL を起動時に流す設定を追加:
+`demo-env/src/main/resources/META-INF/spring/demo-env.xml` には、archetype 生成時点で既に次の設定が入っている (Step 03 で触れた通り、読者側での追加は不要):
 
 ```xml
 <jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
-    <jdbc:script location="classpath:sqls/01-h2-schema.sql" />
+    <jdbc:script location="classpath:/database/${database}-schema.sql" encoding="UTF-8" />
+    <jdbc:script location="classpath:/database/${database}-dataload.sql" encoding="UTF-8" />
 </jdbc:initialize-database>
 ```
 
-`demo-initdb` の `src/main/sqls/` は resources として classpath に載る前提で `classpath:sqls/01-h2-schema.sql` で参照する (archetype 生成品の設定に既に例あり)。
+`demo-infra.properties` の `database=H2` により `${database}` は `H2` に解決される。つまり `demo-env/src/main/resources/database/H2-schema.sql` (Step 03 で追記した DDL) が起動時に自動で実行される。
 
 ## 動作確認
 
@@ -164,7 +165,7 @@ mvn -pl demo-domain -am compile
 mvn -pl demo-web -am cargo:run
 ```
 
-http://localhost:8080/demo-web/h2-console/ (archetype デフォルトで有効) にアクセスし、jdbc.properties と同じ接続情報でログイン。`SELECT * FROM users;` が「0 件」で通れば成功 (テーブルが作られている)。
+http://localhost:8080/demo-web/h2-console/ (archetype デフォルトで有効) にアクセスし、`demo-infra.properties` と同じ接続情報でログイン。`SELECT * FROM users;` が「0 件」で通れば成功 (テーブルが作られている)。
 
 ## よくある詰まり
 

@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 import { TARGET_LABEL } from "@/lib/versions";
+
+export const metadata: Metadata = {
+  title: "アーキテクチャ全体図",
+  description:
+    "役職編集アプリの全 22 ファイルを層構造 (Controller/Service/Repository/Domain/Security/Config/View) で一枚にまとめた図。どのファイルがどの Step で作られるかも確認できる。",
+};
 
 type LayerRow = {
   icon: string;
@@ -72,7 +79,7 @@ export default function ArchitecturePage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-5xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-5xl px-4 py-6 lg:px-12 lg:py-12">
         <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
             Architecture Overview

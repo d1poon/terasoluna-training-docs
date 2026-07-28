@@ -32,12 +32,22 @@ export function EnableCodeCopy() {
         "absolute top-2 right-2 text-[10px] md:text-xs bg-slate-700 hover:bg-slate-600 text-slate-100 px-2 py-1 rounded opacity-0 transition-opacity";
       pre.appendChild(btn);
 
+      // スクリーンリーダー向けのコピー結果通知 (視覚的には非表示)
+      const status = document.createElement("span");
+      status.className = "sr-only";
+      status.setAttribute("role", "status");
+      status.setAttribute("aria-live", "polite");
+      pre.appendChild(status);
+
       const showBtn = () => (btn.style.opacity = "1");
       const hideBtn = () => (btn.style.opacity = "0");
       pre.addEventListener("mouseenter", showBtn);
       pre.addEventListener("mouseleave", hideBtn);
       // モバイルではタップで表示
       pre.addEventListener("touchstart", showBtn, { passive: true });
+      // キーボードで Tab フォーカスしたときも見えるように (デフォルトの opacity-0 のままだと操作可能なのに見えない)
+      btn.addEventListener("focus", showBtn);
+      btn.addEventListener("blur", hideBtn);
 
       const onClick = async (e: MouseEvent) => {
         e.preventDefault();
@@ -48,13 +58,19 @@ export function EnableCodeCopy() {
           const prev = btn.textContent;
           btn.textContent = "✓ コピー済";
           btn.classList.add("bg-emerald-600");
+          status.textContent = "コードをコピーしました";
           setTimeout(() => {
             btn.textContent = prev;
             btn.classList.remove("bg-emerald-600");
+            status.textContent = "";
           }, 1500);
         } catch {
           btn.textContent = "✗ 失敗";
-          setTimeout(() => (btn.textContent = "コピー"), 1500);
+          status.textContent = "コードのコピーに失敗しました";
+          setTimeout(() => {
+            btn.textContent = "コピー";
+            status.textContent = "";
+          }, 1500);
         }
       };
       btn.addEventListener("click", onClick);
@@ -62,8 +78,11 @@ export function EnableCodeCopy() {
       cleanup.push(() => {
         pre.removeEventListener("mouseenter", showBtn);
         pre.removeEventListener("mouseleave", hideBtn);
+        btn.removeEventListener("focus", showBtn);
+        btn.removeEventListener("blur", hideBtn);
         btn.removeEventListener("click", onClick);
         btn.remove();
+        status.remove();
         pre.dataset.copyReady = "";
       });
     });

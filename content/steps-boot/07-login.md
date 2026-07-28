@@ -15,7 +15,7 @@ step: 07
 
 ## 事前準備
 
-- [Step 06](/steps/06-auth-foundation) 完了
+- [Step 06](/steps-boot/06-auth-foundation) 完了
 
 ---
 
@@ -337,11 +337,11 @@ http://localhost:8080/login にアクセス → **自作の「ログイン画面
 
 ## よくある詰まり
 
-- **無限リダイレクト** → SecurityConfig の `/WEB-INF/**` permitAll が抜けている ([Step 06 参照](/steps/06-auth-foundation))
+- **無限リダイレクト** → SecurityConfig の `/WEB-INF/**` permitAll が抜けている ([Step 06 参照](/steps-boot/06-auth-foundation))
 - **CSRF エラー (403)** → フォーム内の CSRF トークン hidden が抜けている
 - **JSP が真っ白 or 500** → `<%@ taglib %>` の URI 誤り、または `tomcat-embed-jasper` 依存漏れ
 - **日本語が化ける** → `<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>` が先頭にあるか
 
 ## 次
 
-→ [Step 08: メニュー画面](/steps/08-menu)
+→ [Step 08: メニュー画面](/steps-boot/08-menu)

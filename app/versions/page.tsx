@@ -4,7 +4,7 @@ import { getAllSteps } from "@/lib/steps";
 import { VERSION_GROUPS, REPO } from "@/lib/versions";
 
 export const metadata = {
-  title: "対象バージョン一覧 — TERASOLUNA 研修",
+  title: "対象バージョン一覧",
   description:
     "本教材で扱う Spring Boot / TERASOLUNA archetype / JDK / Tomcat / MyBatis 等のバージョンをまとめて掲載。",
 };
@@ -17,7 +17,7 @@ export default function VersionsPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           <div className="mb-8">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
               対象バージョン

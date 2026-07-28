@@ -83,6 +83,7 @@ function wrapCircled(root: HTMLElement, gid: string) {
           `注釈 ${CIRCLED_MAP[p]} 番を開く`
         );
         badge.setAttribute("aria-haspopup", "dialog");
+        badge.setAttribute("aria-expanded", "false");
         badge.textContent = p;
         frag.appendChild(badge);
       } else if (p) {
@@ -296,7 +297,7 @@ function closePopover() {
     popoverEl = null;
   }
   if (activeMark) {
-    activeMark.removeAttribute("aria-expanded");
+    activeMark.setAttribute("aria-expanded", "false");
     activeMark = null;
   }
 }

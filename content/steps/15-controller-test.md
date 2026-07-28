@@ -37,16 +37,17 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.example.demo.domain.model.User;
 import com.example.demo.domain.service.user.UserService;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -73,13 +74,15 @@ class SearchControllerTest {
         User u2 = new User(); u2.setId("u004"); u2.setRole("ROLE_ADMIN");
         when(userService.searchByRole("ADMIN")).thenReturn(Arrays.asList(u1, u2));
 
-        mockMvc.perform(get("/search").param("role", "ADMIN"))                  // ②
+        MvcResult result = mockMvc.perform(get("/search").param("role", "ADMIN")) // ②
                .andExpect(status().isOk())
-               .andExpect(view().name("search/search"))                         // ③
+               .andExpect(view().name("search/search"))                           // ③
                .andExpect(model().attributeExists("results"))
-               .andExpect(model().attribute("results", (List<User> list) -> {
-                   assertEquals(2, list.size());
-               }));
+               .andReturn();                                                      // ④
+
+        @SuppressWarnings("unchecked")
+        List<User> results = (List<User>) result.getModelAndView().getModel().get("results");
+        assertEquals(2, results.size());                                          // ⑤
     }
 }
 ```
@@ -89,6 +92,8 @@ class SearchControllerTest {
 - **① `MockMvcBuilders.standaloneSetup(controller)`** — Controller 単体を MockMvc で駆動。Spring Security は含まない (認証をテスト対象外に)
 - **② `mockMvc.perform(get(...).param(...))`** — 実際の HTTP リクエストと同等のオブジェクトを発火
 - **③ `view().name("search/search")`** — Controller が返したビュー名を検証。JSP 自体はレンダリングしない (view() 名だけ確認)
+- **④ `.andReturn()`** — `MvcResult` を受け取り、Model の中身を自分で取り出して検証する形にする。`model().attribute(...)` に `Matcher<T>` 以外 (ラムダ等) は渡せないため、要素数のような単純な検証は `andReturn()` 経由の方が素直
+- **⑤ `assertEquals(2, results.size())`** — 取り出した `List<User>` を通常の JUnit アサーションで検証
 
 ## Spring Security 込みでテストする場合
 

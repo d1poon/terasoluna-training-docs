@@ -18,7 +18,7 @@ const INDEX: Entry[] = [
   { category: "まず読む", title: "用語集", href: "/glossary", desc: "Java / Spring / MyBatis / TERASOLUNA / Web / Security 用語" },
   // リファレンス
   { category: "リファレンス", title: "トラブルシュート", href: "/troubleshoot", desc: "Invalid bound statement / PKIX / ポート競合 / 文字化け 10 項目" },
-  { category: "リファレンス", title: "DB 接続の仕組み", href: "/db-connection", desc: "jdbc.properties → -env.xml → -infra.xml、Connection Pool、エラー診断" },
+  { category: "リファレンス", title: "DB 接続の仕組み", href: "/db-connection", desc: "demo-infra.properties → demo-env.xml → demo-infra.xml、Connection Pool、エラー診断" },
   { category: "リファレンス", title: "セキュリティチェックリスト", href: "/security-checklist", desc: "ログイン失敗漏洩 / セッション固定 / CSRF / IDOR / XSS / SQLi / BCrypt など 10 項目" },
   { category: "リファレンス", title: "H2 → Oracle 落とし穴 10 選", href: "/oracle-diff", desc: "空文字 = NULL / SYSDATE / MERGE / 予約語 / ROWNUM など" },
   // /mentor は 2026-07-28 に非表示化 (コード保持、Sidebar/SearchPalette から除外、URL は 404)
@@ -76,16 +76,52 @@ export function SearchPalette() {
   const [query, setQuery] = useState("");
   const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  // モーダルを開く直前にフォーカスされていた要素。閉じたときにここへ戻す。
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
-  // グローバルショートカット: ⌘K / Ctrl+K
+  // フォーカストラップ: モーダル内の最初/最後のフォーカス可能要素で Tab / Shift+Tab を折り返す
+  function trapFocus(e: KeyboardEvent) {
+    const modal = modalRef.current;
+    if (!modal) return;
+    const focusables = modal.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (e.shiftKey) {
+      if (active === first || !active || !modal.contains(active)) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (active === last || !active || !modal.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  // グローバルショートカット: ⌘K / Ctrl+K + 開いている間の Esc / Tab トラップ
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setOpen((v) => !v);
+        return;
       }
-      if (e.key === "Escape" && open) setOpen(false);
+      if (!open) return;
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key === "Tab") {
+        trapFocus(e);
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -93,11 +129,15 @@ export function SearchPalette() {
 
   useEffect(() => {
     if (open) {
+      // 開く直前のフォーカス位置を保持しておき、閉じたときに復帰する
+      previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
       // 開いた直後に input にフォーカス
       requestAnimationFrame(() => inputRef.current?.focus());
     } else {
       setQuery("");
       setActiveIdx(0);
+      previouslyFocusedRef.current?.focus();
+      previouslyFocusedRef.current = null;
     }
   }, [open]);
 
@@ -154,9 +194,15 @@ export function SearchPalette() {
             className="absolute inset-0 bg-black/50"
             onClick={() => setOpen(false)}
           />
-          <div className="relative w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden">
+          <div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="サイト内検索"
+            className="relative w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden"
+          >
             <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200">
-              <span className="text-slate-400">🔍</span>
+              <span aria-hidden="true" className="text-slate-400">🔍</span>
               <input
                 ref={inputRef}
                 type="text"
@@ -164,7 +210,15 @@ export function SearchPalette() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={onKeyDownInput}
                 placeholder="ページ名・キーワードで検索…"
-                className="flex-1 outline-none text-slate-900 placeholder:text-slate-400 text-sm md:text-base"
+                className="flex-1 outline-none text-slate-900 placeholder:text-slate-500 text-sm md:text-base"
+                role="combobox"
+                aria-expanded={results.length > 0}
+                aria-haspopup="listbox"
+                aria-controls="search-results-listbox"
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  results[activeIdx] ? `search-option-${activeIdx}` : undefined
+                }
               />
               <button
                 onClick={() => setOpen(false)}
@@ -176,15 +230,18 @@ export function SearchPalette() {
             </div>
             <div className="max-h-[60vh] overflow-y-auto">
               {results.length === 0 ? (
-                <div className="p-6 text-center text-slate-500 text-sm">
+                <div className="p-6 text-center text-slate-500 text-sm" role="status">
                   該当なし
                 </div>
               ) : (
-                <ul className="py-2">
+                <ul id="search-results-listbox" role="listbox" aria-label="検索結果" className="py-2">
                   {results.map((r, i) => (
-                    <li key={r.href}>
+                    <li key={r.href} role="presentation">
                       <Link
                         href={r.href}
+                        id={`search-option-${i}`}
+                        role="option"
+                        aria-selected={i === activeIdx}
                         onClick={() => setOpen(false)}
                         onMouseEnter={() => setActiveIdx(i)}
                         className={

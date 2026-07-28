@@ -17,7 +17,7 @@ Step 13 (Mockito) では検出できなかった**SQL のバグ** (typo / 列名
 
 ## 事前準備
 
-- [Step 13](/steps/13-service-test) 完了
+- [Step 13](/steps-boot/13-service-test) 完了
 
 ---
 
@@ -190,4 +190,4 @@ Step 13 と合わせて 11 テストが全通ればOK:
 
 ## 次
 
-→ [Step 15: MockMvc で Controller のリクエスト〜View 名検証](/steps/15-controller-test)
+→ [Step 15: MockMvc で Controller のリクエスト〜View 名検証](/steps-boot/15-controller-test)

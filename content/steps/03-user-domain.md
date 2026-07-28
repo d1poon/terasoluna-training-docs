@@ -11,7 +11,7 @@ step: 03
 
 - `users` テーブルの 1 行を表す **Entity** (`User.java`) を作る
 - `demo-domain` モジュールの `domain.model` パッケージに配置する
-- DDL を `demo-initdb` に置き、起動時にテーブルが作られるようにする
+- DDL を `demo-env` の既存 `H2-schema.sql` に追記し、起動時にテーブルが作られるようにする
 
 **なぜ Entity と DDL をペアで扱うか**: この 2 つが対応していないと Repository が動かない (Step 04 でつまづく)。ここで揃えておく。
 
@@ -75,19 +75,19 @@ public class User implements Serializable {                                    /
 - **③ フィールド 3 つ** — DDL (次) と 1:1 対応。カラム追加は Entity 側の追加とセット
 - **④ 引数なしコンストラクタ** — MyBatis の resultType 経由での自動マッピングに必須。省略すると `NoSuchMethodException` で落ちる
 
-### 2. DDL: `01-h2-schema.sql`
+### 2. DDL: `H2-schema.sql` に追記
 
 <div class="file-location">
-  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-location-label">📍 このファイルを編集 (archetype が最初から生成する既存ファイル)</div>
   <div class="file-tree">
     <div class="ft-line">📁 demo/</div>
-    <div class="ft-line ft-l1">📁 demo-initdb/</div>
-    <div class="ft-line ft-l2">📁 src/main/sqls/</div>
-    <div class="ft-line ft-l3 ft-file">📄 01-h2-schema.sql <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l1">📁 demo-env/</div>
+    <div class="ft-line ft-l2">📁 src/main/resources/database/</div>
+    <div class="ft-line ft-l3 ft-file">📄 H2-schema.sql <span class="ft-tag ft-tag--modify">修正</span></div>
   </div>
 </div>
 
-**DDL** (Data Definition Language、テーブル定義 SQL) を initdb モジュールに配置:
+**DDL** (Data Definition Language、テーブル定義 SQL) は新しいファイルを作るのではなく、`demo-env` モジュールに既にある `H2-schema.sql` に追記する:
 
 ```sql
 DROP TABLE IF EXISTS users;
@@ -99,9 +99,18 @@ CREATE TABLE users (
 );
 ```
 
-### 3. 起動時に DDL を流す設定
+### 3. 起動時に DDL を流す設定 (追加作業は不要)
 
-archetype の `demo-env/src/main/resources/META-INF/spring/` に、H2 の起動時初期化を仕込む。詳細は Step 04 に持ち越し (Repository 実装と一緒に確認する方が動作確認しやすい)。
+`demo-env/src/main/resources/META-INF/spring/demo-env.xml` には、archetype 生成時点で既に次の設定が入っている:
+
+```xml
+<jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
+    <jdbc:script location="classpath:/database/${database}-schema.sql" encoding="UTF-8" />
+    <jdbc:script location="classpath:/database/${database}-dataload.sql" encoding="UTF-8" />
+</jdbc:initialize-database>
+```
+
+`demo-infra.properties` の `database=H2` により `${database}` は `H2` に解決されるので、上記は実質 `classpath:/database/H2-schema.sql` を指す。**この XML は編集不要** — 上の 2 で `H2-schema.sql` の中身を書けば、アプリ起動時に自動で実行される。
 
 ## `domain.model` パッケージの位置付け
 
@@ -124,15 +133,15 @@ demo-domain/src/main/java/com/example/demo/domain/
 
 ```
 demo/
-├── demo-env/          (Step 02 で jdbc.properties 済)
+├── demo-env/
+│   └── src/main/resources/database/
+│       └── H2-schema.sql                ← 追記
 ├── demo-domain/
 │   └── src/main/java/com/example/demo/domain/
 │       └── model/
 │           └── User.java                ← 追加
 ├── demo-web/          (未着手)
-├── demo-initdb/
-│   └── src/main/sqls/
-│       └── 01-h2-schema.sql             ← 追加
+├── demo-initdb/       (H2 開発では未使用)
 └── demo-selenium/
 ```
 

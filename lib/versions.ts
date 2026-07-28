@@ -7,11 +7,27 @@
 
 export const VERSIONS = {
   // TERASOLUNA multi-project 本教材の"正"となる構成
+  // 出典: https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/tree/5.11.0.RELEASE
   terasolunaGfw: "5.11.0.RELEASE",
+  // 2026-07-29 訂正: 従来 "jsp-mybatis3-archetype" (xmlconfig 無し) と記載していたが、
+  // それは JavaConfig 版 (config/web/SpringMvcConfig.java 等を生成、XML は web.xml のみ)。
+  // 本教材は applicationContext.xml / spring-security.xml / demo-domain.xml を編集する
+  // XML 設定前提のため、正しくは xmlconfig が付く方。
+  // 出典: https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/blob/5.11.0.RELEASE/README.md
+  //       (parts/XMLConfig*/ ツリーで確認)
   terasolunaBlankArchetype:
-    "terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype (5.11.0.RELEASE)",
+    "terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype (5.11.0.RELEASE)",
+  // archetype の groupId (mvn archetype:generate 時の -DarchetypeGroupId)。
+  // GFW 本体ライブラリの groupId (下の terasolunaGroupId = org.terasoluna.gfw) とは別物。
+  // 出典: https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/blob/5.11.0.RELEASE/README.md
+  terasolunaArchetypeGroupId: "org.terasoluna.gfw.blank",
+  // GFW 本体ライブラリ (terasoluna-gfw-parent / terasoluna-gfw-common 等) の groupId。
+  // archetype 自体の groupId (terasolunaArchetypeGroupId) とは別物なので混同しないこと。
+  // 出典: https://github.com/terasolunaorg/terasoluna-gfw/tree/5.11.0.RELEASE/terasoluna-gfw-parent
   terasolunaGroupId: "org.terasoluna.gfw",
+  // 出典: https://github.com/terasolunaorg/terasoluna-gfw/tree/5.11.0.RELEASE/terasoluna-gfw-parent
   terasolunaParentBom: "5.11.0.RELEASE (terasoluna-gfw-parent)",
+  // 出典: https://github.com/terasolunaorg/terasoluna-dependencies/tree/3.0.0.RELEASE
   terasolunaDependenciesBom: "3.0.0.RELEASE (terasoluna-dependencies)",
 
   // 依存 BOM から transitively 管理される Spring 系
@@ -22,10 +38,13 @@ export const VERSIONS = {
   springSecurity: "7.0.2",
 
   // Web / JSP / Validation
+  // 出典: spring-boot-dependencies 4.0.2 経由で管理 (terasoluna-dependencies 3.0.0.RELEASE が import)
   jakartaServlet: "6.1.0",
   jakartaServletJspApi: "4.0.0",
   jakartaElApi: "6.0.1",
-  jakartaJstl: "3.0 (Jakarta EE 準拠、glassfish 実装同梱)",
+  // API (jakarta.servlet.jsp.jstl-api) と実装 (org.glassfish.web:jakarta.servlet.jsp.jstl) は
+  // 別 artifact でバージョン番号も異なるため、まとめて "3.0" と書かず両方を明記する。
+  jakartaJstl: "API 3.0.2 / 実装 (glassfish) 3.0.1 (Jakarta EE 準拠)",
   hibernateValidator: "9.1.0.Final",
 
   // MyBatis
@@ -33,10 +52,14 @@ export const VERSIONS = {
   mybatisSpring: "4.0.0",
 
   // ランタイム / ビルド
-  jdk: "17 (公式指定、24 でも動作)",
+  // 出典: https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/blob/5.11.0.RELEASE/parts/XMLConfig-JSP/pom.xml の <java-version>
+  // 2026-07-29 訂正: 「24 でも動作」は一次ソース未確認のため削除。archetype の指定値のみ記載。
+  jdk: "17 (archetype の java-version 指定値)",
   maven: "3.9.9 (プロジェクト同梱、外部インストール不要)",
   mavenCompilerPlugin: "3.14.1",
-  tomcatDeployTarget: "11.0.15 (Cargo プラグイン想定)",
+  // 11.0.15 は terasoluna-gfw-parent pom.xml の <cargo.tomcat11.version> プロパティ由来。
+  // 出典: https://github.com/terasolunaorg/terasoluna-gfw/blob/5.11.0.RELEASE/terasoluna-gfw-parent/pom.xml (179-209行)
+  tomcatDeployTarget: "11.0.15 (cargo.tomcat11.version, Cargo プラグイン想定)",
 
   // DB (dev/prod ターゲット)
   h2: "2.x (dev in-memory)",
@@ -52,6 +75,9 @@ export const VERSIONS = {
   // TERASOLUNA スタックを使う。両者を混同しないこと。
   bootMainVersion: "3.4.x",
   bootMainSpringSecurity: "6.x",
+  // Spring Boot 3.4.x が管理する Spring Framework 系列。TERASOLUNA 5.11 系 (Spring Framework 7.0.3、
+  // 上の springFramework を参照) とはメジャーバージョンが異なる。「共通の土台 = 同じバージョン」ではない点に注意。
+  bootMainSpringFramework: "6.x",
   bootMainMybatisStarter: "3.0.4 (mybatis-spring-boot-starter)",
 
   // docs-site 自体
@@ -59,7 +85,7 @@ export const VERSIONS = {
   siteStack: "Next.js 16 + React 19 + Tailwind CSS 3",
 
   // 最終更新
-  lastUpdated: "2026-07-28",
+  lastUpdated: "2026-07-29",
 } as const;
 
 /**
@@ -89,7 +115,16 @@ export const VERSION_GROUPS: {
     rows: [
       { label: "TERASOLUNA GFW", value: VERSIONS.terasolunaGfw },
       { label: "archetype", value: VERSIONS.terasolunaBlankArchetype },
-      { label: "groupId", value: VERSIONS.terasolunaGroupId },
+      {
+        label: "archetype groupId",
+        value: VERSIONS.terasolunaArchetypeGroupId,
+        note: "mvn archetype:generate の -DarchetypeGroupId",
+      },
+      {
+        label: "GFW groupId",
+        value: VERSIONS.terasolunaGroupId,
+        note: "terasoluna-gfw-parent 等 GFW 本体ライブラリの groupId (archetype groupId とは別物)",
+      },
       { label: "parent BOM", value: VERSIONS.terasolunaParentBom },
       { label: "dependencies BOM", value: VERSIONS.terasolunaDependenciesBom },
       { label: "JDK 要件", value: VERSIONS.jdk },
@@ -170,9 +205,10 @@ export const VERSION_GROUPS: {
       "本教材の主軸は TERASOLUNA multi-project だが、先に Spring Boot で本質を理解したい人向けに残した補助版。",
     rows: [
       { label: "Spring Boot", value: VERSIONS.bootMainVersion },
+      { label: "Spring Framework", value: VERSIONS.bootMainSpringFramework, note: "TERASOLUNA 側 (7.0.3) とはメジャーバージョンが異なる" },
       { label: "Spring Security", value: VERSIONS.bootMainSpringSecurity },
       { label: "mybatis-spring-boot-starter", value: VERSIONS.bootMainMybatisStarter },
-      { label: "JDK", value: "17 (24 でも動作)" },
+      { label: "JDK", value: "17 (Boot 3.4 系ベースライン)" },
     ],
   },
   {

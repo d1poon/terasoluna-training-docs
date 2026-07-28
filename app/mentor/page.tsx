@@ -6,7 +6,7 @@ import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 
-export const metadata = { title: "メンター向けガイド | TERASOLUNA 研修" };
+export const metadata = { title: "メンター向けガイド" };
 
 // ==========================================================================
 // 【非表示化: 2026-07-28】
@@ -132,7 +132,7 @@ export default function MentorPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">

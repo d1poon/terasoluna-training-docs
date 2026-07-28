@@ -5,8 +5,9 @@ import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 import { TARGET_LABEL } from "@/lib/versions";
+import { TERMS } from "@/lib/glossary-terms";
 
-export const metadata = { title: "「〜するには?」レシピ集 | TERASOLUNA 研修" };
+export const metadata = { title: "「〜するには?」レシピ集" };
 
 type CodeBlock = {
   label: string;
@@ -604,13 +605,14 @@ function CodeBlock({ block }: { block: CodeBlock }) {
 export default function HowToPage() {
   const steps = getAllSteps();
   const totalRecipes = CATEGORIES.reduce((s, c) => s + c.recipes.length, 0);
+  const termCount = TERMS.length;
 
   return (
     <div className="lg:flex mx-auto max-w-[80rem] xl:max-w-[88rem] 2xl:max-w-[96rem]">
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -754,10 +756,10 @@ export default function HowToPage() {
 
           {/* Related pages */}
           <RelatedLinks items={[
-            { href: "/glossary", emoji: "📖", label: "用語集", desc: "分からない単語をここで引く。40 用語カテゴリ別" },
+            { href: "/glossary", emoji: "📖", label: "用語集", desc: `分からない単語をここで引く。${termCount} 用語カテゴリ別` },
             { href: "/preface", emoji: "📗", label: "まず最初に読む", desc: "レストランメタファーで全体像。基礎理解から" },
             { href: "/build-order", emoji: "✅", label: "作成順チェックリスト", desc: "1 番から順に作れば動く。全 22 ファイル進捗管理付き" },
-            { href: "/db-connection", emoji: "🔌", label: "DB 接続の仕組み", desc: "jdbc.properties から Connection Pool まで細かく" },
+            { href: "/db-connection", emoji: "🔌", label: "DB 接続の仕組み", desc: "demo-infra.properties から Connection Pool まで細かく" },
           ]} />
 
           {/* Bottom banner */}

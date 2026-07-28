@@ -15,7 +15,7 @@ step: 08
 
 ## 事前準備
 
-- [Step 07](/steps/07-login) 完了
+- [Step 07](/steps-boot/07-login) 完了
 
 ## 追加するファイル (3つ)
 
@@ -171,4 +171,4 @@ rolemgr/src/main/
 
 ## 次
 
-→ [Step 09: 検索画面](/steps/09-search)
+→ [Step 09: 検索画面](/steps-boot/09-search)

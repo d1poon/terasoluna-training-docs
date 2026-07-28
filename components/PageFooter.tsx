@@ -53,7 +53,7 @@ export function PageFooter({
           リポジトリを見る
         </a>
       </div>
-      <p className="mt-2 text-[11px] text-slate-400">
+      <p className="mt-2 text-[11px] text-slate-500">
         フィードバックは公開 Issue として残るので、後から同じ疑問を持った方の役にも立ちます。
       </p>
     </footer>

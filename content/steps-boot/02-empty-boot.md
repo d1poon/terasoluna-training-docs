@@ -17,7 +17,7 @@ step: 02
 
 ## 事前準備
 
-- [Step 01](/steps/01-project-skeleton) 完了 (`mvn compile` が通る)
+- [Step 01](/steps-boot/01-project-skeleton) 完了 (`mvn compile` が通る)
 
 ## 追加するファイル (2つ)
 
@@ -135,4 +135,4 @@ Started RolemgrApplication in X.XXX seconds
 
 ## 次
 
-→ [Step 03: User ドメイン](/steps/03-user-domain)
+→ [Step 03: User ドメイン](/steps-boot/03-user-domain)

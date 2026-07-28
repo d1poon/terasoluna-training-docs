@@ -31,7 +31,7 @@ mvn -pl demo-web -am cargo:run
 
 1. http://localhost:8080/demo-web/ → `/login` にリダイレクト
 2. ID: `u001`、パスワード: `password` → `/menu` に遷移
-3. 「役職検索」→ 「長」で検索 → 該当役職を持つ user 一覧
+3. 「役職検索」→ 「ADMIN」で検索 → 2 件 (`ROLE_ADMIN` の u003, u004)
 4. 「自分のユーザ情報」 → ID + 役職 表示
 5. 「役職を変更する」 → 新役職入力 → 更新 → `/user-info` に戻る (URL バーが変わる = PRG)
 6. F5 リロード → 二重更新なし
@@ -45,9 +45,11 @@ mvn -pl demo-web -am cargo:run
     <div class="ft-line">📁 demo/</div>
     <div class="ft-line ft-l1 ft-file">📄 pom.xml (親 POM)</div>
     <div class="ft-line ft-l1">📁 demo-env/src/main/resources/</div>
-    <div class="ft-line ft-l2 ft-file">📄 jdbc.properties</div>
+    <div class="ft-line ft-l2 ft-file">📄 META-INF/spring/demo-infra.properties</div>
     <div class="ft-line ft-l2 ft-file">📄 logback.xml</div>
     <div class="ft-line ft-l2 ft-file">📄 META-INF/spring/demo-env.xml</div>
+    <div class="ft-line ft-l2 ft-file">📄 database/H2-schema.sql</div>
+    <div class="ft-line ft-l2 ft-file">📄 database/H2-dataload.sql</div>
     <div class="ft-line ft-l1">📁 demo-domain/src/main/java/com/example/demo/domain/</div>
     <div class="ft-line ft-l2 ft-file">📄 model/User.java</div>
     <div class="ft-line ft-l2 ft-file">📄 repository/user/UserRepository.java (+ .xml は resources 側)</div>
@@ -67,10 +69,7 @@ mvn -pl demo-web -am cargo:run
     <div class="ft-line ft-l2 ft-file">📄 applicationContext.xml</div>
     <div class="ft-line ft-l2 ft-file">📄 spring-mvc.xml</div>
     <div class="ft-line ft-l2 ft-file">📄 spring-security.xml</div>
-    <div class="ft-line ft-l2 ft-file">📄 demo-web.xml</div>
-    <div class="ft-line ft-l1">📁 demo-initdb/src/main/sqls/</div>
-    <div class="ft-line ft-l2 ft-file">📄 01-h2-schema.sql</div>
-    <div class="ft-line ft-l2 ft-file">📄 02-h2-dataload.sql</div>
+    <div class="ft-line ft-l1">📁 demo-initdb/ <span class="ft-tag">H2 開発では未使用</span></div>
   </div>
 </div>
 

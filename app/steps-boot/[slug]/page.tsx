@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
@@ -5,11 +6,31 @@ import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 import { getAllSteps, formatStepNumber } from "@/lib/steps";
 import { getAllBootSteps, getBootStep } from "@/lib/steps-boot";
-import { renderMarkdown } from "@/lib/markdown";
+import { renderMarkdown, extractDescription } from "@/lib/markdown";
 import { TARGET_LABEL } from "@/lib/versions";
 
 export async function generateStaticParams() {
   return getAllBootSteps().map((s) => ({ slug: s.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const step = getBootStep(slug);
+  if (!step) return {};
+
+  // Boot 版であることを title に明示し、/steps/ 側 (TERASOLUNA 版) と検索結果で区別する
+  const title = `Step ${formatStepNumber(step.number)} — ${step.title} (Spring Boot 補助版)`;
+  const description = extractDescription(step.content);
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/steps-boot/${slug}` },
+  };
 }
 
 export default async function BootStepPage({
@@ -34,7 +55,7 @@ export default async function BootStepPage({
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           <div className="mb-4 bg-amber-50 border-l-4 border-amber-400 rounded-r px-4 py-3 text-sm text-amber-900">
             <div className="font-semibold mb-1">補助: Spring Boot 単一プロジェクト版</div>
             <p className="leading-relaxed">

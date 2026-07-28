@@ -18,7 +18,7 @@ step: 03
 
 ## 事前準備
 
-- [Step 02](/steps/02-empty-boot) 完了
+- [Step 02](/steps-boot/02-empty-boot) 完了
 
 ---
 
@@ -208,4 +208,4 @@ mvn compile
 
 ## 次
 
-→ [Step 04: Mapper](/steps/04-mapper)
+→ [Step 04: Mapper](/steps-boot/04-mapper)

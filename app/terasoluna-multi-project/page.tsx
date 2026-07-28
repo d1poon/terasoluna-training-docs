@@ -4,7 +4,7 @@ import { getAllSteps } from "@/lib/steps";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 
-export const metadata = { title: "TERASOLUNA マルチプロジェクト構造 | TERASOLUNA 研修" };
+export const metadata = { title: "TERASOLUNA マルチプロジェクト構造" };
 
 type ModuleInfo = {
   key: string;
@@ -60,7 +60,7 @@ const MODULES: ModuleInfo[] = [
     color: "bg-purple-50 border-purple-200",
     contents: [
       { path: "src/main/resources/logback.xml", desc: "ロガー設定 (デフォルトは local 用)" },
-      { path: "configs/test-server/resources/", desc: "test-server プロファイル用ファイル (logback.xml, jdbc.properties)" },
+      { path: "configs/test-server/resources/", desc: "test-server プロファイル用ファイル (logback.xml, projectName-infra.properties)" },
       { path: "configs/production-server/resources/", desc: "production-server プロファイル用ファイル" },
     ],
   },
@@ -72,7 +72,7 @@ const MODULES: ModuleInfo[] = [
     desc: "起動時に流す DDL / データ投入 SQL",
     color: "bg-amber-50 border-amber-200",
     contents: [
-      { path: "src/main/sqls/", desc: "DDL / データ投入 SQL (H2, PostgreSQL 別に置ける)" },
+      { path: "src/main/sqls/", desc: "外部 DB (PostgreSQL/Oracle) 向け DDL / データ投入 SQL。sql-maven-plugin で実行 (H2 開発時は未使用)" },
     ],
   },
   {
@@ -105,8 +105,8 @@ const FILE_MAPPING = [
   { boot: "repository/UserMapper.java",      tera: "domain/repository/user/UserRepository.java",      teraModule: "-domain" },
   { boot: "resources/mapper/UserMapper.xml", tera: "resources/com/example/myapp/domain/repository/user/UserRepository.xml", teraModule: "-domain" },
   { boot: "security/CustomUserDetailsService.java", tera: "domain/service/userdetails/UserDetailsServiceImpl.java", teraModule: "-domain" },
-  { boot: "resources/schema.sql",            tera: "src/main/sqls/H2-schema.sql (等)",                teraModule: "-initdb" },
-  { boot: "(なし、Spring Boot 内蔵)",        tera: "logback.xml + jdbc.properties",                    teraModule: "-env" },
+  { boot: "resources/schema.sql",            tera: "-env/src/main/resources/database/H2-schema.sql",  teraModule: "-env" },
+  { boot: "(なし、Spring Boot 内蔵)",        tera: "logback.xml + projectName-infra.properties",       teraModule: "-env" },
 ];
 
 export default function TerasolunaMultiProjectPage() {
@@ -117,7 +117,7 @@ export default function TerasolunaMultiProjectPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -127,12 +127,12 @@ export default function TerasolunaMultiProjectPage() {
               マルチプロジェクト構造
               <br className="md:hidden" />
               <span className="text-lg md:text-2xl text-slate-600 font-semibold">
-                {" "}(blank-jsp / mybatis3)
+                {" "}(blank-xmlconfig-jsp / mybatis3)
               </span>
             </h1>
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
               研修で実際に使うのは <a href="https://terasolunaorg.github.io/guideline/current/ja/" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">TERASOLUNA GFW 公式ガイドライン</a> の
-              <strong> blank-jsp マルチプロジェクト archetype</strong>。
+              <strong> blank-xmlconfig-jsp マルチプロジェクト archetype</strong> (XML 設定版)。
               このリファレンス実装 (Spring Boot 単一プロジェクト) との違いと対応を整理します。
             </p>
           </div>
@@ -164,7 +164,7 @@ export default function TerasolunaMultiProjectPage() {
               <pre className="font-mono leading-relaxed">
 {`mvn archetype:generate -B \\
   -DarchetypeGroupId=org.terasoluna.gfw.blank \\
-  -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype \\
+  -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype \\
   -DarchetypeVersion=5.11.0.RELEASE \\
   -DgroupId=com.example.rolemgr \\
   -DartifactId=rolemgr \\
@@ -177,12 +177,16 @@ export default function TerasolunaMultiProjectPage() {
                   archetype ID の 4 パターン
                 </div>
                 <ul className="space-y-1 text-slate-700">
-                  <li>· <code className="text-xs">...blank-jsp-mybatis3-archetype</code></li>
+                  <li>· <code className="text-xs">...blank-xmlconfig-jsp-mybatis3-archetype</code></li>
                   <li>· <code className="text-xs">...blank-jsp-jpa-archetype</code></li>
                   <li>· <code className="text-xs">...blank-thymeleaf-mybatis3-archetype</code></li>
                   <li>· <code className="text-xs">...blank-thymeleaf-jpa-archetype</code></li>
                 </ul>
-                <p className="mt-2 text-xs text-slate-500">View 系 × ORM 系 の組み合わせ</p>
+                <p className="mt-2 text-xs text-slate-500">
+                  View 系 × ORM 系 の組み合わせ。研修で使うのは xmlconfig 版 (JavaConfig 版と 2 系統ある、詳細は{" "}
+                  <Link href="/steps/01-project-skeleton" className="underline">Step 01</Link>)。
+                  他 3 パターンにも同様の xmlconfig / JavaConfig の分岐があるかは未確認
+                </p>
               </div>
               <div className="bg-white rounded-lg border border-slate-200 p-3">
                 <div className="font-semibold text-slate-900 mb-1">研修で使うのはこれ</div>
@@ -347,7 +351,7 @@ export default function TerasolunaMultiProjectPage() {
             </h2>
             <div className="bg-white rounded-xl border border-slate-200 p-5 md:p-6">
               <p className="text-slate-700 mb-4 text-sm md:text-base leading-relaxed">
-                TERASOLUNA archetype には Maven プロファイルが 3 つ標準で入っています。ビルド時に <code>-P</code> でどのプロファイルを使うか指定 → 該当ディレクトリの設定ファイル (logback.xml, jdbc.properties …) を war に組み込む。
+                TERASOLUNA archetype には Maven プロファイルが 3 つ標準で入っています。ビルド時に <code>-P</code> でどのプロファイルを使うか指定 → 該当ディレクトリの設定ファイル (logback.xml, projectName-infra.properties …) を war に組み込む。
               </p>
               <div className="grid gap-3 md:grid-cols-3 text-sm">
                 <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
@@ -412,7 +416,7 @@ export default function TerasolunaMultiProjectPage() {
                 </li>
                 <li>
                   問題が<strong>DB 接続できない</strong>なら <code>-env/</code> の
-                  <code> jdbc.properties</code> と、
+                  <code> META-INF/spring/projectName-infra.properties</code> と、
                   ビルド時にどのプロファイル (-P) を指定したか
                 </li>
                 <li>

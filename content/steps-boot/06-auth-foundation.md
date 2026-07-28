@@ -17,7 +17,7 @@ step: 06
 
 ## 事前準備
 
-- [Step 05](/steps/05-service) 完了
+- [Step 05](/steps-boot/05-service) 完了
 
 ---
 
@@ -341,4 +341,4 @@ Started RolemgrApplication in X.XXX seconds
 
 ## 次
 
-→ [Step 07: ログイン画面](/steps/07-login)
+→ [Step 07: ログイン画面](/steps-boot/07-login)

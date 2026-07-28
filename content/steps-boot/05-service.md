@@ -15,7 +15,7 @@ step: 05
 
 ## 事前準備
 
-- [Step 04](/steps/04-mapper) 完了
+- [Step 04](/steps-boot/04-mapper) 完了
 
 ## 追加するファイル (1つ)
 
@@ -132,4 +132,4 @@ rolemgr/src/main/java/com/example/rolemgr/
 
 ## 次
 
-→ [Step 06: 認証基盤](/steps/06-auth-foundation)
+→ [Step 06: 認証基盤](/steps-boot/06-auth-foundation)

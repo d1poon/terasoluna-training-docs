@@ -117,7 +117,7 @@ export function T({
         <div
           ref={popoverRef}
           role="dialog"
-          className="fixed z-50 w-[min(340px,calc(100vw-16px))] bg-white border border-slate-300 rounded-xl shadow-2xl p-4 animate-in fade-in"
+          className="fixed z-50 w-[min(340px,calc(100vw-16px))] bg-white border border-slate-300 rounded-xl shadow-2xl p-4 term-popover-enter"
           style={{ top: pos.top, left: pos.left }}
           onMouseLeave={() => {
             if (window.matchMedia("(hover: hover)").matches) setOpen(false);

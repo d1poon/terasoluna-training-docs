@@ -15,7 +15,7 @@ step: 04
 
 ## 事前準備
 
-- [Step 03](/steps/03-user-domain) 完了
+- [Step 03](/steps-boot/03-user-domain) 完了
 
 ## 追加するファイル (2つ、ペアで動く)
 
@@ -181,4 +181,4 @@ mvn compile
 
 ## 次
 
-→ [Step 05: Service](/steps/05-service)
+→ [Step 05: Service](/steps-boot/05-service)

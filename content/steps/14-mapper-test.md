@@ -16,7 +16,7 @@ step: 14
 ## 事前準備
 
 - [Step 13](/steps/13-service-test) 完了
-- `demo-initdb` の DDL / データ SQL が動く状態
+- `demo-env` の DDL / データ SQL (`H2-schema.sql` / `H2-dataload.sql`) が動く状態
 
 ## 追加するファイル (1 つ)
 
@@ -86,7 +86,7 @@ class UserRepositoryTest {
 - **① `@ExtendWith(SpringExtension.class)`** — JUnit 5 + Spring TestContext を統合。Spring の DI がテスト内で使える
 - **② `@ContextConfiguration`** — 実際の Spring 設定 XML を読み込む。demo-domain の Bean + MyBatis 設定 + DB 接続情報 (env)
 - **③ `@Transactional`** — 各テストメソッドの終わりで自動 rollback。テストが互いに影響しない
-- **④ initdb の投入データを前提** — サンプルデータで ROLE_ADMIN は 2 名 (u003, u004)
+- **④ `H2-dataload.sql` の投入データを前提** — サンプルデータで ROLE_ADMIN は 2 名 (u003, u004)
 
 ## demo-domain の pom.xml 依存確認
 

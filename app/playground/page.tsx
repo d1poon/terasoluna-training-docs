@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+
+export const metadata: Metadata = {
+  title: "触ってみるデモ (Playground)",
+  description:
+    "STS を立ち上げなくても、ログイン・役職検索・ユーザ情報変更 (PRG パターン) を実物と同じ挙動でこのページ上で試せるデモ集。",
+};
 
 export default function PlaygroundIndex() {
   const steps = getAllSteps();
@@ -11,7 +18,7 @@ export default function PlaygroundIndex() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
         <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-brand font-semibold">
             Playground

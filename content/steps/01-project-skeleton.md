@@ -47,7 +47,7 @@ step: 01
 ```powershell
 mvn archetype:generate `
     "-DarchetypeGroupId=org.terasoluna.gfw.blank" `
-    "-DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype" `
+    "-DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype" `
     "-DarchetypeVersion=5.11.0.RELEASE" `
     "-DgroupId=com.example.demo" `
     "-DartifactId=demo" `
@@ -60,7 +60,7 @@ mvn archetype:generate `
 ```bash
 mvn archetype:generate \
     -DarchetypeGroupId=org.terasoluna.gfw.blank \
-    -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype \
+    -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype \
     -DarchetypeVersion=5.11.0.RELEASE \
     -DgroupId=com.example.demo \
     -DartifactId=demo \
@@ -70,8 +70,9 @@ mvn archetype:generate \
 
 #### なぜこう書く
 
-- **`-DarchetypeGroupId=org.terasoluna.gfw.blank`** — TERASOLUNA 公式の blank archetype 群を指す groupId
-- **`-DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype`** — JSP + MyBatis3 の multi-project 版 archetype。他に `-thymeleaf-` / `-jpa-` バリアントがある
+- **`-DarchetypeGroupId=org.terasoluna.gfw.blank`** — TERASOLUNA 公式の blank archetype 群を指す groupId (GFW 本体ライブラリの groupId `org.terasoluna.gfw` とは別物)
+- **`-DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype`** — JSP + MyBatis3 の multi-project 版 archetype。他に `-thymeleaf-` / `-jpa-` バリアントがある
+  - **なぜ `xmlconfig` が付く方か**: 同じ組み合わせには `xmlconfig` を含まない JavaConfig 版 (`terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype`) も存在するが、そちらは `SpringMvcConfig.java` / `SpringSecurityConfig.java` など **Java クラスで設定**する版で、XML は `web.xml` しか生成されない。本教材は `applicationContext.xml` / `spring-security.xml` / `demo-domain.xml` を編集する **XML 設定前提**の手順なので、**必ず `xmlconfig` が付く方**を指定すること
 - **`-DarchetypeVersion=5.11.0.RELEASE`** — 今回は 5.11.0.RELEASE を使う。バージョンを固定しないと将来最新に引きずられる
 - **`-DgroupId=com.example.demo`** — 自プロジェクトのパッケージ prefix。**実プロジェクトでは会社の命名規則に従う** (`jp.co.<company>.<project>` 等)
 - **`-DartifactId=demo`** — Maven 上のプロジェクト名。生成されるディレクトリ名がこれになる (`demo/`)
@@ -85,7 +86,7 @@ mvn archetype:generate \
 コマンド実行後、`demo/` ディレクトリが作られる。中身:
 
 <div class="file-location">
-  <div class="file-location-label">📍 archetype 生成後のディレクトリ構造</div>
+  <div class="file-location-label">📍 archetype 生成後のディレクトリ構造 (xmlconfig 版・実物確認済み)</div>
   <div class="file-tree">
     <div class="ft-line">📁 workspace/</div>
     <div class="ft-line ft-l1">📁 demo/</div>
@@ -93,8 +94,10 @@ mvn archetype:generate \
     <div class="ft-line ft-l2">📁 demo-env/</div>
     <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
     <div class="ft-line ft-l3">📁 src/main/resources/</div>
-    <div class="ft-line ft-l4 ft-file">📄 jdbc.properties</div>
     <div class="ft-line ft-l4 ft-file">📄 logback.xml</div>
+    <div class="ft-line ft-l4">📁 META-INF/spring/</div>
+    <div class="ft-line ft-l5 ft-file">📄 demo-env.xml</div>
+    <div class="ft-line ft-l5 ft-file">📄 demo-infra.properties <span class="ft-tag">DB 接続情報</span></div>
     <div class="ft-line ft-l2">📁 demo-domain/</div>
     <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
     <div class="ft-line ft-l3">📁 src/main/java/com/example/demo/domain/</div>
@@ -103,7 +106,10 @@ mvn archetype:generate \
     <div class="ft-line ft-l4">📁 service/ (空)</div>
     <div class="ft-line ft-l3">📁 src/main/resources/META-INF/spring/</div>
     <div class="ft-line ft-l4 ft-file">📄 demo-domain.xml</div>
-    <div class="ft-line ft-l4 ft-file">📄 demo-infra.xml <span class="ft-tag">MyBatis 設定</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 demo-codelist.xml</div>
+    <div class="ft-line ft-l4 ft-file">📄 demo-infra.xml <span class="ft-tag">MyBatis-Spring 橋渡し</span></div>
+    <div class="ft-line ft-l3">📁 src/main/resources/META-INF/mybatis/</div>
+    <div class="ft-line ft-l4 ft-file">📄 mybatis-config.xml <span class="ft-tag">MyBatis 全体設定</span></div>
     <div class="ft-line ft-l2">📁 demo-web/</div>
     <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
     <div class="ft-line ft-l3">📁 src/main/java/com/example/demo/app/ (空)</div>
@@ -113,12 +119,12 @@ mvn archetype:generate \
     <div class="ft-line ft-l5">📁 views/ (JSP を置く)</div>
     <div class="ft-line ft-l3">📁 src/main/resources/META-INF/spring/</div>
     <div class="ft-line ft-l4 ft-file">📄 applicationContext.xml</div>
-    <div class="ft-line ft-l4 ft-file">📄 demo-web.xml <span class="ft-tag">Web 設定</span></div>
     <div class="ft-line ft-l4 ft-file">📄 spring-mvc.xml <span class="ft-tag">MVC 設定</span></div>
     <div class="ft-line ft-l4 ft-file">📄 spring-security.xml <span class="ft-tag">セキュリティ設定</span></div>
+    <div class="ft-line ft-l4 ft-file">📄 application.properties</div>
     <div class="ft-line ft-l2">📁 demo-initdb/</div>
     <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
-    <div class="ft-line ft-l3">📁 src/main/sqls/ (DDL / データ SQL を置く)</div>
+    <div class="ft-line ft-l3">📁 src/main/sqls/ (空。H2 開発では未使用。postgres/oracle 等外部 DB プロファイル向け)</div>
     <div class="ft-line ft-l2">📁 demo-selenium/</div>
     <div class="ft-line ft-l3 ft-file">📄 pom.xml</div>
     <div class="ft-line ft-l3">📁 src/test/ (研修では触らない)</div>
@@ -205,6 +211,7 @@ Package Explorer に **6 個のプロジェクト**が並べば成功。
 ## よくある詰まり
 
 - **archetype:generate で `-DarchetypeVersion` を省略**: 最新版が引かれてこの手順書と齟齬が出る。必ず明示
+- **`xmlconfig` を付け忘れて JavaConfig 版を生成してしまう**: `-DarchetypeArtifactId` の `xmlconfig` を落とすと Java クラスで設定する版が生成され、`applicationContext.xml` 等の XML 編集手順と噛み合わなくなる。生成後に `demo-web/src/main/resources/META-INF/spring/applicationContext.xml` が存在するか確認
 - **社内プロキシで DL がタイムアウト**: `~/.m2/settings.xml` にプロキシ設定 (Nexus/JFrog がある場合はそちらをミラーに)。詳細 → [[/troubleshoot]]
 - **`mvn clean install` を子モジュールで先に流す**: 例えばルートで install する前に `cd demo-web && mvn install` すると、`demo-domain` / `demo-env` が Maven ローカルに未配布で解決失敗する。**必ずルート → 子** の順
 - **`java-version` エラー**: JDK 11 or 8 だと `-source/-target 17 is not supported` で失敗。JDK 17+ に切り替える

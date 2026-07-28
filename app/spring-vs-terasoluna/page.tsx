@@ -5,7 +5,7 @@ import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 import { TARGET_LABEL, VERSIONS } from "@/lib/versions";
 
-export const metadata = { title: "Spring Boot vs TERASOLUNA | TERASOLUNA 研修" };
+export const metadata = { title: "Spring Boot vs TERASOLUNA" };
 
 type Comparison = {
   n: number;
@@ -214,7 +214,7 @@ spring init --dependencies=web,security,mybatis rolemgr`,
       lang: "bash",
       code: `mvn archetype:generate -B \\
   -DarchetypeGroupId=org.terasoluna.gfw.blank \\
-  -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype \\
+  -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype \\
   -DarchetypeVersion=5.11.0.RELEASE \\
   -DgroupId=com.example.rolemgr \\
   -DartifactId=rolemgr \\
@@ -223,7 +223,7 @@ spring init --dependencies=web,security,mybatis rolemgr`,
 # → 5 モジュール構成 (-web / -domain / -env / -initdb / -selenium)
 #    認証・Validation・共通エラーページ・env プロファイル入り`,
     },
-    note: "研修で使うのは multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE (公式)。詳細は /terasoluna-multi-project を参照",
+    note: "研修で使うのは multi-web-blank-xmlconfig-jsp-mybatis3-archetype 5.11.0.RELEASE (公式)。詳細は /terasoluna-multi-project を参照",
   },
 ];
 
@@ -250,7 +250,7 @@ export default function SpringVsTerasolunaPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -284,7 +284,7 @@ export default function SpringVsTerasolunaPage() {
                 <p className="text-sm text-amber-900 leading-relaxed">
                   研修で使う TERASOLUNA archetype は{" "}
                   <code className="text-xs bg-white px-1.5 py-0.5 rounded">
-                    terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE
+                    terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype 5.11.0.RELEASE
                   </code>
                   。<code>-web</code> / <code>-domain</code> / <code>-env</code> /{" "}
                   <code>-initdb</code> / <code>-selenium</code> の 5 つに物理分割される。
@@ -329,10 +329,13 @@ export default function SpringVsTerasolunaPage() {
                 共通の土台
               </div>
               <div className="text-lg font-bold text-slate-900">
-                🌱 Spring Framework 6
+                🌱 Spring Framework
               </div>
               <div className="text-sm text-slate-600 mt-1">
-                DI コンテナ / AOP / トランザクション管理 …の中核
+                DI コンテナ / AOP / トランザクション管理 …の中核。
+                共通なのは<strong>「Spring Framework という基盤」であってバージョンではない</strong>
+                (TERASOLUNA {VERSIONS.terasolunaGfw} 系は Spring Framework {VERSIONS.springFramework}、
+                Boot {VERSIONS.bootMainVersion} 系は Spring Framework {VERSIONS.bootMainSpringFramework} 系 — メジャーバージョンが異なる)
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-3 text-sm">
                 <div className="bg-slate-50 border border-slate-200 rounded p-2.5">

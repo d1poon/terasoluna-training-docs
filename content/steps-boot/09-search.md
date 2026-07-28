@@ -14,7 +14,7 @@ step: 09
 
 ## 事前準備
 
-- [Step 08](/steps/08-menu) 完了
+- [Step 08](/steps-boot/08-menu) 完了
 
 ## 追加するファイル (2つ)
 
@@ -204,4 +204,4 @@ rolemgr/src/main/
 
 ## 次
 
-→ [Step 10: ユーザ情報画面](/steps/10-user-info)
+→ [Step 10: ユーザ情報画面](/steps-boot/10-user-info)

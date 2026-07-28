@@ -3,8 +3,9 @@ import { Sidebar } from "@/components/Sidebar";
 import { getAllSteps } from "@/lib/steps";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { TERMS } from "@/lib/glossary-terms";
 
-export const metadata = { title: "ゼロから始める 教科書 | TERASOLUNA 研修" };
+export const metadata = { title: "ゼロから始める 教科書" };
 
 const CHAPTERS = [
   { n: 1, id: "web", emoji: "🌐", title: "Web アプリって何?" },
@@ -17,13 +18,14 @@ const CHAPTERS = [
 
 export default function TextbookPage() {
   const steps = getAllSteps();
+  const termCount = TERMS.length;
 
   return (
     <div className="lg:flex mx-auto max-w-[80rem] xl:max-w-[88rem] 2xl:max-w-[96rem]">
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 lg:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -610,7 +612,7 @@ public class UserInfoController {
                   Ref
                 </div>
                 <div className="text-base font-bold mt-1 text-slate-900">
-                  用語集 (40 用語)
+                  用語集 ({termCount} 用語)
                 </div>
               </Link>
               <Link

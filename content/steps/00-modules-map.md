@@ -30,8 +30,8 @@ TERASOLUNA blank archetype (5.11.0.RELEASE) が生成する **5 つの Maven モ
 demo/                      ← 親 POM (packaging: pom)。ビルドの入口
 ├── demo-web/              ← Presentation 層 (Controller / JSP / spring-mvc.xml)
 ├── demo-domain/           ← Business + Data 層 (Service / Repository / Entity)
-├── demo-env/              ← 環境依存の設定 (jdbc.properties / logback.xml)
-├── demo-initdb/           ← DB 初期化 (DDL / データ投入 SQL)
+├── demo-env/              ← 環境依存の設定 (demo-infra.properties / logback.xml)
+├── demo-initdb/           ← 外部 DB (PostgreSQL/Oracle) 向け DDL 投入。H2 開発中は未使用
 └── demo-selenium/         ← E2E テスト (Selenium)。研修では触らないことが多い
 ```
 
@@ -46,11 +46,32 @@ demo/                      ← 親 POM (packaging: pom)。ビルドの入口
 
 | モジュール | 役割 | 主な中身 |
 |---|---|---|
-| `demo-web` | 画面まわり | Controller, JSP, Form, spring-mvc.xml, spring-security.xml |
-| `demo-domain` | 業務+データ | Service (interface + Impl), Repository (interface + XML), Entity |
-| `demo-env` | 環境依存 | `jdbc.properties`, `logback.xml`, プロファイル別設定 |
-| `demo-initdb` | DB 初期化 | `CREATE TABLE` DDL, サンプルデータ INSERT |
+| `demo-web` | 画面まわり | Controller, JSP, Form, `spring-mvc.xml`, `spring-security.xml` |
+| `demo-domain` | 業務+データ | Service (interface + Impl), Repository (interface + XML), Entity, `mybatis-config.xml` |
+| `demo-env` | 環境依存 | `demo-infra.properties` (DB 接続情報), `logback.xml`, プロファイル別設定 |
+| `demo-initdb` | 外部 DB 初期化 (H2 開発中は未使用) | `local-postgres` / `oracle` プロファイル用 SQL (`sql-maven-plugin` で実行) |
 | `demo-selenium` | E2E テスト | Selenium テストコード + WebDriver 設定 |
+
+### archetype が生成する設定ファイル (xmlconfig 版・実物確認済み)
+
+`projectName` を `demo` に読み替えた実際のパス:
+
+```
+demo-web/src/main/resources/META-INF/spring/applicationContext.xml
+demo-web/src/main/resources/META-INF/spring/spring-mvc.xml
+demo-web/src/main/resources/META-INF/spring/spring-security.xml
+demo-web/src/main/webapp/WEB-INF/web.xml
+demo-web/src/main/resources/META-INF/spring/application.properties
+demo-domain/src/main/resources/META-INF/spring/demo-domain.xml
+demo-domain/src/main/resources/META-INF/spring/demo-codelist.xml
+demo-domain/src/main/resources/META-INF/spring/demo-infra.xml
+demo-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml
+demo-env/src/main/resources/META-INF/spring/demo-env.xml
+demo-env/src/main/resources/META-INF/spring/demo-infra.properties
+demo-env/src/main/resources/logback.xml
+```
+
+MyBatis の設定 (`mybatis-config.xml` / `demo-infra.xml`) は `demo-web` ではなく **`demo-domain` 側**にある点に注意 (詳細は [[/steps/01-project-skeleton|Step 01]])。
 
 ## モジュール依存の方向
 
@@ -62,7 +83,7 @@ demo/                      ← 親 POM (packaging: pom)。ビルドの入口
       <div class="flow-node-name">demo-web</div>
       <div class="flow-node-detail">
         Controller が Service を呼ぶ → <strong>demo-domain に依存</strong><br />
-        実行時は <strong>demo-env</strong> も要る (jdbc.properties)
+        実行時は <strong>demo-env</strong> も要る (demo-infra.properties)
       </div>
     </div>
     <div class="flow-arrow">
@@ -92,13 +113,13 @@ demo/                      ← 親 POM (packaging: pom)。ビルドの入口
     <div class="flow-step">
       <span class="flow-step-badge">2</span>
       <div class="flow-step-content">
-        <code>demo-env.jar</code> の中の <code>jdbc.properties</code> が classpath に載る
+        <code>demo-env.jar</code> の中の <code>demo-infra.properties</code> が classpath に載る
       </div>
     </div>
     <div class="flow-step">
       <span class="flow-step-badge">3</span>
       <div class="flow-step-content">
-        <code>demo-domain.jar</code> の Repository が MyBatis 経由で DB (initdb で作られたテーブル) に接続
+        <code>demo-domain.jar</code> の Repository が MyBatis 経由で DB (demo-env の起動時 DB 初期化で作られたテーブル) に接続
       </div>
     </div>
     <div class="flow-step">
@@ -118,8 +139,8 @@ demo/                      ← 親 POM (packaging: pom)。ビルドの入口
   <div class="flow-step">
     <span class="flow-step-badge">Q1</span>
     <div class="flow-step-content">
-      <strong>DB のテーブル定義 / 初期データ?</strong><br />
-      → <code>demo-initdb/src/main/sqls/</code>
+      <strong>DB のテーブル定義 / 初期データ (H2 開発時)?</strong><br />
+      → <code>demo-env/src/main/resources/database/H2-schema.sql</code> / <code>H2-dataload.sql</code> (既存ファイルを編集。起動時に自動実行される)
     </div>
   </div>
   <div class="flow-step">
@@ -177,13 +198,22 @@ demo/                      ← 親 POM (packaging: pom)。ビルドの入口
   <div class="flow-step">
     <span class="flow-step-badge">Q9</span>
     <div class="flow-step-content">
-      <strong>Spring MVC / Security / MyBatis の設定 XML?</strong><br />
-      → <code>demo-web/src/main/resources/META-INF/spring/</code> (web モジュールに集約)
+      <strong>Spring MVC / Security の設定 XML?</strong><br />
+      → <code>demo-web/src/main/resources/META-INF/spring/</code> (<code>applicationContext.xml</code> / <code>spring-mvc.xml</code> / <code>spring-security.xml</code> が web モジュールに集約)
+    </div>
+  </div>
+  <div class="flow-step">
+    <span class="flow-step-badge">Q10</span>
+    <div class="flow-step-content">
+      <strong>MyBatis の設定 XML?</strong><br />
+      → <code>demo-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml</code> と
+      <code>demo-domain/src/main/resources/META-INF/spring/demo-infra.xml</code>
+      (<strong>domain モジュール側</strong>。web ではない)
     </div>
   </div>
 </div>
 
-**教訓**: 迷ったら「実行時にどこで参照されるか」を軸に判断する。Controller は画面から呼ばれる → `-web`、DDL は起動時に流れる → `-initdb`、DB 接続情報は環境で切り替わる → `-env`。
+**教訓**: 迷ったら「実行時にどこで参照されるか」を軸に判断する。Controller は画面から呼ばれる → `-web`、DDL は H2 開発中は `-env` の DB 初期化スクリプトが起動時に自動で流す (`-initdb` は外部 DB 向けで H2 開発時は未使用)、DB 接続情報は環境で切り替わる → `-env`。
 
 ## STS / Eclipse に import した時の見え方
 
@@ -204,7 +234,7 @@ demo-selenium       (E2E テスト)
 ## 「なぜ 5 つに分ける?」よくある疑問
 
 - **1 プロジェクトで書けば良くない?** → 動きます。でも `demo-env` を独立させておくと「本番 / test / local」で env の中身だけ差し替えれば良くなる (WAR は同一)。Entity や Service を「別サーバの Web アプリからも呼びたい」時、demo-domain だけ jar 化して使い回せる
-- **initdb は DB 一発作れば要らない?** → 開発中は毎回リセットしたい (H2 in-memory 前提)。本番デプロイ時は流さない (Flyway 等に置き換える)
+- **initdb は DB 一発作れば要らない?** → H2 開発中はそもそも使わない (`-env` の起動時初期化がテーブル作成・データ投入まで自動でやる)。initdb が働くのは `local-postgres` / `oracle` プロファイルで外部 DB に `sql-maven-plugin` から SQL を流す時
 - **selenium は要らない?** → 研修中はスキップして OK。運用フェーズで書き足す
 
 ## 動作確認 (このステップでやること)

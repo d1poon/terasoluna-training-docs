@@ -102,7 +102,7 @@ export function Sidebar({
     <>
       <div className="p-5 border-b border-slate-200">{brandBlock}</div>
 
-      <nav className="p-3">
+      <nav className="p-3" aria-label="サイドバー ナビゲーション">
         {/* Global search */}
         <div className="mb-4">
           <SearchPalette />
@@ -285,6 +285,8 @@ export function Sidebar({
                 <button
                   type="button"
                   onClick={() => togglePhase(phase.key)}
+                  aria-expanded={isOpen}
+                  aria-controls={`phase-panel-${phase.key}`}
                   className={
                     "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
                     (hasActive
@@ -296,10 +298,11 @@ export function Sidebar({
                   <span className="flex-1 text-left leading-tight">
                     {phase.name}
                   </span>
-                  <span className="text-slate-400 font-mono text-xs">
+                  <span className="text-slate-500 font-mono text-xs">
                     {phase.desc}
                   </span>
                   <span
+                    aria-hidden="true"
                     className={
                       "text-slate-400 text-xs transition-transform " +
                       (isOpen ? "rotate-90" : "")
@@ -310,7 +313,10 @@ export function Sidebar({
                 </button>
 
                 {isOpen && (
-                  <ul className="ml-2 mt-1 mb-2 border-l border-slate-200 pl-1 space-y-0.5">
+                  <ul
+                    id={`phase-panel-${phase.key}`}
+                    className="ml-2 mt-1 mb-2 border-l border-slate-200 pl-1 space-y-0.5"
+                  >
                     {phaseSteps.map((step) => {
                       const active = step.slug === currentSlug;
                       return (
@@ -328,7 +334,7 @@ export function Sidebar({
                             <span
                               className={
                                 "font-mono text-[11px] " +
-                                (active ? "text-white/80" : "text-slate-400")
+                                (active ? "text-white/80" : "text-slate-500")
                               }
                             >
                               {formatStepNumber(step.number)}
@@ -346,7 +352,7 @@ export function Sidebar({
         </ul>
 
         {/* 補助: Boot 版 (先に理解したい人向け) */}
-        <div className="mt-6 text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1 px-2">
+        <div className="mt-6 text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
           補助
         </div>
         <ul className="space-y-1">
@@ -354,6 +360,8 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => togglePhase("boot-aux")}
+              aria-expanded={openPhases.has("boot-aux")}
+              aria-controls="phase-panel-boot-aux"
               className={
                 "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
                 (openPhases.has("boot-aux")
@@ -366,6 +374,7 @@ export function Sidebar({
                 Boot 版 (先に理解したい人向け)
               </span>
               <span
+                aria-hidden="true"
                 className={
                   "text-slate-400 text-xs transition-transform " +
                   (openPhases.has("boot-aux") ? "rotate-90" : "")
@@ -376,7 +385,10 @@ export function Sidebar({
             </button>
 
             {openPhases.has("boot-aux") && (
-              <ul className="ml-2 mt-1 mb-2 border-l border-amber-200 pl-1 space-y-0.5">
+              <ul
+                id="phase-panel-boot-aux"
+                className="ml-2 mt-1 mb-2 border-l border-amber-200 pl-1 space-y-0.5"
+              >
                 {BOOT_STEPS.map((step) => (
                   <li key={step.slug}>
                     <Link
@@ -402,7 +414,7 @@ export function Sidebar({
         <p className="mt-1">
           multi-project + JSP + MyBatis · Spring Boot {VERSIONS.springBoot}
         </p>
-        <p className="mt-1 text-slate-400">
+        <p className="mt-1 text-slate-500">
           補助: Spring Boot {VERSIONS.bootMainVersion} 単一プロジェクト版
         </p>
       </div>

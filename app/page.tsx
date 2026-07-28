@@ -13,7 +13,7 @@ export default function HomePage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -32,7 +32,7 @@ export default function HomePage() {
             <p className="mt-3 text-sm text-slate-600 leading-relaxed">
               <strong>TERASOLUNA</strong> は日本の SIer 現場で広く使われる Spring ベースの開発フレームワーク。本教材は{" "}
               <code className="text-xs bg-slate-100 px-1 rounded">
-                terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype {VERSIONS.terasolunaGfw}
+                terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype {VERSIONS.terasolunaGfw}
               </code>{" "}
               (Spring Boot {VERSIONS.springBoot} / Spring Framework {VERSIONS.springFramework} / JDK 17 /
               MyBatis {VERSIONS.mybatis} / Tomcat 11) を主軸に書かれています。
@@ -124,7 +124,7 @@ export default function HomePage() {
               tagBg="bg-brand/10"
               tagText="text-brand-dark"
               title="作成順チェックリスト (全 23 項目)"
-              desc="1. pom.xml → 22. userInfoEdit.jsp まで通し番号で並んだリスト。進捗保存機能付き。"
+              desc="1. pom.xml → 22. userInfoEdit.jsp の実装、23. 通し動作確認まで番号順に並んだリスト。進捗保存機能付き。"
               accent="border-slate-200 hover:border-brand"
             />
             <SecondaryCard
@@ -134,7 +134,7 @@ export default function HomePage() {
               tagBg="bg-cyan-100"
               tagText="text-cyan-900"
               title="DB 接続の仕組み (TERASOLUNA -env)"
-              desc="jdbc.properties → -env.xml → -infra.xml の連鎖、Connection Pool、エラー診断まで。"
+              desc="demo-infra.properties → demo-env.xml → demo-infra.xml の連鎖、Connection Pool、エラー診断まで。"
               accent="border-cyan-200 hover:border-cyan-500"
             />
           </div>

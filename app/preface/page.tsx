@@ -6,12 +6,12 @@ import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 
-export const metadata = { title: "はじめに | TERASOLUNA 研修" };
+export const metadata = { title: "はじめに" };
 
 const roleTable = [
   { restaurant: "🍽 ウェイター", role: "Controller", file: "controller/*.java", desc: "注文票を受け取ってシェフに伝える" },
   { restaurant: "👨‍🍳 シェフ", role: "Service", file: "service/*.java", desc: "実際に料理を作る (業務ロジック)" },
-  { restaurant: "🗄 倉庫係", role: "Mapper (Repository)", file: "repository/ + mapper/*.xml", desc: "冷蔵庫から材料を取り出す" },
+  { restaurant: "🗄 倉庫係", role: "Repository (Mapper)", file: "repository/ + mapper/*.xml", desc: "冷蔵庫から材料を取り出す" },
   { restaurant: "❄ 冷蔵庫", role: "DB (H2)", file: "schema.sql (定義)", desc: "全部のデータが実際に入っている場所" },
   { restaurant: "🍽 お皿・盛り付け", role: "View (JSP)", file: "webapp/WEB-INF/views/*.jsp", desc: "料理を綺麗な形にしてお客に出す (HTML 生成)" },
   { restaurant: "📝 注文票の紙", role: "Model", file: "Controller の中で作る", desc: "Controller が View に渡すデータの箱" },
@@ -151,7 +151,7 @@ const faqs: Faq[] = [
         <strong>archetype (アーキタイプ)</strong> は Maven の「プロジェクト雛形」。
         <code>mvn archetype:generate ...</code> と実行すると、archetype に沿った pom.xml・
         フォルダ構造・サンプルコードが自動で生成されます。
-        TERASOLUNA の <code>terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype</code> は
+        TERASOLUNA の <code>terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype</code> は
         「TERASOLUNA 標準のマルチプロジェクト構造をゼロから作るためのテンプレート」。
         「白紙 (blank)」なので、生成されるのは箱と設定だけで、アプリのロジックは自分で書き足すことになります。
       </>
@@ -167,7 +167,7 @@ export default function PrefacePage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -182,6 +182,11 @@ export default function PrefacePage() {
               「Controller → どこに行くの?」がわからないレベルからでも読めるように、
               <strong>レストラン</strong>に例えて全体像を掴みます。
               このページを読むだけで、「そもそも Web アプリって何を繰り返しているのか?」を自分の言葉で説明できるようになります。
+            </p>
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+              なお、コード例のプロジェクト名は文脈で使い分けています。<code className="text-xs bg-slate-100 px-1 rounded">rolemgr</code> は
+              Spring Boot 単一プロジェクト版の参照実装名、<code className="text-xs bg-slate-100 px-1 rounded">demo</code> は
+              TERASOLUNA multi-project カリキュラム側の実装名で、この 2 つは別プロジェクトです。
             </p>
           </div>
 
@@ -256,6 +261,9 @@ export default function PrefacePage() {
                 </tbody>
               </table>
             </div>
+            <p className="mt-3 text-sm text-slate-600">
+              ※ 本教材の主軸である TERASOLUNA multi-project 版ではこの層を「Repository」と呼びます（Mapper は Spring Boot 単一版での呼び方）。
+            </p>
             <p className="mt-3 text-sm text-slate-600">
               (スマホでは詳細列を省略。詳しくは <Link href="/architecture" className="text-brand hover:underline">アーキテクチャ全体図</Link> を参照)
             </p>

@@ -16,7 +16,7 @@ step: 10
 
 ## 事前準備
 
-- [Step 09](/steps/09-search) 完了
+- [Step 09](/steps-boot/09-search) 完了
 
 ## 追加するファイル (2つ)
 
@@ -175,4 +175,4 @@ rolemgr/src/main/
 
 ## 次
 
-→ [Step 11: 変更画面](/steps/11-edit)
+→ [Step 11: 変更画面](/steps-boot/11-edit)

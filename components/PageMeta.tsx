@@ -25,11 +25,11 @@ export function PageMeta({
   return (
     <div className="mb-6 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 border-b border-slate-100 pb-3">
       <span>
-        <span className="text-slate-400">最終更新:</span>{" "}
+        <span className="text-slate-500">最終更新:</span>{" "}
         <time className="font-mono text-slate-700">{updatedStr}</time>
       </span>
       <span>
-        <span className="text-slate-400">対象:</span>{" "}
+        <span className="text-slate-500">対象:</span>{" "}
         <span className="font-mono text-slate-700">{target}</span>
       </span>
       <Link

@@ -170,13 +170,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 ### 3. データ投入 SQL
 
 <div class="file-location">
-  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-location-label">📍 このファイルを編集 (archetype が最初から生成する既存ファイル)</div>
   <div class="file-tree">
     <div class="ft-line">📁 demo/</div>
-    <div class="ft-line ft-l1">📁 demo-initdb/src/main/sqls/</div>
-    <div class="ft-line ft-l2 ft-file">📄 02-h2-dataload.sql <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l1">📁 demo-env/</div>
+    <div class="ft-line ft-l2">📁 src/main/resources/database/</div>
+    <div class="ft-line ft-l3 ft-file">📄 H2-dataload.sql <span class="ft-tag ft-tag--modify">修正</span></div>
   </div>
 </div>
+
+新しいファイルを作るのではなく、`demo-env` モジュールに既にある `H2-dataload.sql` に追記する:
 
 ```sql
 -- 5 名分のサンプルユーザ。パスワードは 'password' の BCrypt ハッシュ
@@ -188,14 +191,7 @@ INSERT INTO users (id, password, role) VALUES
     ('u005', '$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_USER');
 ```
 
-`demo-env.xml` の `<jdbc:initialize-database>` に schema SQL の後ろで data SQL も流れるように追記:
-
-```xml
-<jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
-    <jdbc:script location="classpath:sqls/01-h2-schema.sql" />
-    <jdbc:script location="classpath:sqls/02-h2-dataload.sql" />
-</jdbc:initialize-database>
-```
+`demo-env.xml` の `<jdbc:initialize-database>` は archetype 生成時点で既に schema SQL と data SQL の両方 (`classpath:/database/${database}-schema.sql` / `${database}-dataload.sql`) を読む設定になっている ([[/steps/03-user-domain|Step 03]] 参照)。**XML の追記は不要** — 上の `H2-dataload.sql` の中身を書けば起動時に自動で流れる。
 
 ## 動作確認
 

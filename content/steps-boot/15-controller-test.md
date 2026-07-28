@@ -16,7 +16,7 @@ step: 15
 
 ## 事前準備
 
-- [Step 14](/steps/14-mapper-test) 完了
+- [Step 14](/steps-boot/14-mapper-test) 完了
 
 ---
 
@@ -213,6 +213,6 @@ Step 13-15 で **合計 14 テスト**が全通ればOK:
 
 ## 次
 
-→ [Step 12: 完成 & まとめ](/steps/12-complete) (自動テストが揃った状態で改めて動作確認)
+→ [Step 12: 完成 & まとめ](/steps-boot/12-complete) (自動テストが揃った状態で改めて動作確認)
 
-戻る場合: → [Step 00: 目次](/steps/00-toc)
+戻る場合: → [Step 00: 目次](/steps-boot/00-toc)

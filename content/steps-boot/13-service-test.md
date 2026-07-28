@@ -17,7 +17,7 @@ step: 13
 
 ## 事前準備
 
-- [Step 12](/steps/12-complete) 完了 (アプリが 5 画面通しで動く)
+- [Step 12](/steps-boot/12-complete) 完了 (アプリが 5 画面通しで動く)
 
 ---
 
@@ -231,4 +231,4 @@ IDE (STS4 / IntelliJ) から `UserServiceTest` を右クリック → Run で個
 
 ## 次
 
-→ [Step 14: @MybatisTest で SQL 疎通確認](/steps/14-mapper-test)
+→ [Step 14: @MybatisTest で SQL 疎通確認](/steps-boot/14-mapper-test)

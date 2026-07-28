@@ -5,7 +5,7 @@ import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 import { VERSIONS } from "@/lib/versions";
 
-export const metadata = { title: "DB 接続の仕組み | TERASOLUNA 研修" };
+export const metadata = { title: "DB 接続の仕組み" };
 
 export default function DbConnectionPage() {
   const steps = getAllSteps();
@@ -15,7 +15,7 @@ export default function DbConnectionPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 lg:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -31,7 +31,7 @@ export default function DbConnectionPage() {
             <p className="mt-4 text-slate-700 text-base md:text-lg leading-relaxed">
               研修中に「DB に接続できない」で一番詰まる部分を、
               <strong>4 つのファイル・環境プロファイル・Connection Pool・エラー診断</strong>
-              まで細かく解説。読み終えると <code>jdbc.properties</code> がどこで何をしているかがわかります。
+              まで細かく解説。読み終えると <code>demo-infra.properties</code> がどこで何をしているかがわかります。
             </p>
           </div>
 
@@ -52,7 +52,7 @@ export default function DbConnectionPage() {
               </div>
               <ul className="space-y-2 text-sm text-rose-900">
                 <li>
-                  ① <code>-env/src/main/resources/jdbc.properties</code>
+                  ① <code>-env/src/main/resources/META-INF/spring/&#123;projectName&#125;-infra.properties</code>
                   <br />
                   <span className="text-xs pl-4 text-rose-700">
                     URL・ユーザ名・パスワード・ドライバクラスの 4 情報を書く
@@ -73,7 +73,7 @@ export default function DbConnectionPage() {
                   </span>
                 </li>
                 <li>
-                  ④ <code>-env/configs/&#123;profile&#125;/resources/jdbc.properties</code>
+                  ④ <code>-env/configs/&#123;profile&#125;/resources/META-INF/spring/&#123;projectName&#125;-infra.properties</code>
                   <br />
                   <span className="text-xs pl-4 text-rose-700">
                     test-server / production-server プロファイル用の上書き
@@ -103,9 +103,9 @@ export default function DbConnectionPage() {
               ]}
             />
             <p className="mt-4">
-              この 4 情報が、TERASOLUNA では <code>jdbc.properties</code> にプロパティとして書かれる:
+              この 4 情報が、TERASOLUNA では <code>&#123;projectName&#125;-infra.properties</code> にプロパティとして書かれる:
             </p>
-            <CodeExample lang="properties" code={`# -env/src/main/resources/jdbc.properties
+            <CodeExample lang="properties" code={`# -env/src/main/resources/META-INF/spring/rolemgr-infra.properties
 database=POSTGRESQL
 database.url=jdbc:postgresql://localhost:5432/rolemgr
 database.username=app_user
@@ -179,8 +179,8 @@ database.driverClassName=org.postgresql.Driver`} />
                 <ChainStep n={1} title="Spring 起動">
                   Spring コンテナが初期化を開始
                 </ChainStep>
-                <ChainStep n={2} title="jdbc.properties を読み込む" file="-env/src/main/resources/jdbc.properties">
-                  4 情報 (URL / username / password / driverClassName) を平文プロパティで置く
+                <ChainStep n={2} title="{projectName}-infra.properties を読み込む" file="-env/src/main/resources/META-INF/spring/{projectName}-infra.properties">
+                  4 情報 (database.url / database.username / database.password / database.driverClassName) を平文プロパティで置く
                 </ChainStep>
                 <ChainStep n={3} title="DataSource Bean を組み立てる" file="-env/META-INF/spring/{projectName}-env.xml">
                   <code>&lt;bean id=&quot;dataSource&quot; class=&quot;BasicDataSource&quot;&gt;</code> が上のプロパティを埋め込んで生成される
@@ -196,7 +196,7 @@ database.driverClassName=org.postgresql.Driver`} />
             <Table
               head={["#", "ファイル (どのモジュール)", "何を書く"]}
               rows={[
-                ["①", "-env: jdbc.properties", "URL / ユーザ名 / パスワード / driver の 4 情報 (プロパティ形式)"],
+                ["①", "-env: {projectName}-infra.properties", "URL / ユーザ名 / パスワード / driver の 4 情報 (プロパティ形式)"],
                 ["②", "-env: META-INF/spring/{name}-env.xml", "①のプロパティを読み込んで DataSource Bean を作る"],
                 ["③", "-domain: META-INF/spring/{name}-infra.xml", "DataSource → SqlSessionFactory へ橋渡し、Mapper スキャン設定"],
                 ["④", "-domain: META-INF/mybatis/mybatis-config.xml", "MyBatis 全体設定 (SQL キャッシュ、型エイリアスなど)"],
@@ -206,8 +206,8 @@ database.driverClassName=org.postgresql.Driver`} />
 
           {/* Section 5: Concrete XML examples */}
           <Section id="xml-examples" title="5. 実物の XML 設定を読む">
-            <H3>5-1. jdbc.properties (プロパティ形式)</H3>
-            <CodeExample lang="properties" code={`# -env/src/main/resources/jdbc.properties
+            <H3>5-1. {"{projectName}"}-infra.properties (プロパティ形式)</H3>
+            <CodeExample lang="properties" code={`# -env/src/main/resources/META-INF/spring/rolemgr-infra.properties
 database=POSTGRESQL
 database.url=jdbc:postgresql://localhost:5432/rolemgr
 database.username=app_user
@@ -226,7 +226,7 @@ cp.maxWait=60000`} />
 
   <!-- プロパティを読み込む -->
   <context:property-placeholder
-      location="classpath:/jdbc.properties" />
+      location="classpath:/META-INF/spring/rolemgr-infra.properties" />
 
   <!-- コネクションプール (DBCP2) を DataSource として登録 -->
   <bean id="dataSource"
@@ -236,10 +236,15 @@ cp.maxWait=60000`} />
     <property name="url"             value="\${database.url}"/>
     <property name="username"        value="\${database.username}"/>
     <property name="password"        value="\${database.password}"/>
+    <property name="defaultAutoCommit" value="false"/>
     <property name="maxTotal"        value="\${cp.maxActive}"/>
     <property name="maxIdle"         value="\${cp.maxIdle}"/>
     <property name="minIdle"         value="\${cp.minIdle}"/>
-    <property name="maxWaitMillis"   value="\${cp.maxWait}"/>
+    <property name="maxWait">
+      <bean class="java.time.Duration" factory-method="ofMillis">
+        <constructor-arg value="\${cp.maxWait}"/>
+      </bean>
+    </property>
   </bean>
 
   <!-- トランザクションマネージャ -->
@@ -315,7 +320,7 @@ cp.maxWait=60000`} />
                 ["maxTotal (maxActive)", "同時に開ける接続の最大数", "96", "同時ユーザ数 × 1.5 くらい"],
                 ["maxIdle", "空きで保っておく最大数", "16", "maxTotal の 1/4 程度"],
                 ["minIdle", "空きで保っておく最小数", "0", "起動時遅延を避けたいなら > 0"],
-                ["maxWaitMillis (maxWait)", "空きが無い時に待つ最大 ms", "60000 (60秒)", "業務要件に合わせ短めに"],
+                ["maxWait", "空きが無い時に待つ最大 ms", "60000 (60秒)", "業務要件に合わせ短めに"],
               ]}
             />
             <Note>
@@ -327,13 +332,13 @@ cp.maxWait=60000`} />
           <Section id="profiles" title="7. 環境プロファイル (local / test-server / production-server)">
             <p>
               「開発中はローカル H2、テストサーバは共有 PostgreSQL、本番は本番 DB」のように、
-              <strong>環境ごとに違う jdbc.properties を使いたい</strong>。
+              <strong>環境ごとに違う {"{projectName}"}-infra.properties を使いたい</strong>。
               TERASOLUNA archetype には Maven プロファイルが 3 種類標準で入っている:
             </p>
             <Table
               head={["プロファイル", "ビルドコマンド", "どのファイルが war に入る"]}
               rows={[
-                ["local (デフォルト)", "mvn install", "-env/src/main/resources/ (jdbc.properties は H2 想定)"],
+                ["local (デフォルト)", "mvn install", "-env/src/main/resources/META-INF/spring/ ({projectName}-infra.properties は H2 想定)"],
                 ["test-server", "mvn install -P test-server", "-env/configs/test-server/resources/ で上書き"],
                 ["production-server", "mvn install -P production-server", "-env/configs/production-server/resources/ で上書き"],
               ]}
@@ -341,16 +346,19 @@ cp.maxWait=60000`} />
             <AsciiBox>
 {`-env/
 ├── src/main/resources/
-│   ├── jdbc.properties            ← local 用 (H2 in-memory 等)
 │   ├── logback.xml
-│   └── META-INF/spring/*.xml
+│   └── META-INF/spring/
+│       ├── rolemgr-env.xml
+│       └── rolemgr-infra.properties       ← local 用 (H2 in-memory 等)
 └── configs/
     ├── test-server/resources/
-    │   ├── jdbc.properties        ← test-server プロファイル時、こちらで上書き
-    │   └── logback.xml
+    │   ├── logback.xml
+    │   └── META-INF/spring/
+    │       └── rolemgr-infra.properties   ← test-server プロファイル時、こちらで上書き
     └── production-server/resources/
-        ├── jdbc.properties        ← production 用 (本番 PostgreSQL URL)
-        └── logback.xml`}
+        ├── logback.xml
+        └── META-INF/spring/
+            └── rolemgr-infra.properties   ← production 用 (本番 PostgreSQL URL)`}
             </AsciiBox>
             <Note>
               💡 <strong>同じ war を環境ごとに使い回さない</strong>のが TERASOLUNA の思想。
@@ -370,7 +378,7 @@ cp.maxWait=60000`} />
 </dependency>`} />
               </li>
               <li>
-                <strong><code>jdbc.properties</code> を PostgreSQL 用に書き換え</strong>
+                <strong><code>{"{projectName}"}-infra.properties</code> を PostgreSQL 用に書き換え</strong>
                 <CodeExample lang="properties" code={`# Before (H2)
 database.url=jdbc:h2:mem:rolemgr
 database.driverClassName=org.h2.Driver
@@ -397,7 +405,7 @@ database.driverClassName=org.postgresql.Driver`} />
             <div className="space-y-4">
               <ErrorCase
                 error="Cannot get JDBC Connection"
-                cause="jdbc.url が違う / DB サーバが動いてない / ポート違い"
+                cause="database.url が違う / DB サーバが動いてない / ポート違い"
                 fix={[
                   "PostgreSQL: psql -h localhost -U app_user -d rolemgr で繋がるか確認",
                   "サーバのプロセスが動いてるか (Windows のサービス、pg_ctl status)",
@@ -408,7 +416,7 @@ database.driverClassName=org.postgresql.Driver`} />
                 error="FATAL: password authentication failed"
                 cause="username / password が違う、または pg_hba.conf の認証方式ミスマッチ"
                 fix={[
-                  "jdbc.properties の username / password を確認",
+                  "{projectName}-infra.properties の database.username / database.password を確認",
                   "本当にその user で psql ログインできるかコマンドラインで確認",
                   "PostgreSQL の pg_hba.conf を確認 (trust / md5 / scram-sha-256)"
                 ]}
@@ -460,8 +468,8 @@ database.driverClassName=org.postgresql.Driver`} />
                   <code className="ml-2 text-xs bg-slate-100 px-1.5 py-0.5 rounded">psql -h ... -U ...</code>
                 </li>
                 <li>
-                  <strong>jdbc.properties の 4 情報が正しいか</strong>
-                  (URL / username / password / driverClassName)
+                  <strong>{"{projectName}"}-infra.properties の 4 情報が正しいか</strong>
+                  (database.url / database.username / database.password / database.driverClassName)
                 </li>
                 <li>
                   <strong>pom.xml に該当 driver 依存があるか</strong>
@@ -472,7 +480,7 @@ database.driverClassName=org.postgresql.Driver`} />
                   (<code>mvn install -P production-server</code> のように build 時に <code>-P</code> を付けたか)
                 </li>
                 <li>
-                  <strong>-env.xml の property-placeholder が jdbc.properties を指してるか</strong>
+                  <strong>-env.xml の property-placeholder が {"{projectName}"}-infra.properties を指してるか</strong>
                   (パスミスがないか)
                 </li>
                 <li>

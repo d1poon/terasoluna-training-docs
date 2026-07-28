@@ -6,7 +6,7 @@ import { PageFooter } from "@/components/PageFooter";
 import { RelatedLinks } from "@/components/RelatedLinks";
 
 export const metadata = {
-  title: "トラブルシュート | TERASOLUNA 研修",
+  title: "トラブルシュート",
   description:
     "TERASOLUNA multi-project 特有のよくある詰まり (Invalid bound statement, PKIX, ポート競合, 文字化け 等)。",
 };
@@ -34,7 +34,7 @@ const TROUBLES: Trouble[] = [
       text: `cd demo
 mvn clean install     # ← まずこれで 5 モジュール全部をローカルに install
 cd demo-web
-mvn cargo:run         # ← これで動く`,
+mvn cargo:run         # ← prefix 解決に失敗する場合は #11 参照`,
     },
     refStep: "Step 01",
     refStepHref: "/steps/01-project-skeleton",
@@ -70,7 +70,7 @@ $JAVA_HOME = "C:\\Program Files\\Java\\jdk-17"
     title: "4. `Address already in use: bind` (ポート 8080 競合)",
     symptom: "`cargo:run` で Tomcat が起動しない、8080 が使用中と表示。",
     cause: "別プロセス (別の Tomcat / Node / IntelliJ の内蔵 サーバ 等) が 8080 を掴んでいる。",
-    fix: "① 別プロセスを停止するか、② Cargo プラグインの `cargo.servlet.port` を上書き。",
+    fix: "① 別プロセスを停止するか、② Cargo プラグインの `cargo.servlet.port` を上書き。`cargo:run` の prefix 解決自体に失敗する場合は #11 を参照。",
     code: {
       lang: "powershell",
       text: `# ① 使用中プロセスを特定して停止 (Windows)
@@ -86,7 +86,7 @@ mvn -pl demo-web -am cargo:run -Dcargo.servlet.port=8090`,
     title: "5. 文字化け (JSP / URL / DB のいずれか)",
     symptom: "画面 or DB 保存された日本語が `??` や `\\u3042` になる、または UTF-8 文字が化ける。",
     cause: "JSP の contentType 宣言忘れ / web.xml の CharacterEncodingFilter 未設定 / DB 接続 URL に characterEncoding が付いていない / Tomcat の URI encoding がデフォルトのまま、のいずれか。",
-    fix: "4 箇所を全て確認: ① JSP 冒頭に `<%@ page contentType=\"text/html; charset=UTF-8\" %>`。② `web.xml` に CharacterEncodingFilter (`encoding=UTF-8`, `forceEncoding=true`)。③ jdbc.properties の URL に `?useUnicode=true&characterEncoding=UTF-8` (MySQL の場合、PostgreSQL/H2/Oracle は不要)。④ Tomcat の `server.xml` の Connector に `URIEncoding=\"UTF-8\"` (Tomcat 11 はデフォルト)。",
+    fix: "4 箇所を全て確認: ① JSP 冒頭に `<%@ page contentType=\"text/html; charset=UTF-8\" %>`。② `web.xml` に CharacterEncodingFilter (`encoding=UTF-8`, `forceEncoding=true`)。③ {projectName}-infra.properties の database.url に `?useUnicode=true&characterEncoding=UTF-8` (MySQL の場合、PostgreSQL/H2/Oracle は不要)。④ Tomcat の `server.xml` の Connector に `URIEncoding=\"UTF-8\"` (Tomcat 11 はデフォルト)。",
   },
   {
     id: "no-classdef",
@@ -126,14 +126,15 @@ mvn -pl demo-web -am cargo:run -Dcargo.servlet.port=8090`,
     id: "jstl-taglib",
     title: "9. `<c:if>` タグがそのまま HTML に出力される (JSTL が動かない)",
     symptom: "JSP を開くと `<c:if test=\"${...}\">` の文字列がそのまま画面に表示され、条件分岐が効かない。",
-    cause: "JSTL の taglib 宣言が旧 URI (`http://java.sun.com/jsp/jstl/core`)。**Jakarta EE 移行後は URI が変わっている**。",
-    fix: "宣言を Jakarta 版に:",
+    cause: "taglib 宣言の URI 自体が原因ではないことが多い。実際の原因は次のいずれか: ① `jakarta.servlet.jsp.jstl` の API / 実装 (glassfish) jar が web モジュールの依存に入っていない、② taglib 宣言そのものを書き忘れている、③ 共通の `include.jsp` を JSP 先頭で `<%@ include %>` し忘れている。",
+    fix: "旧 URI (`http://java.sun.com/jsp/jstl/core`) と新 URI (`jakarta.tags.core`) は**どちらも有効**(JSTL 3.0 は旧 URI を後方互換としてサポートしており、公式 archetype が生成する `include.jsp` 自体が旧 URI を使っている)。新旧の混在だけ避ければ良く、まずは依存 jar と include 忘れを確認する:",
     code: {
       lang: "jsp",
-      text: `<!-- ❌ 旧 (Java EE) -->
+      text: `<!-- 公式 archetype の include.jsp はこの旧 URI をそのまま使用 (これでも動く) -->
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<!-- ✅ 新 (Jakarta EE) — TERASOLUNA 5.11.0 系はこちら -->
+<!-- Jakarta EE の正式 URI (JSTL 3.0 以降)。こちらでも動く。プロジェクト内で統一すること -->
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>`,
     },
   },
@@ -146,6 +147,26 @@ mvn -pl demo-web -am cargo:run -Dcargo.servlet.port=8090`,
     refStep: "Step 01",
     refStepHref: "/steps/01-project-skeleton",
   },
+  {
+    id: "cargo-prefix",
+    title: "11. `mvn cargo:run` で `No plugin found for prefix 'cargo'`",
+    symptom: "`mvn -pl demo-web -am cargo:run` を実行すると `No plugin found for prefix 'cargo' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo]` と出て起動しない。",
+    cause: "Cargo プラグイン (`cargo-maven3-plugin` 1.10.25、`containerId=tomcat11x` で Tomcat 11.0.15 を自動 DL する設定込み) は `terasoluna-gfw-parent` の `pluginManagement` に定義されているが、archetype が生成する `demo-web/pom.xml` 自体には `<plugin>` 宣言が無い (`build-helper-maven-plugin` のみ)。Maven の prefix 解決はデフォルトで `org.apache.maven.plugins` / `org.codehaus.mojo` しか探さないため、環境によっては prefix 解決に失敗する。",
+    fix: "① 完全修飾のゴール名で直接呼ぶ、② または `demo-web/pom.xml` の `<build><plugins>` に空の `<plugin>` 宣言を追加する (version / configuration は親の pluginManagement から継承されるので書かなくてよい)。いずれの方法でも、初回は Tomcat 11.0.15 の zip を自動 DL するため起動に時間がかかる。",
+    code: {
+      lang: "powershell",
+      text: `# ① 完全修飾で prefix 解決をスキップして直接実行
+mvn -pl demo-web -am org.codehaus.cargo:cargo-maven3-plugin:run
+
+# ② または demo-web/pom.xml の <build><plugins> に追加 (version/configuration は継承されるので省略可)
+# <plugin>
+#   <groupId>org.codehaus.cargo</groupId>
+#   <artifactId>cargo-maven3-plugin</artifactId>
+# </plugin>`,
+    },
+    refStep: "Step 02",
+    refStepHref: "/steps/02-empty-boot",
+  },
 ];
 
 export default function TroubleshootPage() {
@@ -156,7 +177,7 @@ export default function TroubleshootPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
               Troubleshoot

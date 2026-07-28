@@ -12,7 +12,9 @@ TERASOLUNA multi-project 構成で「役職編集アプリ」を組み立てる�
 | **主軸** | `/steps/` | 研修環境で実際に使う構成 | TERASOLUNA GFW 5.11.0.RELEASE (multi-project、5 モジュール) |
 | **補助** | `/steps-boot/` | 先に本質だけ掴みたい人向け | Spring Boot 3.4 (単一プロジェクト) |
 
-主軸の TERASOLUNA 側は `terasoluna-gfw-multi-web-blank-jsp-mybatis3-archetype 5.11.0.RELEASE` が生成する
+主軸の TERASOLUNA 側は `terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype 5.11.0.RELEASE`
+(groupId: `org.terasoluna.gfw.blank`、XML 設定版。`xmlconfig` の付かない同名 archetype は
+Java クラスで設定する JavaConfig 版で別物) が生成する
 `-web` / `-domain` / `-env` / `-initdb` / `-selenium` の 5 モジュール構成を「正」として書かれている。
 
 ## バージョンの単一の真実源

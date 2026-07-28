@@ -168,7 +168,7 @@ public class SearchController {
 
 ## 動作確認
 
-Tomcat 起動 → ログイン → メニュー → 「役職検索」リンク → 「長」で検索 → 3 件 (ROLE_USER が対象は 0 件だが、ROLE_ADMIN + 「長」を含めた検索は用途による)。空欄で検索 → 5 件全表示。
+Tomcat 起動 → ログイン → メニュー → 「役職検索」リンク → 「ADMIN」で検索 → 2 件 (`ROLE_ADMIN` の u003, u004 がヒット。Step 06 で投入したサンプルデータは `ROLE_USER` × 3, `ROLE_ADMIN` × 2 の 5 件)。空欄で検索 → 5 件全表示。
 
 ## よくある詰まり
 

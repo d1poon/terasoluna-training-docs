@@ -1,4 +1,5 @@
 "use client";
+// 現在未使用。将来 steps ページの右レール目次として組み込む想定。
 import { useEffect, useState } from "react";
 
 type Heading = {

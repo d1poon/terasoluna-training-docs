@@ -118,7 +118,7 @@ mvn -pl demo-domain test
 
 ## よくある詰まり
 
-- **`NullPointerException` in `@InjectMocks`**: フィールドインジェクション (`@Inject`) の場合、`@InjectMocks` は field injection モードでフィールドに mock を入れる。**フィールドが `private` だと Mockito がリフレクションで書き込めない**ことがあるため、package-private (デフォルト可視性) にしておく
+- **`NullPointerException` in `@InjectMocks`**: フィールドインジェクション (`@Inject`) の場合、`@InjectMocks` は `field.setAccessible(true)` を経由してリフレクションでフィールドに値を書き込むため、**`private` であっても注入自体は問題なく行われる** (Mockito の標準動作)。`NullPointerException` になる典型原因は、フィールドの型と `@Mock` の型が一致しない、または候補になる `@Mock` が複数あって曖昧なケース。package-private (デフォルト可視性) にすることがあるのは「テストコードから直接フィールドを参照・上書きしたい」といった可視性上の理由であり、Mockito の注入可否とは関係ない
 - **`UnnecessaryStubbingException`**: `when().thenReturn()` を書いたのにその呼び出しが実際になかったケース。テストの意図と実装の乖離を示唆
 - **`Method X was not called`**: `verify(...)` で「呼ばれるはず」と書いた呼び出しが無い。Service 側で条件分岐して呼ばない経路になっている可能性
 

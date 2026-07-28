@@ -1,13 +1,33 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
 import { getAllSteps, getStep, formatStepNumber } from "@/lib/steps";
-import { renderMarkdown } from "@/lib/markdown";
+import { renderMarkdown, extractDescription } from "@/lib/markdown";
 
 export async function generateStaticParams() {
   return getAllSteps().map((s) => ({ slug: s.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const step = getStep(slug);
+  if (!step) return {};
+
+  const title = `Step ${formatStepNumber(step.number)} — ${step.title}`;
+  const description = extractDescription(step.content);
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/steps/${slug}` },
+  };
 }
 
 export default async function StepPage({
@@ -31,7 +51,7 @@ export default async function StepPage({
       <Sidebar steps={steps} currentSlug={slug} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           <div className="mb-6 md:mb-8">
             <div className="text-sm text-brand font-mono">
               Step {formatStepNumber(step.number)}

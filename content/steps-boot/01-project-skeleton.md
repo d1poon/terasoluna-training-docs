@@ -191,4 +191,4 @@ mvn compile
 
 ## 次
 
-→ [Step 02: 空アプリ起動](/steps/02-empty-boot)
+→ [Step 02: 空アプリ起動](/steps-boot/02-empty-boot)

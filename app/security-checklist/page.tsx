@@ -7,7 +7,7 @@ import { PageFooter } from "@/components/PageFooter";
 import { VERSIONS } from "@/lib/versions";
 
 export const metadata = {
-  title: "セキュリティチェックリスト | TERASOLUNA 研修",
+  title: "セキュリティチェックリスト",
   description:
     "ログイン失敗メッセージのユーザ存在漏洩、セッション固定攻撃、ログアウト処理、認可 (IDOR) 等、実装時に踏みがちなセキュリティ観点を 1 ページに集約。",
 };
@@ -236,7 +236,7 @@ export default function SecurityChecklistPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">
@@ -255,6 +255,13 @@ export default function SecurityChecklistPage() {
               このページは<strong>「本番公開する前に一度チェックしたい」観点を 1 ページに集約</strong>したもの。
               初学者が踏みがちな順に並べています。
             </p>
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+              ⚠️ このページのコード例は Spring Boot 単一プロジェクト版 (<code className="text-xs bg-white/60 px-1 rounded">rolemgr</code>、
+              <code className="text-xs bg-white/60 px-1 rounded">SecurityConfig.java</code> の Java Config) で書かれています。
+              各項目の「実装参考」リンクは TERASOLUNA multi-project 版の Step (<code className="text-xs bg-white/60 px-1 rounded">demo</code>、
+              <code className="text-xs bg-white/60 px-1 rounded">spring-security.xml</code> の XML 設定) を指しており、書き方が異なります。
+              差分は <Link href="/spring-vs-terasoluna" className="text-brand underline">Boot からの読み替え表</Link> を参照してください。
+            </div>
             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900">
               <strong>⚠️ 免責:</strong> このページは網羅ではなく、初学者が最初に押さえるべき観点の入口です。
               本番システムには追加の対策 (WAF / IDS / 定期的な依存脆弱性スキャン / ペネトレーションテスト等) が必要です。

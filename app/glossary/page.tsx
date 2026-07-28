@@ -6,7 +6,7 @@ import { PageFooter } from "@/components/PageFooter";
 import { GlossarySearch } from "./GlossarySearch";
 import { TERMS } from "@/lib/glossary-terms";
 
-export const metadata = { title: "用語集 | TERASOLUNA 研修" };
+export const metadata = { title: "用語集" };
 
 export default function GlossaryPage() {
   const steps = getAllSteps();
@@ -17,7 +17,7 @@ export default function GlossaryPage() {
       <Sidebar steps={steps} />
 
       <div className="flex-1 min-w-0">
-        <main className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
           {/* Hero */}
           <div className="mb-8 md:mb-10">
             <div className="text-xs uppercase tracking-wider text-brand font-semibold">

@@ -65,21 +65,21 @@ tags: [type/learning, type/training, tech/terasoluna, tech/spring]
 
 ## リンク
 
-- [Step 01 → プロジェクト骨組み](/steps/01-project-skeleton)
-- [Step 02 → 空アプリ起動](/steps/02-empty-boot)
-- [Step 03 → User ドメイン](/steps/03-user-domain)
-- [Step 04 → Mapper](/steps/04-mapper)
-- [Step 05 → Service](/steps/05-service)
-- [Step 06 → 認証基盤](/steps/06-auth-foundation)
-- [Step 07 → ログイン画面](/steps/07-login)
-- [Step 08 → メニュー画面](/steps/08-menu)
-- [Step 09 → 検索画面](/steps/09-search)
-- [Step 10 → ユーザ情報画面](/steps/10-user-info)
-- [Step 11 → 変更画面](/steps/11-edit)
-- [Step 12 → 完成 & まとめ](/steps/12-complete)
-- [Step 13 → Service 単体テスト (JUnit5 + Mockito)](/steps/13-service-test)
-- [Step 14 → Mapper 統合テスト (@MybatisTest)](/steps/14-mapper-test)
-- [Step 15 → Controller テスト (MockMvc)](/steps/15-controller-test)
+- [Step 01 → プロジェクト骨組み](/steps-boot/01-project-skeleton)
+- [Step 02 → 空アプリ起動](/steps-boot/02-empty-boot)
+- [Step 03 → User ドメイン](/steps-boot/03-user-domain)
+- [Step 04 → Mapper](/steps-boot/04-mapper)
+- [Step 05 → Service](/steps-boot/05-service)
+- [Step 06 → 認証基盤](/steps-boot/06-auth-foundation)
+- [Step 07 → ログイン画面](/steps-boot/07-login)
+- [Step 08 → メニュー画面](/steps-boot/08-menu)
+- [Step 09 → 検索画面](/steps-boot/09-search)
+- [Step 10 → ユーザ情報画面](/steps-boot/10-user-info)
+- [Step 11 → 変更画面](/steps-boot/11-edit)
+- [Step 12 → 完成 & まとめ](/steps-boot/12-complete)
+- [Step 13 → Service 単体テスト (JUnit5 + Mockito)](/steps-boot/13-service-test)
+- [Step 14 → Mapper 統合テスト (@MybatisTest)](/steps-boot/14-mapper-test)
+- [Step 15 → Controller テスト (MockMvc)](/steps-boot/15-controller-test)
 
 ## 参考
 
