@@ -159,11 +159,9 @@ cd demo
 mvn -pl demo-domain -am compile
 ```
 
-### 4-b. Tomcat 起動 → H2 コンソール確認
+### 4-b. Tomcat 再起動 → H2 コンソール確認
 
-```powershell
-mvn -pl demo-web -am cargo:run
-```
+STS の Servers ビューでサーバーを右クリック →「Restart」(未起動の場合は [Step 02](/steps/02-empty-boot) の手順で Run on Server から起動する)。変更が反映されていなければ手動で Restart する。
 
 http://localhost:8080/demo-web/h2-console/ (archetype デフォルトで有効) にアクセスし、`demo-infra.properties` と同じ接続情報でログイン。`SELECT * FROM users;` が「0 件」で通れば成功 (テーブルが作られている)。
 

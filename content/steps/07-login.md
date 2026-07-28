@@ -12,7 +12,7 @@ step: 07
 - 独自の login 画面を作り、Spring Security デフォルトの灰色 UI から置き換える
 - Controller を `demo-web` の `app.login` パッケージに配置 (TERASOLUNA 規約: **usecase 別サブパッケージ**)
 - JSP のフォームに CSRF token を埋め込む
-- 実物のログイン (u001 / password) が通ってメニュー画面 (Step 08) にリダイレクトされる (メニュー未作成でも Whitelabel 404 が出れば OK)
+- 実物のログイン (u001 / password) が通ってメニュー画面 (Step 08) にリダイレクトされる (メニュー未作成でも 404 エラー画面が出れば OK)
 
 ## 事前準備
 
@@ -144,16 +144,15 @@ demo/demo-web/src/main/
 
 ## 動作確認
 
-```powershell
-cd demo
-mvn -pl demo-web -am cargo:run
-```
+STS の Servers ビューでサーバーを右クリック →「Restart」(未起動の場合は [Step 02](/steps/02-empty-boot) の手順で Run on Server から起動する)。
 
 http://localhost:8080/demo-web/login にアクセス:
 
 1. **自作の login.jsp** が出る (Step 06 時点の灰色 UI ではない) → OK
 2. ID: `u001`、パスワード: `password` → ログインボタン
-3. リダイレクトで `/menu` に飛ぶ → **404 Whitelabel Error Page** が出れば OK (Step 08 で menu を作る)
+3. リダイレクトで `/menu` に飛ぶ → **`Resource Not Found Error!` の画面**が出れば OK (Step 08 で menu を作る)
+
+> archetype が生成する `web.xml` には `<error-page>` で 404 → `/WEB-INF/views/common/error/resourceNotFoundError.jsp` が設定済みなので、404 のときはこの画面が出ます。Spring Boot の Whitelabel Error Page ではありません。
 
 ## よくある詰まり
 

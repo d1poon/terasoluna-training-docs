@@ -57,9 +57,11 @@ export const VERSIONS = {
   jdk: "17 (archetype の java-version 指定値)",
   maven: "3.9.9 (プロジェクト同梱、外部インストール不要)",
   mavenCompilerPlugin: "3.14.1",
-  // 11.0.15 は terasoluna-gfw-parent pom.xml の <cargo.tomcat11.version> プロパティ由来。
+  // 11.0.15 は terasoluna-gfw-parent pom.xml の <cargo.tomcat11.version> プロパティ由来
+  // (archetype が想定する Tomcat のバージョンという位置付け)。本教材では Cargo プラグインは使わず、
+  // STS4 の Servers ビューに登録した Tomcat (Run on Server) にデプロイする。
   // 出典: https://github.com/terasolunaorg/terasoluna-gfw/blob/5.11.0.RELEASE/terasoluna-gfw-parent/pom.xml (179-209行)
-  tomcatDeployTarget: "11.0.15 (cargo.tomcat11.version, Cargo プラグイン想定)",
+  tomcatDeployTarget: "11.0.15 (STS4 Servers ビューに登録した Tomcat v11.0 で Run on Server)",
 
   // DB (dev/prod ターゲット)
   h2: "2.x (dev in-memory)",
@@ -189,7 +191,7 @@ export const VERSION_GROUPS: {
     rows: [
       { label: "JDK", value: VERSIONS.jdk },
       { label: "Maven", value: VERSIONS.maven },
-      { label: "Tomcat (Cargo)", value: VERSIONS.tomcatDeployTarget },
+      { label: "Tomcat (STS Run on Server)", value: VERSIONS.tomcatDeployTarget },
       {
         label: "MapStruct",
         value: VERSIONS.mapstruct,

@@ -24,10 +24,7 @@ step: 12
 
 ## 通し動作確認
 
-```powershell
-cd demo
-mvn -pl demo-web -am cargo:run
-```
+STS の Servers ビューでサーバーを右クリック →「Restart」(未起動の場合は [Step 02](/steps/02-empty-boot) の手順で Run on Server から起動する)。
 
 1. http://localhost:8080/demo-web/ → `/login` にリダイレクト
 2. ID: `u001`、パスワード: `password` → `/menu` に遷移

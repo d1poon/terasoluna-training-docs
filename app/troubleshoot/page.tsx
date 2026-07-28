@@ -28,13 +28,11 @@ const TROUBLES: Trouble[] = [
     title: "1. `Could not resolve dependencies for demo-web`",
     symptom: "子モジュールを直接ビルドしようとすると、`demo-domain` や `demo-env` が見つからないと怒られる。",
     cause: "ルート親 POM から `mvn install` していないため、子モジュール間の依存が Maven ローカルリポジトリに配布されていない。",
-    fix: "**必ずルート `demo/` で `mvn clean install` を先に実行**する。以降は個別モジュールでも動くようになる。",
+    fix: "**必ずルート `demo/` で `mvn clean install` を先に実行**する。以降は個別モジュールでも動くようになる。STS で動作確認する場合は、この後 STS にインポートして「Run on Server」で起動する (Step 02 参照)。",
     code: {
       lang: "powershell",
       text: `cd demo
-mvn clean install     # ← まずこれで 5 モジュール全部をローカルに install
-cd demo-web
-mvn cargo:run         # ← prefix 解決に失敗する場合は #11 参照`,
+mvn clean install     # ← まずこれで 5 モジュール全部をローカルに install`,
     },
     refStep: "Step 01",
     refStepHref: "/steps/01-project-skeleton",
@@ -68,17 +66,14 @@ $JAVA_HOME = "C:\\Program Files\\Java\\jdk-17"
   {
     id: "port-conflict",
     title: "4. `Address already in use: bind` (ポート 8080 競合)",
-    symptom: "`cargo:run` で Tomcat が起動しない、8080 が使用中と表示。",
+    symptom: "STS で「Run on Server」を実行すると Tomcat が起動しない、8080 が使用中と表示される。",
     cause: "別プロセス (別の Tomcat / Node / IntelliJ の内蔵 サーバ 等) が 8080 を掴んでいる。",
-    fix: "① 別プロセスを停止するか、② Cargo プラグインの `cargo.servlet.port` を上書き。`cargo:run` の prefix 解決自体に失敗する場合は #11 を参照。",
+    fix: "① 別プロセスを停止するか、② Servers ビューで対象サーバーをダブルクリック →「Ports」タブの「HTTP/1.1」を 8090 等に変更する。",
     code: {
       lang: "powershell",
-      text: `# ① 使用中プロセスを特定して停止 (Windows)
+      text: `# 使用中プロセスを特定して停止 (Windows)
 netstat -ano | findstr ":8080"
-taskkill /PID <PID> /F
-
-# ② ポート変更で起動
-mvn -pl demo-web -am cargo:run -Dcargo.servlet.port=8090`,
+taskkill /PID <PID> /F`,
     },
   },
   {
@@ -97,8 +92,8 @@ mvn -pl demo-web -am cargo:run -Dcargo.servlet.port=8090`,
   },
   {
     id: "jsp-not-found",
-    title: "7. `Whitelabel Error Page (404)` — JSP が見つからない",
-    symptom: "Controller が `\"userinfo/userInfo\"` を返しても、Tomcat 側で JSP が見つからない。",
+    title: "7. `Resource Not Found Error!` (404) — JSP が見つからない",
+    symptom: "Controller が `\"userinfo/userInfo\"` を返しても、Tomcat 側で JSP が見つからない。archetype が生成する `web.xml` に `<error-page>` で 404 → `/WEB-INF/views/common/error/resourceNotFoundError.jsp` が設定されているため、この画面が表示される (Spring Boot の Whitelabel Error Page ではない)。",
     cause: "① JSP の物理配置と Controller の return 値パスが不一致。② ViewResolver の prefix/suffix と実配置が不整合。③ webapp/ の下に置いていない (resources/ に置いてしまった)。",
     fix: "① Controller の return `\"userinfo/userInfo\"` に対し、JSP は `demo-web/src/main/webapp/WEB-INF/views/userinfo/userInfo.jsp` にあるか。② `spring-mvc.xml` の InternalResourceViewResolver の prefix/suffix を確認。③ resources/ でなく webapp/ 配下であることを再確認。",
     refStep: "Step 07",
@@ -148,22 +143,20 @@ mvn -pl demo-web -am cargo:run -Dcargo.servlet.port=8090`,
     refStepHref: "/steps/01-project-skeleton",
   },
   {
-    id: "cargo-prefix",
-    title: "11. `mvn cargo:run` で `No plugin found for prefix 'cargo'`",
-    symptom: "`mvn -pl demo-web -am cargo:run` を実行すると `No plugin found for prefix 'cargo' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo]` と出て起動しない。",
-    cause: "Cargo プラグイン (`cargo-maven3-plugin` 1.10.25、`containerId=tomcat11x` で Tomcat 11.0.15 を自動 DL する設定込み) は `terasoluna-gfw-parent` の `pluginManagement` に定義されているが、archetype が生成する `demo-web/pom.xml` 自体には `<plugin>` 宣言が無い (`build-helper-maven-plugin` のみ)。Maven の prefix 解決はデフォルトで `org.apache.maven.plugins` / `org.codehaus.mojo` しか探さないため、環境によっては prefix 解決に失敗する。",
-    fix: "① 完全修飾のゴール名で直接呼ぶ、② または `demo-web/pom.xml` の `<build><plugins>` に空の `<plugin>` 宣言を追加する (version / configuration は親の pluginManagement から継承されるので書かなくてよい)。いずれの方法でも、初回は Tomcat 11.0.15 の zip を自動 DL するため起動に時間がかかる。",
-    code: {
-      lang: "powershell",
-      text: `# ① 完全修飾で prefix 解決をスキップして直接実行
-mvn -pl demo-web -am org.codehaus.cargo:cargo-maven3-plugin:run
-
-# ② または demo-web/pom.xml の <build><plugins> に追加 (version/configuration は継承されるので省略可)
-# <plugin>
-#   <groupId>org.codehaus.cargo</groupId>
-#   <artifactId>cargo-maven3-plugin</artifactId>
-# </plugin>`,
-    },
+    id: "sts-no-tomcat",
+    title: "11. 「Run on Server」でサーバー選択肢に Tomcat が出てこない",
+    symptom: "`demo-web` を右クリック →「Run As」→「Run on Server」を選んでも、サーバー選択ダイアログに Tomcat が一覧に出ない (または一覧自体が空)。",
+    cause: "STS の Servers ビューに Tomcat サーバーがまだ 1 つも登録されていない。初回はサーバー定義を自分で作成する必要がある。",
+    fix: "サーバー選択ダイアログで Tomcat v11.0 Server をサーバー種別として選び、次の画面で Tomcat のインストールディレクトリを指定してサーバーを新規作成する。登録後は Servers ビューに表示され、以降は「Run on Server」で選択できるようになる。",
+    refStep: "Step 02",
+    refStepHref: "/steps/02-empty-boot",
+  },
+  {
+    id: "sts-build-error",
+    title: "12. STS にインポート直後にビルドエラーが出る",
+    symptom: "Existing Maven Projects でインポートした直後、Package Explorer 上のプロジェクトに赤い ✗ (エラーマーカー) が付く。",
+    cause: "インポート直後は Eclipse 側のプロジェクト設定と Maven (pom.xml) 側の設定にズレが生じ、ビルドエラー表示になることがある。",
+    fix: "プロジェクト名を右クリック →「Maven」→「Update Project…」→ 対象プロジェクトにチェックが入った状態で「OK」。これでエラーが解消するケースがある (TERASOLUNA 公式ガイドラインの Note にも同様の手順が記載されている)。",
     refStep: "Step 02",
     refStepHref: "/steps/02-empty-boot",
   },

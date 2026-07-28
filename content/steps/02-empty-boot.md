@@ -9,7 +9,7 @@ step: 02
 
 ## このステップのゴール
 
-- Step 01 で生成した 5 モジュールを Tomcat 11 (embedded/standalone) にデプロイして「白い画面」が出るところまで持っていく
+- Step 01 で生成した 5 モジュールを STS4 経由で Tomcat 11 にデプロイして「白い画面」が出るところまで持っていく
 - `web.xml` / `spring-mvc.xml` の役割を目視で確認する
 - H2 in-memory DB が起動時にテーブルを持った状態になる (次 Step 03 の準備)
 
@@ -17,7 +17,7 @@ step: 02
 
 ## 事前準備
 
-- [Step 01](/steps/01-project-skeleton) 完了 (`mvn clean install` が全モジュールで SUCCESS)
+- [Step 01](/steps/01-project-skeleton) 完了 (`mvn clean install` が全モジュールで SUCCESS、STS への import も完了)
 
 ## 追加するファイル (2 つ / 内容確認 + 差し替え)
 
@@ -94,48 +94,44 @@ Step 01 の生成物のまま (`demo-infra.properties` は既に H2 設定)。
 
 ## 動作確認
 
-### 3-a. ローカルの Tomcat 11 にデプロイ (Cargo プラグイン経由)
+### 3-a. STS へのインポート状態を確認
 
-Cargo プラグイン (`cargo-maven3-plugin` 1.10.25、Tomcat 11.0.15 自動 DL 込みのフル設定) は
-`terasoluna-gfw-parent` の pluginManagement に定義されている。ただし archetype が生成する
-`demo-web/pom.xml` 自体には `<plugin>` 宣言が無いため、環境によっては prefix 解決に失敗して
-`No plugin found for prefix 'cargo'` と出ることがある (詳細・回避策は [[/troubleshoot|トラブルシュート #11]])。
+[Step 01](/steps/01-project-skeleton) の「STS / Eclipse に import」で、すでに Package Explorer に親 + 5 子モジュール、計 6 個のプロジェクトが並んでいるはず。
 
-まずはルート `demo/` で試す:
+まだインポートしていない場合は `[File]` → `[Import]` → `[Maven]` → `[Existing Maven Projects]` → `[Next]` → Root Directory に `demo/` を指定 → `pom.xml` (親 POM) が選択された状態で `[Finish]`。1 個しか表示されない場合は [トラブルシュート #10](/troubleshoot#sts-import) を参照。
 
-```powershell
-mvn -pl demo-web -am cargo:run
-```
+### 3-b. ビルドエラーが出たら
 
-**`No plugin found for prefix 'cargo'` が出た場合**は完全修飾で prefix 解決を回避:
+インポート直後、プロジェクトに赤い ✗ (エラーマーカー) が付くことがある。
 
-```powershell
-mvn -pl demo-web -am org.codehaus.cargo:cargo-maven3-plugin:run
-```
+プロジェクト名を右クリック → `[Maven]` → `[Update Project…]` → `[OK]` を押下する。これで解消するケースがある ([トラブルシュート #12](/troubleshoot#sts-build-error) も参照)。
 
-- `-pl demo-web` — この module だけ実行
-- `-am` — 依存モジュール (`demo-domain`, `demo-env`) も一緒にビルド
-- `cargo:run` (または完全修飾の `org.codehaus.cargo:cargo-maven3-plugin:run`) — Tomcat 11.0.15 を自動 DL して起動、`demo-web.war` をデプロイ、フォアグラウンドで実行
-- **初回は Tomcat 11.0.15 の zip を自動ダウンロードするため時間がかかる**。2 回目以降はローカルにキャッシュされ短くなる
+### 3-c. サーバーの登録と起動
 
-期待するログ (末尾):
+war をパッケージングするのは `demo-web` モジュールだけなので、「Run on Server」の対象は `demo-web` になります (親 pom や `demo-domain` ではありません)。
 
-```
-[INFO] [beddedLocalContainer] Tomcat 11.x started on port [8080]
-```
+1. Package Explorer で `demo-web` を右クリック → `[Run As]` → `[Run on Server]`
+2. サーバーの選択画面で **Tomcat v11.0 Server at localhost** を選び `[Next]`
+3. 対象プロジェクトが「Configured」欄に入っていることを確認して `[Finish]`
 
-### 3-b. ブラウザ確認
+**Servers ビューにサーバーが 1 つも登録されていない場合**は、手順 2 の画面でサーバーの新規作成が必要になる。サーバー種別として Tomcat v11.0 を選び、次の画面で Tomcat のインストールディレクトリを指定する (詳細は [トラブルシュート #11](/troubleshoot#sts-no-tomcat))。
 
-http://localhost:8080/demo-web/ にアクセス:
+これでサーバーが起動し、`demo-web` がデプロイされる。
+
+### 3-d. アクセス確認
+
+コンテキストパスは war 名に対応するため `http://localhost:8080/demo-web/` になります。
 
 - **Spring Security のデフォルトログイン画面** (灰色の UI) が出る → OK。次 Step 07 で自作 login.jsp に置き換える
-- ログを見て `Started ... in X seconds` が出ていれば起動成功
+- Console ビューのログで起動完了のメッセージが出ていれば成功
 
-### 3-c. 停止
+想定と違うパスになっている場合は、Servers ビューで対象サーバーをダブルクリック →「Modules」タブで実際のコンテキストパスを確認できる。
 
-`Ctrl + C` で cargo:run を停止。
+### 3-e. 停止
 
-### 3-d. スタンドアロン Tomcat 11 に手動デプロイする場合
+Servers ビューでサーバーを選択し、赤い■ (Stop) ボタンをクリックする。または Console ビューの Terminate ボタンでも停止できる。
+
+### 3-f. スタンドアロン Tomcat 11 に手動デプロイする場合
 
 `demo-web` を war パッケージング:
 
@@ -149,10 +145,9 @@ mvn -pl demo-web -am package
 
 - **`Table "USERS" not found`** — 起動時に H2-schema.sql が実行されていない。**このステップではまだテーブルが無い**ので想定内。Step 03 で `demo-env` の `H2-schema.sql` に DDL を追記してから解消する
 - **`Failed to load driver class`** — `demo-env/pom.xml` に H2 依存を書き忘れ。上記 2 を追加
-- **ポート 8080 が使用中** — 別プロセスが 8080 を掴んでいる。`cargo.servlet.port` を上書きするか、既存プロセスを停止 (詳細 [[/troubleshoot]])
-- **`No plugin found for prefix 'cargo'`** — archetype 生成の `demo-web/pom.xml` に cargo プラグイン宣言が無いため、環境によっては起きる。完全修飾コマンド `org.codehaus.cargo:cargo-maven3-plugin:run` を使うか、`demo-web/pom.xml` に `<plugin>` 宣言を追加 (詳細 [[/troubleshoot]] #11)
+- **ポート 8080 が使用中** — 別プロセスが 8080 を掴んでいる、または別の Tomcat と衝突している。Servers ビューで対象サーバーをダブルクリック →「Ports」タブで HTTP ポートを変更するか、既存プロセスを停止 (詳細 [トラブルシュート #4](/troubleshoot#port-conflict))
 - **`ContextLoaderListener` が `applicationContext.xml` を見つけられない** — Maven の resources ディレクトリ (`demo-web/src/main/resources/META-INF/spring/`) に置かれているか確認
-- **Windows でパスに全角が含まれる**: `mvn cargo:run` が Tomcat の起動時 classpath 解決で失敗することがある。ワークスペースは半角パスに
+- **ワークスペースのパスに全角文字が含まれる**: Maven ビルドや Tomcat 起動時の classpath 解決でトラブルになることがある。ワークスペースは半角パスに置く
 
 ## 次
 

@@ -230,8 +230,8 @@ export default function HomePage() {
             <ul className="space-y-1.5 text-slate-700 text-sm md:text-base">
               <li>• JDK 17+ (24 でも動作、TERASOLUNA 5.11.0 系は 17 必須)</li>
               <li>• Maven 3.9+</li>
-              <li>• Tomcat 11 (Cargo プラグインが自動 DL、手動セットアップ不要)</li>
-              <li>• 好きなエディタ (STS4 / VSCode / IntelliJ どれでも)</li>
+              <li>• Tomcat 11 (STS4 / Eclipse の Servers ビューに登録して使用)</li>
+              <li>• コーディングのエディタは自由 (STS4 / VSCode / IntelliJ どれでも) だが、アプリの起動 (Run on Server) は STS4 (Eclipse ベース) を使用</li>
               <li>• 詳細な使用バージョンは <Link href="/versions" className="text-brand underline">バージョン一覧</Link> 参照</li>
             </ul>
           </section>
