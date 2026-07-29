@@ -159,8 +159,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="form" uri="jakarta.tags.form" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>

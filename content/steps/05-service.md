@@ -135,15 +135,15 @@ public class UserServiceImpl implements UserService {                          /
 
 **理由**: TERASOLUNA は将来的な DI コンテナ差し替え可能性 + 標準準拠を重視。「Spring 6/7 の @Autowired」→「別コンテナ」への移行が起きても Java 標準の `@Inject` は動く。
 
-### 3. `applicationContext.xml` の `context:component-scan` を確認
+### 3. `demo-domain.xml` の `context:component-scan` を確認
 
-archetype 生成品 `demo-web/src/main/resources/META-INF/spring/applicationContext.xml` に、以下があるはず:
+archetype 生成品 `demo-domain/src/main/resources/META-INF/spring/demo-domain.xml` に、以下があるはず:
 
 ```xml
-<context:component-scan base-package="com.example.demo.domain.service" />
+<context:component-scan base-package="com.example.demo.domain" />
 ```
 
-**これが `@Service` を付けた Impl を Bean 登録している**。Boot の `@ComponentScan` 相当を XML で書く形。
+**これが `@Service` を付けた Impl を Bean 登録している**。`base-package` は `domain.service` ではなく **`domain` 配下全体**である点に注意 (`domain.repository` 等も同じ scan の対象に入るが、Repository 自体の Bean 化は Step 04 の `<mybatis:scan>` が担う)。Boot の `@ComponentScan` 相当を XML で書く形。`demo-web` 側の `applicationContext.xml` には `context:component-scan` は無い。
 
 ## ディレクトリ構造 (このステップ完了時)
 

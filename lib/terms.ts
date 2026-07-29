@@ -259,8 +259,8 @@ export const TERMS: Record<string, TermInfo> = {
   },
   applicationProperties: {
     term: "application.properties",
-    short: "Spring Boot アプリの設定ファイル",
-    detail: "server.port=8080 / spring.datasource.url=jdbc:h2:mem:xxx など、実行時のパラメータを書く。application-dev.properties / application-prod.properties でプロファイル別に切替可能。",
+    short: "TERASOLUNA では汎用プロパティ置換用ファイル",
+    detail: "TERASOLUNA では spring-mvc.xml の <context:property-placeholder> から読み込まれる汎用プロパティ置換用ファイル (中身はコメント 1 行のみが標準)。server.port や spring.datasource.* は持たず、DB 接続情報は -env モジュールの demo-infra.properties という別ファイルにある。(Spring Boot 単一版では server.port=8080 などを書く設定ファイルで、application-dev.properties 等でプロファイル切替できる。)",
     href: "/glossary#cat-build",
   },
 

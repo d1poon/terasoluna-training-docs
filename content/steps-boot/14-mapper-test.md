@@ -164,9 +164,9 @@ class UserMapperTest {
 mvn test
 ```
 
-Step 13 と合わせて 11 テストが全通ればOK:
+Step 13 と合わせて 12 テストが全通ればOK:
 ```
-[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS
 ```
 

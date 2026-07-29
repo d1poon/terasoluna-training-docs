@@ -59,6 +59,8 @@ import static org.springframework.test.web.servlet.request
 import static org.springframework.test.web.servlet.result
     .MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result
+    .MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result
     .MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result
     .MockMvcResultMatchers.view;
@@ -110,8 +112,7 @@ class SearchControllerTest {
     void 未認証_で_GET_search_は_ログインに_リダイレクト() throws Exception {
         mockMvc.perform(get("/search"))                                    // ⑨
             .andExpect(status().is3xxRedirection())
-            .andExpect(view().name(org.springframework.test.web.servlet
-                .result.MockMvcResultMatchers.redirectedUrl("http://localhost/login").toString()));
+            .andExpect(redirectedUrl("http://localhost/login"));
     }
 
     private static User user(String id, String role) {
@@ -143,10 +144,10 @@ class SearchControllerTest {
 mvn test
 ```
 
-Step 13-15 で **合計 14 テスト**が全通ればOK:
+Step 13-15 で **合計 15 テスト**が全通ればOK:
 
 ```
-[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS
 ```
 

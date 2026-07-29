@@ -4,6 +4,7 @@ import type { Root } from "mdast";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
+import rehypeSlug from "rehype-slug";
 import rehypeHighlight from "rehype-highlight";
 import rehypeStringify from "rehype-stringify";
 
@@ -36,6 +37,9 @@ export async function renderMarkdown(md: string): Promise<string> {
     .use(remarkGfm)
     .use(remarkRemoveLeadingH1)
     .use(remarkRehype, { allowDangerousHtml: true })
+    // 見出し (h2/h3 など、先頭 h1 は上の remarkRemoveLeadingH1 で既に除去済み) に
+    // サーバ側で安定した id を付与する。InPageToc (右レール目次) のアンカーリンク先として使う。
+    .use(rehypeSlug)
     .use(rehypeHighlight, { detect: true, ignoreMissing: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(md);

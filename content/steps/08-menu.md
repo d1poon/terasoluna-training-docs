@@ -61,8 +61,6 @@ public class MenuController {
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  <%-- ① --%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -71,7 +69,7 @@ public class MenuController {
 </head>
 <body>
     <h1>メニュー</h1>
-    <p>こんにちは、<sec:authentication property="principal.username" /> さん</p>  <%-- ② --%>
+    <p>こんにちは、<sec:authentication property="principal.username" /> さん</p>  <%-- ① --%>
 
     <nav>
         <ul>
@@ -88,8 +86,7 @@ public class MenuController {
 </html>
 ```
 
-- **① Spring Security の JSP タグ** — TERASOLUNA の web-jsp 依存で使えるようになる
-- **② `<sec:authentication property="principal.username" />`** — 認証コンテキストから現在ログイン中の user ID を表示。**URL パラメータからでなく認証コンテキストから取る**のがセキュリティ的に正しい (詳細は [[/security-checklist#idor|IDOR 対策]] 参照)
+- **① `<sec:authentication property="principal.username" />`** — 認証コンテキストから現在ログイン中の user ID を表示。**URL パラメータからでなく認証コンテキストから取る**のがセキュリティ的に正しい (詳細は [[/security-checklist#idor|IDOR 対策]] 参照)。`sec` prefix は共通 `include.jsp` で既に宣言済み ([[/steps/07-login|Step 07]] の「共通 include.jsp の自動前置」参照) なのでこの JSP で再宣言していない
 
 ## 動作確認
 
@@ -97,7 +94,7 @@ Tomcat 起動 → ログイン → `/menu` に着地 → 「こんにちは、u0
 
 ## よくある詰まり
 
-- **`<sec:authentication>` タグが未定義**: `<%@ taglib prefix="sec" ... %>` の宣言忘れ、または demo-web の pom に `terasoluna-gfw-security-web-dependencies` が入っていない
+- **`<sec:authentication>` タグが未定義**: `demo-web` の pom に `terasoluna-gfw-security-web-dependencies` が入っていない、または (通常起きないが) `include.jsp` の自動前置設定が外れている
 - **CSRF 403 (ログアウト時)**: ログアウトフォームにも CSRF token を埋め込む必要あり (`sec:csrf` が有効な限り)
 - **`principal.username` が null**: 認証が通っていない (Spring Security のフィルタが働いていない) → spring-security.xml と web.xml の filter 設定を確認
 

@@ -34,8 +34,10 @@ export default function HomePage() {
               <code className="text-xs bg-slate-100 px-1 rounded">
                 terasoluna-gfw-multi-web-blank-xmlconfig-jsp-mybatis3-archetype {VERSIONS.terasolunaGfw}
               </code>{" "}
-              (Spring Boot {VERSIONS.springBoot} / Spring Framework {VERSIONS.springFramework} / JDK 17 /
-              MyBatis {VERSIONS.mybatis} / Tomcat 11) を主軸に書かれています。
+              {/* JDK / Tomcat の番号部分は VERSIONS の値から先頭トークンを取り出して表示 (直書き禁止・単一の真実源は lib/versions.ts) */}
+              (Spring Boot {VERSIONS.springBoot} / Spring Framework {VERSIONS.springFramework} / JDK{" "}
+              {VERSIONS.jdk.split(" ")[0]} / MyBatis {VERSIONS.mybatis} / Tomcat{" "}
+              {VERSIONS.tomcatDeployTarget.split(".")[0]}) を主軸に書かれています。
               先に Boot 単一版で本質を掴みたい人向けに <Link href="/steps-boot/00-toc" className="text-brand underline">補助: Boot 版</Link> も用意しています。
             </p>
           </div>
@@ -228,10 +230,14 @@ export default function HomePage() {
               前提
             </h2>
             <ul className="space-y-1.5 text-slate-700 text-sm md:text-base">
-              <li>• JDK 17+ (24 でも動作、TERASOLUNA 5.11.0 系は 17 必須)</li>
-              <li>• Maven 3.9+</li>
-              <li>• Tomcat 11 (STS4 / Eclipse の Servers ビューに登録して使用)</li>
-              <li>• コーディングのエディタは自由 (STS4 / VSCode / IntelliJ どれでも) だが、アプリの起動 (Run on Server) は STS4 (Eclipse ベース) を使用</li>
+              <li>• JDK {VERSIONS.jdk}</li>
+              <li>• Maven {VERSIONS.maven}</li>
+              <li>• Tomcat {VERSIONS.tomcatDeployTarget}</li>
+              <li>
+                • コーディングのエディタ自体は自由 (STS4 / VSCode / IntelliJ どれでも)。
+                ただし本サイトの操作説明 (New Class 作成・Import・Update Project・Servers ビューでの起動など) は
+                <strong>STS4 (Eclipse ベース) を前提に書いています</strong>
+              </li>
               <li>• 詳細な使用バージョンは <Link href="/versions" className="text-brand underline">バージョン一覧</Link> 参照</li>
             </ul>
           </section>

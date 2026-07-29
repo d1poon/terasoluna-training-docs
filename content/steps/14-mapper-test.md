@@ -1,11 +1,11 @@
 ---
-title: "Repository 統合テスト (@MybatisTest + H2)"
+title: "Repository 統合テスト (SpringExtension + XML Context + H2)"
 date: 2026-07-28
 tags: [type/learning, type/training, tech/mybatis, tech/junit5, tech/test]
 step: 14
 ---
 
-# Step 14 — Repository 統合テスト (@MybatisTest + H2)
+# Step 14 — Repository 統合テスト (SpringExtension + XML Context + H2)
 
 ## このステップのゴール
 

@@ -546,13 +546,13 @@ public String edit(...) {
       href="<c:url value='/resources/css/style.css'/>" />`,
           },
         ],
-        note: "SecurityConfig の permitAll に /css/** or /resources/** を追加していないと、CSS ファイル自体が認証で弾かれて画面が真っ白になる",
+        note: "(Boot 単一版) SecurityConfig の permitAll に /css/** or /resources/** を追加していないと、CSS ファイル自体が認証で弾かれて画面が真っ白になる。TERASOLUNA multi-project 版では spring-security.xml の <sec:intercept-url pattern=\"/resources/**\" access=\"permitAll\" /> が相当 (Step 06 参照)",
       },
       {
         n: 19,
         q: "H2 コンソールで DB の中身を見るには?",
-        a: "<code>http://localhost:8080/h2-console</code> にアクセス。JDBC URL: <code>jdbc:h2:mem:rolemgr</code>、User: <code>sa</code>、Password: 空。SELECT * FROM users で行が見える。",
-        note: "SecurityConfig で /h2-console/** を permitAll、CSRF 無効化、frameOptions sameOrigin を設定していないと開けない",
+        a: "<code>http://localhost:8080/h2-console</code> にアクセス。JDBC URL: <code>jdbc:h2:mem:rolemgr</code>、User: <code>sa</code>、Password: 空。SELECT * FROM users で行が見える。(Boot 単一版の例。TERASOLUNA multi-project 版では URL が <code>/demo-web/h2-console/</code> になり、既定で有効 — Step 04 参照)",
+        note: "(Boot 単一版) SecurityConfig で /h2-console/** を permitAll、CSRF 無効化、frameOptions sameOrigin を設定していないと開けない。TERASOLUNA multi-project 版の認証まわりの設定箇所は spring-security.xml 側になる (詳細は据え置き — 未確認)",
       },
       {
         n: 20,
@@ -574,7 +574,7 @@ Invalid bound statement (not found)
   → メソッド名と <select id="X"> の X がずれてる
 
 無限リダイレクト (/login → /login)
-  → SecurityConfig で /WEB-INF/** を permitAll し忘れ
+  → SecurityConfig で /WEB-INF/** を permitAll し忘れ (Boot 単一版。TERASOLUNA multi-project 版は spring-security.xml の intercept-url)
 
 JSP で \${xxx} が空表示
   → Controller で model.addAttribute し忘れ

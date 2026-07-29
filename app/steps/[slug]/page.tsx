@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { PageMeta } from "@/components/PageMeta";
 import { PageFooter } from "@/components/PageFooter";
+import { InPageToc } from "@/components/InPageToc";
 import { getAllSteps, getStep, formatStepNumber } from "@/lib/steps";
 import { renderMarkdown, extractDescription } from "@/lib/markdown";
 
@@ -51,66 +52,76 @@ export default async function StepPage({
       <Sidebar steps={steps} currentSlug={slug} />
 
       <div className="flex-1 min-w-0">
-        <main id="main" className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12">
-          <div className="mb-6 md:mb-8">
-            <div className="text-sm text-brand font-mono">
-              Step {formatStepNumber(step.number)}
+        {/* xl+ では本文と右レール目次 (InPageToc) を横並びにする。
+            xl 未満では InPageToc 側が display:none になるため、この行自体は
+            何も変えない素の div として振る舞い、レイアウトは従来通り。 */}
+        <div className="toc-row xl:flex xl:items-start xl:justify-center">
+          <main
+            id="main"
+            className="mx-auto max-w-4xl px-4 py-6 lg:px-12 lg:py-12 xl:mx-0 xl:min-w-0"
+          >
+            <div className="mb-6 md:mb-8">
+              <div className="text-sm text-brand font-mono">
+                Step {formatStepNumber(step.number)}
+              </div>
+              <h1 className="text-2xl md:text-3xl font-bold mt-1 text-slate-900 leading-tight">
+                {step.title}
+              </h1>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold mt-1 text-slate-900 leading-tight">
-              {step.title}
-            </h1>
-          </div>
 
-          <PageMeta updated={step.date} />
+            <PageMeta updated={step.date} />
 
-          <article
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
+            <article
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
 
-          <PageFooter pageTitle={`Step ${formatStepNumber(step.number)} — ${step.title}`} slug={`steps/${slug}`} />
+            <PageFooter pageTitle={`Step ${formatStepNumber(step.number)} — ${step.title}`} slug={`steps/${slug}`} />
 
-          <nav className="mt-10 pt-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-3">
-            {prev ? (
-              <Link
-                href={`/steps/${prev.slug}`}
-                className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors"
-              >
-                <div className="text-xs text-slate-500">← 前へ</div>
-                <div className="text-slate-900 font-semibold mt-1 text-sm md:text-base">
-                  {formatStepNumber(prev.number)}. {prev.title}
-                </div>
-              </Link>
-            ) : (
-              <Link
-                href="/"
-                className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors"
-              >
-                <div className="text-xs text-slate-500">← 目次へ</div>
-                <div className="text-slate-900 font-semibold mt-1">Home</div>
-              </Link>
-            )}
-            {next ? (
-              <Link
-                href={`/steps/${next.slug}`}
-                className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors md:text-right"
-              >
-                <div className="text-xs text-slate-500">次へ →</div>
-                <div className="text-slate-900 font-semibold mt-1 text-sm md:text-base">
-                  {formatStepNumber(next.number)}. {next.title}
-                </div>
-              </Link>
-            ) : (
-              <Link
-                href="/"
-                className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors md:text-right"
-              >
-                <div className="text-xs text-slate-500">完了 →</div>
-                <div className="text-slate-900 font-semibold mt-1">目次に戻る</div>
-              </Link>
-            )}
-          </nav>
-        </main>
+            <nav className="mt-10 pt-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-3">
+              {prev ? (
+                <Link
+                  href={`/steps/${prev.slug}`}
+                  className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors"
+                >
+                  <div className="text-xs text-slate-500">← 前へ</div>
+                  <div className="text-slate-900 font-semibold mt-1 text-sm md:text-base">
+                    {formatStepNumber(prev.number)}. {prev.title}
+                  </div>
+                </Link>
+              ) : (
+                <Link
+                  href="/"
+                  className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors"
+                >
+                  <div className="text-xs text-slate-500">← 目次へ</div>
+                  <div className="text-slate-900 font-semibold mt-1">Home</div>
+                </Link>
+              )}
+              {next ? (
+                <Link
+                  href={`/steps/${next.slug}`}
+                  className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors md:text-right"
+                >
+                  <div className="text-xs text-slate-500">次へ →</div>
+                  <div className="text-slate-900 font-semibold mt-1 text-sm md:text-base">
+                    {formatStepNumber(next.number)}. {next.title}
+                  </div>
+                </Link>
+              ) : (
+                <Link
+                  href="/"
+                  className="block p-4 bg-white rounded-lg border border-slate-200 hover:border-brand transition-colors md:text-right"
+                >
+                  <div className="text-xs text-slate-500">完了 →</div>
+                  <div className="text-slate-900 font-semibold mt-1">目次に戻る</div>
+                </Link>
+              )}
+            </nav>
+          </main>
+
+          <InPageToc />
+        </div>
       </div>
     </div>
   );

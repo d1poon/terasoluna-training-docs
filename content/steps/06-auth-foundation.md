@@ -10,7 +10,7 @@ step: 06
 ## このステップのゴール
 
 - Spring Security を **XML 設定** (`spring-security.xml`) で構成する (TERASOLUNA 規約、Boot の Java Config とは書き方が異なる)
-- BCrypt でパスワードをハッシュ化する PasswordEncoder を Bean 登録
+- `applicationContext.xml` に既にある `passwordEncoder` (`DelegatingPasswordEncoder`) を使って BCrypt ハッシュを照合できるようにする
 - DB からユーザを引く `UserDetailsService` の実装を書く
 - 起動時にサンプル user を 5 人 initdb で投入する
 
@@ -36,7 +36,7 @@ step: 06
   <div class="flow-step">
     <span class="flow-step-badge">3</span>
     <div class="flow-step-content">
-      <strong>PasswordEncoder</strong> — 入力パスワードをハッシュ化して DB の値と照合。BCrypt を使う
+      <strong>PasswordEncoder</strong> — 入力パスワードをハッシュ化して DB の値と照合。`applicationContext.xml` に archetype 生成時点で既にある `passwordEncoder` Bean をそのまま使う
     </div>
   </div>
 </div>
@@ -92,8 +92,6 @@ step: 06
         </sec:authentication-provider>
     </sec:authentication-manager>
 
-    <bean id="passwordEncoder"
-          class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 </beans>
 ```
 
@@ -105,7 +103,14 @@ step: 06
 - **④ `username-parameter="id"`** — ログインフォームの `<input name="id">` から ID を受け取る (Boot 版と同じ)
 - **⑤ `<sec:csrf />`** — CSRF 対策を有効化。POST 全部に token 埋め込みが必須になる
 - **⑥ `session-fixation-protection="changeSessionId"`** — ログイン成功時にセッション ID を rotate。デフォルトだが明示
-- **⑦ `<sec:password-encoder ref="passwordEncoder" />`** — 認証時にパスワード照合を BCrypt で行う
+- **⑦ `<sec:password-encoder ref="passwordEncoder" />`** — `passwordEncoder` という id の Bean を参照する。**このファイルでは新規定義しない** — `applicationContext.xml` に archetype 生成時点で既に `id="passwordEncoder"` の Bean (`DelegatingPasswordEncoder`) が存在するため、それがそのまま使われる。`web.xml` の `contextConfigLocation` は `applicationContext.xml` と `spring-security.xml` を同一の `ContextLoaderListener` に読ませるため、両者の Bean は同一コンテナに登録される。ここで同じ id の Bean (`BCryptPasswordEncoder` 等) を追加宣言すると、後読みの `spring-security.xml` 側が既存の Bean を無言で上書きしてしまう
+
+### `DelegatingPasswordEncoder` について
+
+`applicationContext.xml` の既存 `passwordEncoder` は `DelegatingPasswordEncoder` で、既定のエンコード方式は **pbkdf2** (bcrypt 等の他方式も登録済みで、DB 側の値に付いた `{bcrypt}` / `{pbkdf2}` などのプレフィックスを見て照合方式を切り替える)。
+
+- 新規にコードで `passwordEncoder.encode(...)` した場合、結果は既定の `{pbkdf2}...` になる (`{bcrypt}...` にはならない)
+- 既存の BCrypt ハッシュをそのまま使いたい場合は、DB の値に **`{bcrypt}` プレフィックスを付けて保存**すれば `DelegatingPasswordEncoder` が bcrypt として照合してくれる (下記のサンプルデータで実施)
 
 ### 2. `UserDetailsServiceImpl.java` (Spring Security が呼ぶ user 引き係)
 
@@ -183,25 +188,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 ```sql
 -- 5 名分のサンプルユーザ。パスワードは 'password' の BCrypt ハッシュ
+-- passwordEncoder (DelegatingPasswordEncoder) が方式を判別できるよう {bcrypt} プレフィックスを付ける
 INSERT INTO users (id, password, role) VALUES
-    ('u001', '$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_USER'),
-    ('u002', '$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_USER'),
-    ('u003', '$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_ADMIN'),
-    ('u004', '$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_ADMIN'),
-    ('u005', '$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_USER');
+    ('u001', '{bcrypt}$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_USER'),
+    ('u002', '{bcrypt}$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_USER'),
+    ('u003', '{bcrypt}$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_ADMIN'),
+    ('u004', '{bcrypt}$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_ADMIN'),
+    ('u005', '{bcrypt}$2a$10$8HzTfSaJ4/JHR8p3ZO1MveXsRSc9fkfaK4hf3XkjXtoLzq7HxWJm2', 'ROLE_USER');
 ```
 
 `demo-env.xml` の `<jdbc:initialize-database>` は archetype 生成時点で既に schema SQL と data SQL の両方 (`classpath:/database/${database}-schema.sql` / `${database}-dataload.sql`) を読む設定になっている ([[/steps/03-user-domain|Step 03]] 参照)。**XML の追記は不要** — 上の `H2-dataload.sql` の中身を書けば起動時に自動で流れる。
 
 ## 動作確認
 
-Tomcat 起動 → http://localhost:8080/demo-web/ → Spring Security のデフォルトログイン画面が出る (Step 07 で自作 login.jsp に置き換える予定)。とりあえずここで停止する。
+Tomcat 起動 → http://localhost:8080/demo-web/ にアクセスすると `/**` が `isAuthenticated()` になったため `/login` にリダイレクトされる。ただし `login-page="/login"` を明示指定したことで Spring Security の自動生成ログイン画面は無効化されており、`LoginController` / `login.jsp` は Step 07 でまだ作っていないため、リダイレクト先の `/login` は 404 (`Resource Not Found Error!`) になる。これが出れば「認証の壁ができた」ことの確認になる。とりあえずここで停止する。
 
 ## よくある詰まり
 
 - **`Invalid CSRF token`** — フォームに `<sec:csrf />` の token を hidden で入れ忘れ。Step 07 で対応
-- **ログイン時 500 エラー**: `UserDetailsServiceImpl` が Bean 登録されていない → `context:component-scan` の base-package に `com.example.demo.domain.service` が含まれているか確認
-- **`BadCredentialsException` (パスワード誤り)**: BCrypt ハッシュが古いバージョン (SHA-256 平文等) と混在。**必ず BCrypt ハッシュを DB に格納**
+- **ログイン時 500 エラー**: `UserDetailsServiceImpl` が Bean 登録されていない → `demo-domain.xml` の `<context:component-scan base-package="com.example.demo.domain" />` (Step 05 参照) の対象に `domain.service.userdetails` が含まれているか確認 (base-package が `domain` 配下全体なので通常は含まれる)
+- **`BadCredentialsException` (パスワード誤り)**: `{bcrypt}` プレフィックス忘れ (`DelegatingPasswordEncoder` は id が無いとどの方式で照合するか判別できない)、または SHA-256 平文等の別方式ハッシュが混在。**必ず `{bcrypt}` プレフィックス付きの BCrypt ハッシュを DB に格納**
 - **`UsernameNotFoundException` を無視して 200 OK が返る**: Spring Security 6+ ではデフォルトで例外を隠す挙動あり。`<sec:authentication-provider>` の設定を確認
 
 ## 次

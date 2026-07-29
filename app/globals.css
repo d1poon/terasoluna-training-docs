@@ -514,6 +514,11 @@
   .lg\:flex { display: block !important; }
   .flex-1 { flex: none !important; }
 
+  /* InPageToc (右レール目次): aside 自体は上の `aside { display: none }` で
+     既に非表示だが、Step ページの本文と目次を横並びにする xl:flex 行 (.toc-row) も
+     念のため解除しておく (印刷時に本文の幅計算へ影響を残さないため)。 */
+  .toc-row { display: block !important; }
+
   /* popover 完全非表示 */
   .anno-popover,
   [role="dialog"] {

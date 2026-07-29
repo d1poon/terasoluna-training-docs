@@ -91,7 +91,7 @@ const MODULES: ModuleInfo[] = [
 
 const FILE_MAPPING = [
   { boot: "RolemgrApplication.java",         tera: "web.xml (DispatcherServlet 起動)",              teraModule: "-web" },
-  { boot: "application.properties",          tera: "META-INF/spring/application.properties",         teraModule: "-web" },
+  { boot: "application.properties (server.port / spring.datasource.*)", tera: "DB 接続は -env/demo-infra.properties へ、ポート設定は Tomcat 側 (同名の TERASOLUNA application.properties は汎用プレースホルダ用の別ファイルで内容は非対応)", teraModule: "-env" },
   { boot: "SecurityConfig.java",             tera: "META-INF/spring/spring-security.xml",             teraModule: "-web" },
   { boot: "config/DataInitializer.java",     tera: "-initdb モジュールの SQL / -domain の初期化 Bean", teraModule: "-initdb / -domain" },
   { boot: "controller/LoginController.java", tera: "app/login/LoginController.java",                  teraModule: "-web" },

@@ -46,21 +46,3 @@ export function RelatedLinks({
     </section>
   );
 }
-
-/** 用語集の該当セクションに飛ぶ小さいリンク (行内利用) */
-export function T({
-  children,
-  href,
-}: {
-  children: React.ReactNode;
-  href: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="underline decoration-dotted decoration-slate-400 underline-offset-2 hover:text-brand hover:decoration-brand"
-    >
-      {children}
-    </Link>
-  );
-}

@@ -118,8 +118,8 @@ export const TERMS: GlossaryTerm[] = [
   {
     term: "application.properties",
     category: "Build",
-    short: "Spring Boot アプリの設定ファイル",
-    detail: "server.port=8080 / spring.datasource.url=jdbc:h2:mem:xxx など、実行時のパラメータを書く。同名で application-dev.properties / application-prod.properties を作ればプロファイル別に切替可能。build-order の 2 番目。",
+    short: "TERASOLUNA では汎用プロパティ置換用ファイル",
+    detail: "TERASOLUNA では spring-mvc.xml の <context:property-placeholder location=\"classpath*:/META-INF/spring/*.properties\" /> から読み込まれる汎用プロパティ置換用ファイル (中身はコメント 1 行のみが標準)。server.port や spring.datasource.* は持たず、DB 接続情報は -env モジュールの demo-infra.properties という別ファイルにある。(Spring Boot 単一版では server.port=8080 / spring.datasource.url=jdbc:h2:mem:xxx などを書く設定ファイルで、application-dev.properties / application-prod.properties でプロファイル別に切替できる。TERASOLUNA にはこのプロファイル切替規約はない。)",
     link: { label: "Step 01", href: "/steps/01-project-skeleton" },
   },
 
@@ -160,7 +160,7 @@ export const TERMS: GlossaryTerm[] = [
     term: "コンポーネントスキャン",
     category: "Spring",
     short: "Spring 起動時に @Controller などを探す機能",
-    detail: "@SpringBootApplication があるパッケージ配下を全部走査して、Bean として登録する。だからパッケージ構成が大事。",
+    detail: "@Controller @Service などが付いた class を探して Bean として登録する機能。TERASOLUNA では XML の <context:component-scan base-package=\"...\"> で明示設定する (spring-mvc.xml で app 配下、demo-domain.xml で domain 配下、というように層ごとに設定される)。Spring Boot 単一版では @SpringBootApplication があるパッケージ配下を暗黙的に全部走査する。だからパッケージ構成が大事。",
   },
   {
     term: "@Autowired",
@@ -304,7 +304,7 @@ export const TERMS: GlossaryTerm[] = [
     term: "DispatcherServlet",
     category: "Spring MVC",
     short: "リクエストの振り分け係",
-    detail: "全リクエストの入口。URL とアノテーションを見て、どの Controller のメソッドを呼ぶか決める。Spring Boot が自動で用意してくれる。",
+    detail: "全リクエストの入口。URL とアノテーションを見て、どの Controller のメソッドを呼ぶか決める。TERASOLUNA では web.xml に <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> として明示的に宣言・登録する (Spring Boot 単一版では自動で用意される)。",
   },
   {
     term: "@RequestParam",

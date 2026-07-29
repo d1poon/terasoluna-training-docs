@@ -14,7 +14,7 @@ TERASOLUNA blank archetype (5.11.0.RELEASE) が生成する **5 つの Maven モ
 
 - 5 モジュールの役割を 1 行ずつ言える
 - Controller / Entity / Repository / SQL / DDL / DB 接続情報 の**配置先**を即答できる
-- STS / Eclipse に import するとプロジェクトが 5 個並ぶ理由を説明できる
+- STS / Eclipse に import するとプロジェクトが 6 個 (親 1 + 子 5) 並ぶ理由を説明できる
 - 依存方向 (`-web → -domain`、`-env` は実行時に注入される) が理解できている
 
 > このステップはコードを書かない。読むだけの **地図**。焦らず、5 モジュールがそれぞれ何をしているのかが頭に入るまで読み返して大丈夫です。
@@ -217,7 +217,7 @@ MyBatis の設定 (`mybatis-config.xml` / `demo-infra.xml`) は `demo-web` で�
 
 ## STS / Eclipse に import した時の見え方
 
-archetype 生成直後の親 POM (`demo/pom.xml`) を **Existing Maven Project** として import すると、Package Explorer に**プロジェクトが 5 個並ぶ**:
+archetype 生成直後の親 POM (`demo/pom.xml`) を **Existing Maven Project** として import すると、Package Explorer に**プロジェクトが 6 個 (親 1 + 子 5) 並ぶ**:
 
 ```
 demo                (親 POM)
@@ -228,7 +228,7 @@ demo-initdb         (DB 初期化)
 demo-selenium       (E2E テスト)
 ```
 
-これは意図した挙動。「1 プロジェクトのつもりで開いたのに 5 個出る」ことに面食らわないように。
+これは意図した挙動。「1 プロジェクトのつもりで開いたのに 6 個出る」ことに面食らわないように。
 初回は必ずルート (`demo/`) で `mvn clean install` を実行し、モジュール間の依存を Maven ローカルリポジトリに配布してから、STS で各モジュールを開いていく。
 
 ## 「なぜ 5 つに分ける?」よくある疑問

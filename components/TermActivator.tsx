@@ -100,7 +100,9 @@ function isSkipped(el: Element | null): boolean {
       tag === "SCRIPT" ||
       tag === "STYLE" ||
       el.hasAttribute("data-term") ||
-      el.getAttribute("aria-haspopup") === "dialog"
+      el.getAttribute("aria-haspopup") === "dialog" ||
+      el.classList.contains("file-tree") ||
+      el.classList.contains("file-location")
     ) {
       return true;
     }

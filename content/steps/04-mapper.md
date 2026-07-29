@@ -124,18 +124,20 @@ public interface UserRepository {                                              /
 - **① `namespace="com.example.demo.domain.repository.user.UserRepository"`** — Java interface の完全修飾名を書く。**1 文字でも違うと `Invalid bound statement` エラーで落ちる**
 - **② `resultType="com.example.demo.domain.model.User"`** — 結果 1 行を詰める Java クラスの完全修飾名。TERASOLUNA では Entity が `domain.model` にあるのでこのパス
 - **③ `#{id}`** — PreparedStatement のプレースホルダ。バインドされる = SQL インジェクション安全。`${}` (文字列連結) は使わない
-- **④ `LIKE '%' || #{role} || '%'`** — SQL 標準の文字列連結演算子 `||` を使う (H2 の `MODE=PostgreSQL` で有効)。MySQL では `CONCAT` が必要だが、TERASOLUNA 前提の Oracle/PostgreSQL では `||` が動く
+- **④ `LIKE '%' || #{role} || '%'`** — SQL 標準の文字列連結演算子 `||` を使う。Oracle / PostgreSQL では標準で動く。**この教材の `demo-infra.properties` は `MODE=PostgreSQL` を付けない Regular モードの H2** (`jdbc:h2:mem:demo;DB_CLOSE_DELAY=-1`) なので、`||` が同様に動くかは未確認。動かない場合は `CONCAT(...)` に読み替えること (MySQL では元々 `CONCAT` が必須)
 - **⑤ `<update>` タグ** — INSERT/UPDATE/DELETE 用。戻り値は影響行数
 
-### 3. `demo-domain.xml` の `mybatis:scan` を確認
+### 3. `demo-infra.xml` の `mybatis:scan` を確認
 
-archetype 生成品の `demo-domain/src/main/resources/META-INF/spring/demo-domain.xml` に、既に以下の記述があるはず (無ければ追加):
+archetype 生成品の `demo-domain/src/main/resources/META-INF/spring/demo-infra.xml` に、既に以下の記述があるはず:
 
 ```xml
 <mybatis:scan base-package="com.example.demo.domain.repository" />
 ```
 
 **これが Repository interface を Bean 登録している核心**。`base-package` 以下の interface を自動走査し、XML と紐付けて Bean を生成する。Boot 版の `@Mapper` に相当する仕組み。
+
+> **`demo-domain.xml` と混同しないこと** — 同じ `demo-domain` モジュール内に `demo-domain.xml` という別ファイルもある (Step 05 で扱う `context:component-scan` はこちら側)。`demo-domain.xml` は `mybatis` 名前空間を宣言していないため、`mybatis:scan` をそちらに追記すると名前空間未解決で XML が壊れる。
 
 ### 4. 起動時 DDL 実行の設定 (demo-env 側・確認のみ)
 
@@ -149,6 +151,8 @@ archetype 生成品の `demo-domain/src/main/resources/META-INF/spring/demo-doma
 ```
 
 `demo-infra.properties` の `database=H2` により `${database}` は `H2` に解決される。つまり `demo-env/src/main/resources/database/H2-schema.sql` (Step 03 で追記した DDL) が起動時に自動で実行される。
+
+> この `demo-env.xml` に辿り着くまでの import 連鎖は `applicationContext.xml` → `demo-domain.xml` → `demo-infra.xml` → `demo-env.xml` の 3 段階。`applicationContext.xml` が直接 import するのは `demo-domain.xml` のみで、`applicationContext.xml` を直接見ても `demo-env.xml` という文字列自体は出てこない。
 
 ## 動作確認
 
@@ -173,7 +177,7 @@ http://localhost:8080/demo-web/h2-console/ (archetype デフォルトで有効) 
   3. `<mybatis:scan base-package="..."/>` のパスが repository package を含んでいない
   4. IDE で resources が classpath として認識されていない (`mvn clean install` で解決することが多い)
 - **`resultType` 探索エラー** — Entity の完全修飾名を正確に (`domain.model` の `.` を忘れがち)
-- **DDL が流れない**: `demo-env.xml` の `<jdbc:initialize-database>` が読まれていない → `applicationContext.xml` の import に `demo-env.xml` が入っているか確認
+- **DDL が流れない**: `demo-env.xml` の `<jdbc:initialize-database>` が読まれていない → import の連鎖 (`applicationContext.xml` → `demo-domain.xml` → `demo-infra.xml` → `demo-env.xml`) のどこかが切れていないか確認する。`applicationContext.xml` が直接 import するのは `demo-domain.xml` のみなので、`applicationContext.xml` を直接見ても `demo-env.xml` は出てこない点に注意
 
 ## 次
 

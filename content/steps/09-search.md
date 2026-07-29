@@ -125,8 +125,6 @@ public class SearchController {
 
 ```jsp
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="form" uri="jakarta.tags.form" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -174,7 +172,7 @@ Tomcat 起動 → ログイン → メニュー → 「役職検索」リンク 
 
 - **`Neither BindingResult nor plain target object for bean name 'userSearchForm' available`**: `@ModelAttribute("userSearchForm")` セットアップメソッドを書き忘れ、または名前 (`userSearchForm`) が JSP の `<form:form modelAttribute>` と不一致
 - **`<c:out>` を書き忘れ**: XSS 脆弱性の温床。**必ずエスケープ**する ([[/security-checklist#xss|セキュリティチェックリスト XSS 節]] 参照)
-- **`form:input` タグ未定義**: `<%@ taglib prefix="form" uri="jakarta.tags.form" %>` の宣言忘れ、または旧 URI (`http://www.springframework.org/tags/form`) を使っている
+- **`form:input` タグ未定義**: 通常は起きない (`form` prefix は共通 `include.jsp` で既に宣言済み — [[/steps/07-login|Step 07]] の「共通 include.jsp の自動前置」参照)。起きる場合は `demo-web` の pom 依存不足を疑う
 
 ## 次
 

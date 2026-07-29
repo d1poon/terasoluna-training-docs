@@ -122,7 +122,7 @@ war をパッケージングするのは `demo-web` モジュールだけなの�
 
 コンテキストパスは war 名に対応するため `http://localhost:8080/demo-web/` になります。
 
-- **Spring Security のデフォルトログイン画面** (灰色の UI) が出る → OK。次 Step 07 で自作 login.jsp に置き換える
+- **`/` へのアクセスは 404 (`Resource Not Found Error!` 画面) になる** → OK。このステップでは Controller が 1 つも無く、archetype 初期状態の `spring-security.xml` は `/**` が `permitAll`・認証プロバイダも未設定なので、ログイン画面は出ない (認証の壁自体が無い)。404 が出ていれば「war が正しくデプロイされ、Tomcat がリクエストを受けている」ことの確認になる
 - Console ビューのログで起動完了のメッセージが出ていれば成功
 
 想定と違うパスになっている場合は、Servers ビューで対象サーバーをダブルクリック →「Modules」タブで実際のコンテキストパスを確認できる。

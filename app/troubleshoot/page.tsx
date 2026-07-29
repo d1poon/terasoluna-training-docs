@@ -42,7 +42,7 @@ mvn clean install     # ← まずこれで 5 モジュール全部をローカ�
     title: "2. `Invalid bound statement (not found): ...UserRepository.findById`",
     symptom: "アプリ起動 or Repository 呼び出し時に、MyBatis がメソッドと XML を紐付けられずエラー。",
     cause: "**ほぼ全て**次の 4 パターン: (a) XML の `namespace` が Java interface と 1 文字違う typo、(b) XML の物理配置が interface と別パッケージパス、(c) `<mybatis:scan>` の base-package に含まれていない、(d) IDE のクラスパス設定が resources を見ていない。",
-    fix: "順に確認: ① XML の namespace 属性を interface の完全修飾名と 1 文字ずつ照合。② XML の配置場所は `src/main/resources/com/example/demo/domain/repository/user/UserRepository.xml` (Java と同じパッケージパスを resources 側にミラー)。③ `demo-domain.xml` の `<mybatis:scan base-package=\"com.example.demo.domain.repository\" />` を確認。④ `mvn clean install` で resources を確実に配置。",
+    fix: "順に確認: ① XML の namespace 属性を interface の完全修飾名と 1 文字ずつ照合。② XML の配置場所は `src/main/resources/com/example/demo/domain/repository/user/UserRepository.xml` (Java と同じパッケージパスを resources 側にミラー)。③ `demo-infra.xml` (`demo-domain` モジュール内。`demo-domain.xml` とは別ファイル) の `<mybatis:scan base-package=\"com.example.demo.domain.repository\" />` を確認。④ `mvn clean install` で resources を確実に配置。",
     refStep: "Step 04",
     refStepHref: "/steps/04-mapper",
   },
@@ -95,7 +95,7 @@ taskkill /PID <PID> /F`,
     title: "7. `Resource Not Found Error!` (404) — JSP が見つからない",
     symptom: "Controller が `\"userinfo/userInfo\"` を返しても、Tomcat 側で JSP が見つからない。archetype が生成する `web.xml` に `<error-page>` で 404 → `/WEB-INF/views/common/error/resourceNotFoundError.jsp` が設定されているため、この画面が表示される (Spring Boot の Whitelabel Error Page ではない)。",
     cause: "① JSP の物理配置と Controller の return 値パスが不一致。② ViewResolver の prefix/suffix と実配置が不整合。③ webapp/ の下に置いていない (resources/ に置いてしまった)。",
-    fix: "① Controller の return `\"userinfo/userInfo\"` に対し、JSP は `demo-web/src/main/webapp/WEB-INF/views/userinfo/userInfo.jsp` にあるか。② `spring-mvc.xml` の InternalResourceViewResolver の prefix/suffix を確認。③ resources/ でなく webapp/ 配下であることを再確認。",
+    fix: "① Controller の return `\"userinfo/userInfo\"` に対し、JSP は `demo-web/src/main/webapp/WEB-INF/views/userinfo/userInfo.jsp` にあるか。② `spring-mvc.xml` の `<mvc:view-resolvers>` (`<mvc:jsp>`) の prefix を確認。③ resources/ でなく webapp/ 配下であることを再確認。",
     refStep: "Step 07",
     refStepHref: "/steps/07-login",
   },
@@ -121,16 +121,18 @@ taskkill /PID <PID> /F`,
     id: "jstl-taglib",
     title: "9. `<c:if>` タグがそのまま HTML に出力される (JSTL が動かない)",
     symptom: "JSP を開くと `<c:if test=\"${...}\">` の文字列がそのまま画面に表示され、条件分岐が効かない。",
-    cause: "taglib 宣言の URI 自体が原因ではないことが多い。実際の原因は次のいずれか: ① `jakarta.servlet.jsp.jstl` の API / 実装 (glassfish) jar が web モジュールの依存に入っていない、② taglib 宣言そのものを書き忘れている、③ 共通の `include.jsp` を JSP 先頭で `<%@ include %>` し忘れている。",
-    fix: "旧 URI (`http://java.sun.com/jsp/jstl/core`) と新 URI (`jakarta.tags.core`) は**どちらも有効**(JSTL 3.0 は旧 URI を後方互換としてサポートしており、公式 archetype が生成する `include.jsp` 自体が旧 URI を使っている)。新旧の混在だけ避ければ良く、まずは依存 jar と include 忘れを確認する:",
+    cause: "公式 archetype では `c` / `fmt` / `spring` / `form` / `sec` / `t` / `f` の taglib 宣言は共通 `include.jsp` にまとめられており、`web.xml` の `<include-prelude>` により**全 JSP に自動で前置される**ため、各 JSP 側で改めて宣言する必要は無い。この詰まりの実際の原因は次のいずれかであることが多い: ① 各 JSP に `jakarta.tags.core` のような**存在しない URI**で taglib を独自に再宣言してしまい、`include.jsp` 側の正しい宣言と衝突している、② `demo-web` の pom から JSTL 関連の依存を誤って外してしまった。",
+    fix: "① 各 JSP に taglib を再宣言している箇所を探し、削除する (`c`/`fmt`/`spring`/`form`/`sec`/`t`/`f` は既に使える状態)。② 再宣言する場合は `include.jsp` と同じ URI に厳密に合わせる (`c` なら `http://java.sun.com/jsp/jstl/core` — Jakarta 化されておらず、`jakarta.tags.core` という URI 自体が存在しない)。③ Spring の `form` タグはそもそも JSTL ではなく Spring 独自の名前空間 (`http://www.springframework.org/tags/form`) なので `jakarta.tags.form` も存在しない。",
     code: {
       lang: "jsp",
-      text: `<!-- 公式 archetype の include.jsp はこの旧 URI をそのまま使用 (これでも動く) -->
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+      text: `<!-- 公式 archetype の include.jsp (WEB-INF/views/common/include.jsp) の宣言。全 JSP に自動前置される -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- Jakarta EE の正式 URI (JSTL 3.0 以降)。こちらでも動く。プロジェクト内で統一すること -->
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>`,
+<!-- 存在しない URI。各 JSP で書いてはいけない (include.jsp が既に前置しているので不要) -->
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="form" uri="jakarta.tags.form" %>`,
     },
   },
   {

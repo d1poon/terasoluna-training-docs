@@ -124,4 +124,4 @@ mvn -pl demo-domain test
 
 ## 次
 
-→ [Step 14: Repository 統合テスト (@MybatisTest + H2)](/steps/14-mapper-test)
+→ [Step 14: Repository 統合テスト (SpringExtension + XML Context + H2)](/steps/14-mapper-test)
