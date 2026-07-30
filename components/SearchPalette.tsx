@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BASIC_STEPS } from "@/lib/basic-steps-list";
+import { formatStepNumber } from "@/lib/step-format";
 
 type Entry = {
   title: string;
@@ -9,6 +11,18 @@ type Entry = {
   desc: string;
   category: string;
 };
+
+// 入門: Spring Security なし版の 15 ページ分の検索エントリを
+// lib/basic-steps-list.ts (単一の真実源) から動的生成する。
+// Boot 版は INDEX に手動で数件のみ追加している (下記参照) が、
+// 入門版は新設トラック全体を検索対象にする必要があるため、
+// 手打ちで 15 件複製せず生成する方式にした (保守性優先)。
+const BASIC_STEP_ENTRIES: Entry[] = BASIC_STEPS.map((step) => ({
+  category: "入門 (Security なし版)",
+  title: `Step ${formatStepNumber(step.number)} - ${step.title}`,
+  href: `/steps-basic/${step.slug}`,
+  desc: step.desc,
+}));
 
 // 全ページ + 主要セクションを検索対象に
 const INDEX: Entry[] = [
@@ -34,6 +48,8 @@ const INDEX: Entry[] = [
   { category: "可視化", title: "Playground - ログイン", href: "/playground/login", desc: "ID + PW を入れて /menu 遷移まで模擬" },
   { category: "可視化", title: "Playground - 検索", href: "/playground/search", desc: "LIKE 検索をクライアント側で再現" },
   { category: "可視化", title: "Playground - 変更 (PRG)", href: "/playground/edit", desc: "URL バー切替アニメで PRG パターン可視化" },
+  // 入門: Spring Security なし版 (lib/basic-steps-list.ts から動的生成、上で定義)
+  ...BASIC_STEP_ENTRIES,
   // Steps (TERASOLUNA 主軸)
   { category: "Steps (TERASOLUNA)", title: "Step 00 - 5 モジュールの地図", href: "/steps/00-modules-map", desc: "demo-web / -domain / -env / -initdb / -selenium の役割と依存方向" },
   { category: "Steps (TERASOLUNA)", title: "Step 01 - プロジェクト骨組み (親 POM + 5 子モジュール)", href: "/steps/01-project-skeleton", desc: "mvn archetype:generate で 5.11.0.RELEASE の 5 モジュール生成" },

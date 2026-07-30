@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllSteps } from "@/lib/steps";
 import { getAllBootSteps } from "@/lib/steps-boot";
+import { getAllBasicSteps } from "@/lib/steps-basic";
 import { VERSIONS } from "@/lib/versions";
 
 const SITE_URL = "https://terasoluna-training-docs.vercel.app";
@@ -48,5 +49,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: step.date ? new Date(step.date) : siteLastModified,
   }));
 
-  return [...staticEntries, ...stepEntries, ...bootStepEntries];
+  const basicStepEntries: MetadataRoute.Sitemap = getAllBasicSteps().map((step) => ({
+    url: `${SITE_URL}/steps-basic/${step.slug}`,
+    lastModified: step.date ? new Date(step.date) : siteLastModified,
+  }));
+
+  return [...staticEntries, ...stepEntries, ...bootStepEntries, ...basicStepEntries];
 }

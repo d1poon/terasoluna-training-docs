@@ -1,0 +1,195 @@
+---
+title: "Repository (SQL 係) + MyBatis 起動"
+date: 2026-07-30
+tags: [type/learning, type/training, tech/terasoluna, tech/mybatis, tech/sql]
+step: 04
+---
+
+# Step 04 — Repository (SQL 係) + MyBatis 起動
+
+## このステップのゴール
+
+- MyBatis の Repository (SQL を発行する層) を作る
+- **TERASOLUNA 規約**: interface 名は `UserRepository` (Boot 版 `UserMapper` から改名)
+- XML は **Java interface と同じパッケージパス** に配置 (`resources/mapper/*.xml` 一括ではない)
+- 一覧・詳細・検索・変更の 4 画面 (Step 06-09) で使う CRUD 4 種 (`findAll` / `findById` / `findByRole` / `update`) を揃える
+
+## 事前準備
+
+- [Step 03](/steps-basic/03-user-domain) 完了
+
+## 用語
+
+- **Repository** = SQL を発行する層。TERASOLUNA 規約の呼称。Boot 単一版では `Mapper` と呼んでいた
+- **完全修飾名** = パッケージ名 + クラス名の全体 (例: `com.example.demo.domain.repository.user.UserRepository`)
+- **namespace** = XML の中で「どの Java interface と紐付けるか」を書く属性。**Java interface の完全修飾名を入れる**
+
+## 追加するファイル (2 つ)
+
+### 1. `UserRepository.java` (interface)
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1">📁 demo-domain/</div>
+    <div class="ft-line ft-l2">📁 src/main/java/</div>
+    <div class="ft-line ft-l3">📁 com/example/demo/domain/repository/</div>
+    <div class="ft-line ft-l4">📁 user/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l5 ft-file">📄 UserRepository.java <span class="ft-tag">新規</span></div>
+  </div>
+</div>
+
+```java
+package com.example.demo.domain.repository.user;                              // ①
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+import com.example.demo.domain.model.User;
+
+/**
+ * users テーブルへの CRUD を行う Repository (MyBatis)。
+ * 実装は同一パッケージパスに置かれた UserRepository.xml が担う。
+ */
+public interface UserRepository {                                              // ②
+
+    /** 一覧画面用: 全件取得 */
+    List<User> findAll();
+
+    /** 詳細画面用: 主キーで 1 件取得 */
+    User findById(@Param("id") String id);                                     // ③
+
+    /** 検索画面用: 役職 (部分一致) で 0 件以上取得 */
+    List<User> findByRole(@Param("role") String role);
+
+    /** 変更画面用: 名前・役職をまとめて更新。戻り値は影響行数 */
+    int update(User user);                                                     // ④
+}
+```
+
+#### なぜこう書く
+
+- **① `package com.example.demo.domain.repository.user`** — TERASOLUNA 規約: Repository は **usecase 別サブパッケージ** に置く (`user` など)。Entity (`domain.model`) は共有だが、Repository は usecase ごと
+- **② `interface UserRepository`** — MyBatis が自動で実装クラスを生成する。手で `UserRepositoryImpl` を書く必要は無い
+- **③ `@Param("id")`** — XML 側から `#{id}` で参照できるようにする。**引数 1 個でも書くのが安全** (2 個以上のときは省略不可)
+- **④ `update(User user)` は `@Param` を付けていない** — MyBatis は引数が 1 個かつ非プリミティブ型 (POJO) の場合、その Bean のプロパティ (`id` / `name` / `role`) を XML 側から直接 `#{id}` のように参照できる。この教材では`findById`/`findByRole` は文字列 1 個なので `@Param` を付けたが、`update` は `User` オブジェクトを丸ごと渡すのでその必要がない
+
+> `@Mapper` アノテーションは **不要**。TERASOLUNA では XML 側の設定 (`mybatis:scan`) で Repository interface が Bean 登録される。Boot 版と大きく違う点。
+
+### 2. `UserRepository.xml` (SQL 本体)
+
+<div class="file-location">
+  <div class="file-location-label">📍 このファイルをここに作成 (Java と同じパッケージパスを resources 側にミラー)</div>
+  <div class="file-tree">
+    <div class="ft-line">📁 demo/</div>
+    <div class="ft-line ft-l1">📁 demo-domain/</div>
+    <div class="ft-line ft-l2">📁 src/main/resources/</div>
+    <div class="ft-line ft-l3">📁 com/example/demo/domain/repository/</div>
+    <div class="ft-line ft-l4">📁 user/ <span class="ft-tag">新規</span></div>
+    <div class="ft-line ft-l5 ft-file">📄 UserRepository.xml <span class="ft-tag">新規</span></div>
+  </div>
+</div>
+
+**重要**: 配置場所は `resources/mapper/UserRepository.xml` **ではない**。Java interface と**同じパッケージパスを `resources/` 配下にミラー**する。理由は MyBatis が Java の classpath 上で interface と同一階層の XML を自動探索するため。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.domain.repository.user.UserRepository">    <!-- ① -->
+
+    <select id="findAll" resultType="com.example.demo.domain.model.User">      <!-- ② -->
+        SELECT id, name, role
+          FROM users
+         ORDER BY id
+    </select>
+
+    <select id="findById" resultType="com.example.demo.domain.model.User">
+        SELECT id, name, role
+          FROM users
+         WHERE id = #{id}                                                        <!-- ③ -->
+    </select>
+
+    <select id="findByRole" resultType="com.example.demo.domain.model.User">
+        SELECT id, name, role
+          FROM users
+         WHERE role LIKE '%' || #{role} || '%'                                   <!-- ④ -->
+         ORDER BY id
+    </select>
+
+    <update id="update">                                                       <!-- ⑤ -->
+        UPDATE users
+           SET name = #{name},
+               role = #{role}
+         WHERE id = #{id}
+    </update>
+
+</mapper>
+```
+
+#### なぜこう書く
+
+- **① `namespace="com.example.demo.domain.repository.user.UserRepository"`** — Java interface の完全修飾名を書く。**1 文字でも違うと `Invalid bound statement` エラーで落ちる**
+- **② `resultType="com.example.demo.domain.model.User"`** — 結果 1 行を詰める Java クラスの完全修飾名。TERASOLUNA では Entity が `domain.model` にあるのでこのパス。`findAll` は `WHERE` 無しの全件取得で、一覧画面 (Step 06) がそのまま使う
+- **③ `#{id}`** — PreparedStatement のプレースホルダ。バインドされる = SQL インジェクション安全。`${}` (文字列連結) は使わない
+- **④ `LIKE '%' || #{role} || '%'`** — SQL 標準の文字列連結演算子 `||` を使う。Oracle / PostgreSQL では標準で動く。**この教材の `demo-infra.properties` は `MODE=PostgreSQL` を付けない Regular モードの H2** (`jdbc:h2:mem:demo;DB_CLOSE_DELAY=-1`) なので、`||` が同様に動くかは未確認。動かない場合は `CONCAT(...)` に読み替えること (MySQL では元々 `CONCAT` が必須)
+- **⑤ `<update>` タグ** — `#{name}` / `#{role}` / `#{id}` は引数 `User user` の getter (`getName()` / `getRole()` / `getId()`) 経由でバインドされる。戻り値は影響行数
+
+### 3. `demo-infra.xml` の `mybatis:scan` を確認
+
+archetype 生成品の `demo-domain/src/main/resources/META-INF/spring/demo-infra.xml` に、既に以下の記述があるはず:
+
+```xml
+<mybatis:scan base-package="com.example.demo.domain.repository" />
+```
+
+**これが Repository interface を Bean 登録している核心**。`base-package` 以下の interface を自動走査し、XML と紐付けて Bean を生成する。Boot 版の `@Mapper` に相当する仕組み。
+
+> **`demo-domain.xml` と混同しないこと** — 同じ `demo-domain` モジュール内に `demo-domain.xml` という別ファイルもある (Step 05 で扱う `context:component-scan` はこちら側)。`demo-domain.xml` は `mybatis` 名前空間を宣言していないため、`mybatis:scan` をそちらに追記すると名前空間未解決で XML が壊れる。
+
+### 4. 起動時 DDL 実行の設定 (demo-env 側・確認のみ)
+
+`demo-env/src/main/resources/META-INF/spring/demo-env.xml` には、archetype 生成時点で既に次の設定が入っている (Step 03 で触れた通り、読者側での追加は不要):
+
+```xml
+<jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
+    <jdbc:script location="classpath:/database/${database}-schema.sql" encoding="UTF-8" />
+    <jdbc:script location="classpath:/database/${database}-dataload.sql" encoding="UTF-8" />
+</jdbc:initialize-database>
+```
+
+`demo-infra.properties` の `database=H2` により `${database}` は `H2` に解決される。つまり `demo-env/src/main/resources/database/H2-schema.sql` / `H2-dataload.sql` (Step 03 で追記した DDL + データ) が起動時に自動で実行される。
+
+> この `demo-env.xml` に辿り着くまでの import 連鎖は `applicationContext.xml` → `demo-domain.xml` → `demo-infra.xml` → `demo-env.xml` の 3 段階。`applicationContext.xml` が直接 import するのは `demo-domain.xml` のみで、`applicationContext.xml` を直接見ても `demo-env.xml` という文字列自体は出てこない。
+
+## 動作確認
+
+### 4-a. コンパイル
+
+```powershell
+cd demo
+mvn -pl demo-domain -am compile
+```
+
+### 4-b. Tomcat 再起動 → H2 コンソール確認
+
+STS の Servers ビューでサーバーを右クリック →「Restart」(未起動の場合は [Step 02](/steps-basic/02-empty-boot) の手順で Run on Server から起動する)。変更が反映されていなければ手動で Restart する。
+
+http://localhost:8080/demo-web/h2-console/ (archetype デフォルトで有効) にアクセスし、`demo-infra.properties` と同じ接続情報でログイン。`SELECT * FROM users;` で 5 件出れば成功 (テーブルが作られ、Step 03 のデータが投入されている)。
+
+## よくある詰まり
+
+- **`Invalid bound statement (not found): com.example.demo.domain.repository.user.UserRepository.findById`** — 頻出。原因はほぼ以下のどれか:
+  1. XML の `namespace` が interface と 1 文字違う (typo)
+  2. XML の配置場所が interface と同じパッケージパスでない (`resources/mapper/` に置いてしまった)
+  3. `<mybatis:scan base-package="..."/>` のパスが repository package を含んでいない
+  4. IDE で resources が classpath として認識されていない (`mvn clean install` で解決することが多い)
+- **`resultType` 探索エラー** — Entity の完全修飾名を正確に (`domain.model` の `.` を忘れがち)
+- **DDL が流れない**: `demo-env.xml` の `<jdbc:initialize-database>` が読まれていない → import の連鎖 (`applicationContext.xml` → `demo-domain.xml` → `demo-infra.xml` → `demo-env.xml`) のどこかが切れていないか確認する。`applicationContext.xml` が直接 import するのは `demo-domain.xml` のみなので、`applicationContext.xml` を直接見ても `demo-env.xml` は出てこない点に注意
+- **`update` の `#{name}` が `null` になる**: `User` の getter/setter (`getName()` / `setName()`) が JavaBeans 命名規約に沿っているか確認。フィールド名と getter/setter 名がズレると MyBatis がプロパティを見つけられない
+
+## 次
+
+→ [Step 05: Service (interface + Impl)](/steps-basic/05-service)

@@ -40,6 +40,12 @@ export default function HomePage() {
               {VERSIONS.tomcatDeployTarget.split(".")[0]}) を主軸に書かれています。
               先に Boot 単一版で本質を掴みたい人向けに <Link href="/steps-boot/00-toc" className="text-brand underline">補助: Boot 版</Link> も用意しています。
             </p>
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+              主軸は Step 06 で Spring Security を導入しますが、そこで難しく感じた場合は、
+              認証を後回しにして CRUD の流れだけ先に通せる{" "}
+              <Link href="/steps-basic/00-modules-map" className="text-brand underline">入門: Spring Security なし版</Link>{" "}
+              も用意しています。
+            </p>
           </div>
 
           {/* Primary CTA — "Start here" recommended route */}
@@ -74,7 +80,7 @@ export default function HomePage() {
 
           <Link
             href="/preface"
-            className="block bg-white border-2 border-brand/40 rounded-xl p-4 md:p-5 mb-10 hover:border-brand hover:shadow-sm transition-all"
+            className="block bg-white border-2 border-brand/40 rounded-xl p-4 md:p-5 mb-4 hover:border-brand hover:shadow-sm transition-all"
           >
             <div className="flex items-start gap-3">
               <div aria-hidden="true" className="text-2xl leading-none">📗</div>
@@ -87,6 +93,28 @@ export default function HomePage() {
                 </div>
                 <p className="mt-1 text-sm text-slate-600 leading-snug">
                   「Controller → どこに行くの?」レベルからでも読めるフロー解説。Step 00 と併読推奨。
+                </p>
+              </div>
+            </div>
+          </Link>
+
+          {/* Security でつまずいたら: 入門版 (Security なし) への導線。
+              主軸を格下げするものではなく、あくまで選択肢の追加。 */}
+          <Link
+            href="/steps-basic/00-modules-map"
+            className="block bg-emerald-50 border-2 border-emerald-300 rounded-xl p-4 md:p-5 mb-10 hover:border-emerald-500 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-start gap-3">
+              <div aria-hidden="true" className="text-2xl leading-none">🌱</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs uppercase tracking-wider text-emerald-700 font-semibold">
+                  Step 06 の Spring Security で詰まったら
+                </div>
+                <div className="text-base md:text-lg font-bold mt-0.5 text-slate-900">
+                  入門: Spring Security なし版で CRUD だけ先に通す
+                </div>
+                <p className="mt-1 text-sm text-slate-600 leading-snug">
+                  認証を後回しにして、一覧・検索・詳細・編集の流れだけを先に体験。慣れたら主軸の Step 06 (Security 導入) から合流できます。
                 </p>
               </div>
             </div>

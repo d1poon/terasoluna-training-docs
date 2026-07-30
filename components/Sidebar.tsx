@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { StepMeta } from "@/lib/steps";
 import { formatStepNumber } from "@/lib/step-format";
 import { BOOT_STEPS } from "@/lib/boot-steps-list";
+import { BASIC_STEPS } from "@/lib/basic-steps-list";
 import { VERSIONS } from "@/lib/versions";
 import { SearchPalette } from "./SearchPalette";
 
@@ -267,6 +268,70 @@ export function Sidebar({
           </li>
         </ul>
 
+        {/* 入門: Spring Security なし版 (主軸の直前に配置)。
+            Step 06 で Security を導入する主軸に入る前の選択肢として、
+            詰まった受講者が本編に入る前に視認できる位置に置く。 */}
+        <div className="mt-6 px-2">
+          <div className="text-[10px] uppercase tracking-wider text-emerald-700 font-semibold mb-0.5">
+            入門: Spring Security なし版
+          </div>
+          <p className="text-[11px] text-slate-500 leading-snug mb-1">
+            認証を後回しにして、CRUD の流れだけを先に通す版
+          </p>
+        </div>
+        <ul className="space-y-1 mb-2">
+          <li>
+            <button
+              type="button"
+              onClick={() => togglePhase("basic-intro")}
+              aria-expanded={openPhases.has("basic-intro")}
+              aria-controls="phase-panel-basic-intro"
+              className={
+                "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
+                (openPhases.has("basic-intro")
+                  ? "bg-emerald-50 text-emerald-900 font-semibold"
+                  : "text-slate-700 hover:bg-slate-100")
+              }
+            >
+              <span aria-hidden="true" className="text-base leading-none">🌱</span>
+              <span className="flex-1 text-left leading-tight">
+                Security なしで CRUD 一周
+              </span>
+              <span
+                aria-hidden="true"
+                className={
+                  "text-slate-400 text-xs transition-transform " +
+                  (openPhases.has("basic-intro") ? "rotate-90" : "")
+                }
+              >
+                ▸
+              </span>
+            </button>
+
+            {openPhases.has("basic-intro") && (
+              <ul
+                id="phase-panel-basic-intro"
+                className="ml-2 mt-1 mb-2 border-l border-emerald-200 pl-1 space-y-0.5"
+              >
+                {BASIC_STEPS.map((step) => (
+                  <li key={step.slug}>
+                    <Link
+                      href={`/steps-basic/${step.slug}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-baseline gap-2 px-3 py-1.5 rounded-md text-sm text-slate-600 hover:bg-emerald-50"
+                    >
+                      <span className="font-mono text-[11px] text-emerald-500">
+                        {formatStepNumber(step.number)}
+                      </span>
+                      <span className="leading-tight">{step.title}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        </ul>
+
         {/* Steps grouped by phase (collapsible) */}
         <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1 px-2">
           Steps (TERASOLUNA)
@@ -416,6 +481,9 @@ export function Sidebar({
         </p>
         <p className="mt-1 text-slate-500">
           補助: Spring Boot {VERSIONS.bootMainVersion} 単一プロジェクト版
+        </p>
+        <p className="mt-1 text-slate-500">
+          入門: Security なし版 (TERASOLUNA multi-project ベース)
         </p>
       </div>
     </>
