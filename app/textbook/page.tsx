@@ -42,6 +42,7 @@ export default function TextbookPage() {
               💡 このページは<strong>Web / DB / Java が初めて</strong>の方向け。ある程度知識のある方は
               <Link href="/preface" className="text-brand underline">まず最初に読む (レストランメタファー)</Link>
               や <Link href="/how-to" className="text-brand underline">レシピ集</Link> の方が先に読むと効率的です。
+              実装は主軸から進め、Step 06 の Spring Security で難しく感じたら入門版 (Security なし) に切り替え可能です。
             </div>
           </div>
 
@@ -220,6 +221,11 @@ export default function TextbookPage() {
             <p>
               DB のデータは<strong>表 (テーブル)</strong> の形で持つ。Excel の 1 シートを想像してほしい。
             </p>
+            <div className="mt-3 mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+              ⚠️ この例は Spring Security を使う主軸トラック (<code>/steps/</code>) の users テーブルです。
+              入門トラック (<code>/steps-basic/</code>) では認証を扱わないため、実際のテーブルは
+              <code>id / name / role</code> の 3 カラムで <code>password</code> は存在しません。
+            </div>
             <div className="my-4 overflow-x-auto">
               <table className="text-sm border border-slate-300 border-collapse">
                 <thead>

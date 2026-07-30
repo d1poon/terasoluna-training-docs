@@ -174,6 +174,8 @@ mvn -pl demo-domain -am compile
 - **`UserRepository` が Bean 登録されていない (NoSuchBeanDefinitionException)**: `<mybatis:scan>` の base-package (Step 04) が repository を含んでいない
 - **Impl と interface のメソッドシグネチャがズレる**: `@Override` を全メソッドに付けて、実装漏れをコンパイル時に検出する
 
+> 💡 次の Step 06 では Spring Security を導入します。認証まわりが難しく感じたら、無理せず [入門: Spring Security なし版](/steps-basic/00-modules-map) に切り替えて CRUD の流れだけ先に体験する選択肢もあります。慣れたらこの続き (Step 06) にいつでも戻れます。
+
 ## 次
 
 → [Step 06: 認証基盤 (spring-security.xml + BCrypt)](/steps/06-auth-foundation)

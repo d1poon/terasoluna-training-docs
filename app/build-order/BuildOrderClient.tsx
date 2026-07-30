@@ -182,6 +182,12 @@ export function BuildOrderClient() {
           TERASOLUNA multi-project 版では、モジュール別配置は{" "}
           <Link href="/steps/00-modules-map" className="text-brand underline">Step 00 (5 モジュールの地図)</Link> を参照してください。
         </div>
+        <div className="mt-3 bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-900">
+          🌱 入門トラック (<Link href="/steps-basic/00-modules-map" className="underline">/steps-basic/</Link>) を進めている方は、
+          ファイル構成が異なるため{" "}
+          <Link href="/build-order-basic" className="text-brand underline font-semibold">入門版チェックリスト</Link>
+          {" "}を使ってください。
+        </div>
       </div>
 
       <PageMeta targetVersion={TARGET_LABEL.boot} />

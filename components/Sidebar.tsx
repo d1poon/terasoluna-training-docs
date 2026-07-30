@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { StepMeta } from "@/lib/steps";
 import { formatStepNumber } from "@/lib/step-format";
@@ -63,18 +64,33 @@ function findPhaseForStep(stepNum: number | undefined): string | null {
 export function Sidebar({
   steps,
   currentSlug,
+  currentTrack,
 }: {
   steps: StepMeta[];
   currentSlug?: string;
+  /**
+   * 入門 (/steps-basic/) ・補助 (/steps-boot/) トラックのページから呼ばれるときに指定する。
+   * 主軸 (/steps/) は steps 配列との slug 一致で currentStep が求まるため不要。
+   *
+   * BASIC_STEPS / BOOT_STEPS の slug は主軸・互いの間で重複するものがある
+   * (例: "01-project-skeleton" は 3 トラックすべてに存在) ため、
+   * slug の一致だけで現在地判定すると別トラックを見ているときに誤ハイライトしてしまう。
+   * currentTrack を必須の判定条件に加えることでそれを防ぐ。
+   */
+  currentTrack?: "basic" | "boot";
 }) {
   const currentStep = steps.find((s) => s.slug === currentSlug);
   const currentPhase = findPhaseForStep(currentStep?.number);
-  // Step ページを見ているときはその Phase のみ展開。
+  // Step ページを見ているときはその Phase (または 入門/補助トラック) のみ展開。
   // それ以外 (トップ / preface / glossary 等) は全 Phase を折りたたんで情報密度を下げる。
-  const initialOpen = new Set<string>(currentPhase ? [currentPhase] : []);
+  const initialOpen = new Set<string>();
+  if (currentPhase) initialOpen.add(currentPhase);
+  if (currentTrack === "basic") initialOpen.add("basic-intro");
+  if (currentTrack === "boot") initialOpen.add("boot-aux");
 
   const [openPhases, setOpenPhases] = useState<Set<string>>(initialOpen);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   function togglePhase(key: string) {
     setOpenPhases((prev) => {
@@ -86,6 +102,10 @@ export function Sidebar({
   }
 
   const stepsByNumber = new Map(steps.map((s) => [s.number, s]));
+  // 入門/補助トラックの現在地判定は currentTrack を必須条件にする (slug だけでは
+  // 3 トラック間の重複 slug により誤判定するため。Sidebar 関数コメント参照)。
+  const hasActiveBasic = currentTrack === "basic";
+  const hasActiveBoot = currentTrack === "boot";
 
   const brandBlock = (
     <Link href="/" onClick={() => setMobileOpen(false)} className="block">
@@ -288,7 +308,7 @@ export function Sidebar({
               aria-controls="phase-panel-basic-intro"
               className={
                 "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
-                (openPhases.has("basic-intro")
+                (openPhases.has("basic-intro") || hasActiveBasic
                   ? "bg-emerald-50 text-emerald-900 font-semibold"
                   : "text-slate-700 hover:bg-slate-100")
               }
@@ -313,20 +333,56 @@ export function Sidebar({
                 id="phase-panel-basic-intro"
                 className="ml-2 mt-1 mb-2 border-l border-emerald-200 pl-1 space-y-0.5"
               >
-                {BASIC_STEPS.map((step) => (
-                  <li key={step.slug}>
-                    <Link
-                      href={`/steps-basic/${step.slug}`}
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-baseline gap-2 px-3 py-1.5 rounded-md text-sm text-slate-600 hover:bg-emerald-50"
+                <li>
+                  <Link
+                    href="/build-order-basic"
+                    onClick={() => setMobileOpen(false)}
+                    className={
+                      "flex items-baseline gap-2 px-3 py-1.5 rounded-md text-sm transition-colors " +
+                      (pathname === "/build-order-basic"
+                        ? "bg-emerald-600 text-white font-semibold"
+                        : "text-slate-600 hover:bg-emerald-50")
+                    }
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={
+                        "text-[11px] " +
+                        (pathname === "/build-order-basic" ? "text-white/80" : "text-emerald-500")
+                      }
                     >
-                      <span className="font-mono text-[11px] text-emerald-500">
-                        {formatStepNumber(step.number)}
-                      </span>
-                      <span className="leading-tight">{step.title}</span>
-                    </Link>
-                  </li>
-                ))}
+                      ✓
+                    </span>
+                    <span className="leading-tight">作成順チェックリスト (入門版)</span>
+                  </Link>
+                </li>
+                {BASIC_STEPS.map((step) => {
+                  const active = hasActiveBasic && step.slug === currentSlug;
+                  return (
+                    <li key={step.slug}>
+                      <Link
+                        href={`/steps-basic/${step.slug}`}
+                        onClick={() => setMobileOpen(false)}
+                        className={
+                          "flex items-baseline gap-2 px-3 py-1.5 rounded-md text-sm transition-colors " +
+                          (active
+                            ? "bg-emerald-600 text-white font-semibold"
+                            : "text-slate-600 hover:bg-emerald-50")
+                        }
+                      >
+                        <span
+                          className={
+                            "font-mono text-[11px] " +
+                            (active ? "text-white/80" : "text-emerald-500")
+                          }
+                        >
+                          {formatStepNumber(step.number)}
+                        </span>
+                        <span className="leading-tight">{step.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </li>
@@ -429,7 +485,7 @@ export function Sidebar({
               aria-controls="phase-panel-boot-aux"
               className={
                 "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors " +
-                (openPhases.has("boot-aux")
+                (openPhases.has("boot-aux") || hasActiveBoot
                   ? "bg-amber-50 text-amber-900 font-semibold"
                   : "text-slate-600 hover:bg-slate-100")
               }
@@ -454,20 +510,33 @@ export function Sidebar({
                 id="phase-panel-boot-aux"
                 className="ml-2 mt-1 mb-2 border-l border-amber-200 pl-1 space-y-0.5"
               >
-                {BOOT_STEPS.map((step) => (
-                  <li key={step.slug}>
-                    <Link
-                      href={`/steps-boot/${step.slug}`}
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-baseline gap-2 px-3 py-1.5 rounded-md text-sm text-slate-600 hover:bg-amber-50"
-                    >
-                      <span className="font-mono text-[11px] text-amber-500">
-                        {formatStepNumber(step.number)}
-                      </span>
-                      <span className="leading-tight">{step.title}</span>
-                    </Link>
-                  </li>
-                ))}
+                {BOOT_STEPS.map((step) => {
+                  const active = hasActiveBoot && step.slug === currentSlug;
+                  return (
+                    <li key={step.slug}>
+                      <Link
+                        href={`/steps-boot/${step.slug}`}
+                        onClick={() => setMobileOpen(false)}
+                        className={
+                          "flex items-baseline gap-2 px-3 py-1.5 rounded-md text-sm transition-colors " +
+                          (active
+                            ? "bg-amber-600 text-white font-semibold"
+                            : "text-slate-600 hover:bg-amber-50")
+                        }
+                      >
+                        <span
+                          className={
+                            "font-mono text-[11px] " +
+                            (active ? "text-white/80" : "text-amber-500")
+                          }
+                        >
+                          {formatStepNumber(step.number)}
+                        </span>
+                        <span className="leading-tight">{step.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </li>

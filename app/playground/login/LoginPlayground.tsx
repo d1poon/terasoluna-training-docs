@@ -151,7 +151,7 @@ export function LoginPlayground() {
               <ul className="text-sm text-slate-700 space-y-1.5 list-disc pl-5">
                 <li>CSRF トークンは省略 (本物は hidden で送る)</li>
                 <li>認証は JS で判定 (本物は DB + BCrypt)</li>
-                <li>実物の完全動作: <a href="/steps/07-login" className="text-brand hover:underline">Step 07</a></li>
+                <li>実物の完全動作: <Link href="/steps/07-login" className="text-brand hover:underline">Step 07</Link></li>
               </ul>
             </div>
           </aside>

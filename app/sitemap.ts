@@ -13,6 +13,7 @@ const STATIC_ROUTES = [
   "",
   "/architecture",
   "/build-order",
+  "/build-order-basic",
   "/db-connection",
   "/glossary",
   "/how-to",

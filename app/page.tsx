@@ -48,6 +48,11 @@ export default function HomePage() {
             </p>
           </div>
 
+          <p className="mb-4 text-sm text-slate-600 leading-relaxed">
+            トラックの選び方の目安: 本番相当のコードで学ぶなら<strong>主軸</strong>、まず動くものだけ触りたいなら<strong>入門</strong>、
+            Spring Boot 単一構成の基礎から入りたいなら<strong>補助</strong>。
+          </p>
+
           {/* Primary CTA — "Start here" recommended route */}
           <div className="mb-3">
             <div className="inline-block text-[10px] uppercase tracking-wider font-bold bg-brand text-white px-2 py-0.5 rounded">
@@ -108,13 +113,15 @@ export default function HomePage() {
               <div aria-hidden="true" className="text-2xl leading-none">🌱</div>
               <div className="flex-1 min-w-0">
                 <div className="text-xs uppercase tracking-wider text-emerald-700 font-semibold">
-                  Step 06 の Spring Security で詰まったら
+                  先に CRUD だけ体験したい人 / Step 06 で詰まった人へ
                 </div>
                 <div className="text-base md:text-lg font-bold mt-0.5 text-slate-900">
                   入門: Spring Security なし版で CRUD だけ先に通す
                 </div>
                 <p className="mt-1 text-sm text-slate-600 leading-snug">
-                  認証を後回しにして、一覧・検索・詳細・編集の流れだけを先に体験。慣れたら主軸の Step 06 (Security 導入) から合流できます。
+                  認証の実装は後回しにして、一覧・検索・詳細・編集の基本の流れだけを先に体験できます。
+                  「まず動くものを触ってから理解を深めたい」人は最初からこちらを選んでも構いません。
+                  慣れたら主軸の Step 06 から合流してください。
                 </p>
               </div>
             </div>

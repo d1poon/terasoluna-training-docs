@@ -262,6 +262,12 @@ export default function SecurityChecklistPage() {
               <code className="text-xs bg-white/60 px-1 rounded">spring-security.xml</code> の XML 設定) を指しており、書き方が異なります。
               差分は <Link href="/spring-vs-terasoluna" className="text-brand underline">Boot からの読み替え表</Link> を参照してください。
             </div>
+            <div className="mt-4 bg-emerald-50 border-l-4 border-emerald-400 rounded-r p-3 text-sm text-emerald-900">
+              🌱 入門トラック (<code>/steps-basic/</code>) を進めている方へ: このページは Spring Security を
+              導入した後 (主軸トラック Step 06 以降) に読むページです。入門トラックには認証・CSRF が
+              無いため、今の段階では関係ありません。入門トラックを終えて主軸の Step 06 に進んだら
+              戻ってきてください。
+            </div>
             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900">
               <strong>⚠️ 免責:</strong> このページは網羅ではなく、初学者が最初に押さえるべき観点の入口です。
               本番システムには追加の対策 (WAF / IDS / 定期的な依存脆弱性スキャン / ペネトレーションテスト等) が必要です。

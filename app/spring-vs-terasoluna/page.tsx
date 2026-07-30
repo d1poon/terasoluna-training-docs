@@ -138,23 +138,15 @@ public class SecurityConfig {
 mybatis.configuration.map-underscore-to-camel-case=true`,
     },
     tera: {
-      label: "applicationContext-mybatis.xml",
+      label: "rolemgr-infra.xml (mybatis:scan)",
       lang: "xml",
-      code: `<bean id="sqlSessionFactory"
-      class="org.mybatis.spring.SqlSessionFactoryBean">
-  <property name="dataSource" ref="dataSource" />
-  <property name="mapperLocations"
-            value="classpath:mapper/*.xml" />
-  <property name="configuration">
-    <bean class="org.apache.ibatis.session.Configuration">
-      <property name="mapUnderscoreToCamelCase"
-                value="true" />
-    </bean>
-  </property>
-</bean>
-<mybatis:scan base-package="com.example.rolemgr.repository" />`,
+      code: `<!-- rolemgr-domain/src/main/resources/META-INF/spring/rolemgr-infra.xml -->
+<mybatis:scan base-package="com.example.rolemgr.repository" />
+<!-- @Mapper アノテーションは不要。XML (SQL 本体) は Java interface と
+     同じパッケージパスを resources/ 側にミラー配置する
+     (resources/mapper/*.xml への一括配置ではない) -->`,
     },
-    note: "Mapper XML の中身 (SQL) はそのままコピーできる (差分はほぼ設定側のみ)",
+    note: "Mapper XML の中身 (SQL) はそのままコピーできる (差分は登録方法: Boot=@Mapper、TERASOLUNA=mybatis:scan)",
   },
   {
     n: 6,
@@ -230,7 +222,7 @@ spring init --dependencies=web,security,mybatis rolemgr`,
 const SAME_TABLE = [
   { concept: "Controller", both: "@Controller / @GetMapping / @PostMapping" },
   { concept: "Service", both: "@Service / @Transactional" },
-  { concept: "Repository (Mapper)", both: "@Mapper (MyBatis) / XML の SQL" },
+  { concept: "Repository (Mapper)", both: "SQL 本体は XML (#{param} / <select> / <update>)。登録方法は Boot=@Mapper、TERASOLUNA=mybatis:scan で異なる" },
   { concept: "DI (依存性注入)", both: "コンストラクタ注入 or @Autowired" },
   { concept: "Model", both: "org.springframework.ui.Model" },
   { concept: "JSP + JSTL", both: "${var} / <c:if> / <c:forEach>" },
@@ -593,7 +585,7 @@ export default function SpringVsTerasolunaPage() {
                     ["RolemgrApplication.java (@SpringBootApplication)", "web.xml + applicationContext.xml"],
                     ["application.properties", "applicationContext-*.xml (機能別に分割)"],
                     ["SecurityConfig.java (Java Config)", "spring-security.xml"],
-                    ["mybatis.mapper-locations プロパティ", "applicationContext-mybatis.xml の SqlSessionFactoryBean"],
+                    ["mybatis.mapper-locations プロパティ", "rolemgr-infra.xml の <mybatis:scan> (@Mapper 相当)"],
                     ["spring.mvc.view.prefix プロパティ", "spring-mvc.xml の InternalResourceViewResolver"],
                     ["mvn spring-boot:run (埋め込み Tomcat)", "war ビルド → Tomcat の webapps/ に配置"],
                     [

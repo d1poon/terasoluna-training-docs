@@ -217,7 +217,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 - **① `<form:hidden path="id" />`** — 編集対象の `id` を POST 本文に載せて往復させる。前述の通り、この値はサーバ側では検証されず信用される
 - **② `<form:errors path="role" />`** — バリデーションエラーメッセージを表示
 
-**この画面が POST を扱うため、実アプリでは CSRF 対策が必要になる。** 主軸トラック (Security 版) では `<sec:csrf />` により全 POST フォームに token の hidden input (`${_csrf.parameterName}` / `${_csrf.token}`) が要求されるが、このトラックには Spring Security が無いため CSRF 対策の仕組み自体が存在しない。この画面の `<form:form>` にも CSRF token は入れていない。詳細は Spring Security 版の [[/steps/11-edit|Step 11]] で扱う。
+**この画面が POST を扱うため、実アプリでは CSRF 対策が必要になる。** 主軸トラック (Security 版) では `<sec:csrf />` により全 POST フォームに token の hidden input (`${_csrf.parameterName}` / `${_csrf.token}`) が要求されるが、このトラックには Spring Security が無いため CSRF 対策の仕組み自体が存在しない。この画面の `<form:form>` にも CSRF token は入れていない。詳細は Spring Security 版の [[/steps/06-auth-foundation|Step 06]] (`<sec:csrf />` の有効化) と
+[[/steps/07-login|Step 07]] (CSRF token の埋め込み方) で扱う。
 
 ## 動作確認
 

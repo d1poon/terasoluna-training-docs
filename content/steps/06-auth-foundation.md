@@ -14,6 +14,8 @@ step: 06
 - DB からユーザを引く `UserDetailsService` の実装を書く
 - 起動時にサンプル user を 5 人 initdb で投入する
 
+> 💡 **このステップで難しく感じたら**: 無理に進めず、[入門: Spring Security なし版](/steps-basic/00-modules-map) で認証を後回しにして CRUD の流れだけ先に体験する選択肢があります。慣れたらこのページに戻って合流できます。
+
 ## 事前準備
 
 - [Step 05](/steps/05-service) 完了 (UserService が動く状態)

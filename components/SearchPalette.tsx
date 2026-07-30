@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BASIC_STEPS } from "@/lib/basic-steps-list";
+import { BOOT_STEPS } from "@/lib/boot-steps-list";
 import { formatStepNumber } from "@/lib/step-format";
 
 type Entry = {
@@ -14,13 +15,22 @@ type Entry = {
 
 // 入門: Spring Security なし版の 15 ページ分の検索エントリを
 // lib/basic-steps-list.ts (単一の真実源) から動的生成する。
-// Boot 版は INDEX に手動で数件のみ追加している (下記参照) が、
-// 入門版は新設トラック全体を検索対象にする必要があるため、
-// 手打ちで 15 件複製せず生成する方式にした (保守性優先)。
+// 手打ちで 15 件複製すると content/ とのドリフトが再発するため、生成方式にした (保守性優先)。
+// Boot 版も同じ理由で BOOT_STEP_ENTRIES として動的生成している (下記)。
 const BASIC_STEP_ENTRIES: Entry[] = BASIC_STEPS.map((step) => ({
   category: "入門 (Security なし版)",
   title: `Step ${formatStepNumber(step.number)} - ${step.title}`,
   href: `/steps-basic/${step.slug}`,
+  desc: step.desc,
+}));
+
+// 補助 Boot 版の 18 ページ分の検索エントリを lib/boot-steps-list.ts から動的生成する。
+// 以前は 3 件のみ手打ちで残り 15 件が Ctrl+K 検索でヒットしなかったため、
+// 入門版と同じく単一の真実源 (BOOT_STEPS) から生成する方式に統一した。
+const BOOT_STEP_ENTRIES: Entry[] = BOOT_STEPS.map((step) => ({
+  category: "補助 Boot 版",
+  title: `Boot Step ${formatStepNumber(step.number)} - ${step.title}`,
+  href: `/steps-boot/${step.slug}`,
   desc: step.desc,
 }));
 
@@ -42,6 +52,7 @@ const INDEX: Entry[] = [
   { category: "TERASOLUNA", title: "Boot からの読み替え表 (補助)", href: "/spring-vs-terasoluna", desc: "Boot 補助版で本質を掴んだあとの TERASOLUNA 版への対応表" },
   // 可視化
   { category: "可視化 (Boot 補助側)", title: "作成順チェックリスト (Boot 版)", href: "/build-order", desc: "Boot 単一プロジェクトの全 22 ファイル通し番号 + localStorage 進捗" },
+  { category: "入門 (Security なし版)", title: "作成順チェックリスト (入門版)", href: "/build-order-basic", desc: "Security なし・入門トラック向けの全 22 項目 通し番号 + localStorage 進捗" },
   { category: "可視化 (Boot 補助側)", title: "アーキテクチャ全体図 (Boot 版)", href: "/architecture", desc: "Boot 単一プロジェクトの層構造。TERASOLUNA 版は Step 00 を参照" },
   { category: "可視化 (Boot 補助側)", title: "「〜するには?」レシピ集 (Boot 版寄り)", href: "/how-to", desc: "20 レシピ、現状 Boot 版寄り、TERASOLUNA 版対応は追加予定" },
   { category: "可視化", title: "触ってみるデモ (Playground)", href: "/playground", desc: "STS なしで login / search / edit を体験" },
@@ -69,10 +80,8 @@ const INDEX: Entry[] = [
   { category: "Steps (TERASOLUNA)", title: "Step 13 - Service 単体テスト", href: "/steps/13-service-test", desc: "JUnit5 + Mockito、@InjectMocks で UserServiceImpl" },
   { category: "Steps (TERASOLUNA)", title: "Step 14 - Repository 統合テスト", href: "/steps/14-mapper-test", desc: "Spring TestContext + @Transactional で H2 に実 SQL" },
   { category: "Steps (TERASOLUNA)", title: "Step 15 - Controller テスト (MockMvc)", href: "/steps/15-controller-test", desc: "standaloneSetup で URL / Model / View 検証" },
-  // Steps-boot (補助)
-  { category: "補助 Boot 版", title: "Boot 版目次", href: "/steps-boot/00-toc", desc: "先に Spring Boot 単一プロジェクトで本質を掴みたい人向け" },
-  { category: "補助 Boot 版", title: "Boot Step 01 - プロジェクト骨組み", href: "/steps-boot/01-project-skeleton", desc: "spring-boot-starter-parent、単一プロジェクト" },
-  { category: "補助 Boot 版", title: "Boot Step 06 - 認証基盤 (Java Config)", href: "/steps-boot/06-auth-foundation", desc: "SecurityConfig.java + BCryptPasswordEncoder Bean" },
+  // Steps-boot (補助、lib/boot-steps-list.ts から動的生成、上で定義)
+  ...BOOT_STEP_ENTRIES,
 ];
 
 // 曖昧マッチ (小文字化 + 部分文字列)

@@ -20,6 +20,7 @@ type Trouble = {
   code?: { lang: string; text: string };
   refStep?: string;
   refStepHref?: string;
+  trackNote?: string;
 };
 
 const TROUBLES: Trouble[] = [
@@ -105,6 +106,7 @@ taskkill /PID <PID> /F`,
     symptom: "GET は動くが POST が全て 403 で拒否される。",
     cause: "`<sec:csrf />` を spring-security.xml で有効化しているのに、フォームに CSRF token を hidden で埋め込んでいない。",
     fix: "全 POST form の直下に:",
+    trackNote: "主軸 / 補助トラック限定 — 入門トラック (/steps-basic/) には Spring Security が無いため発生しません",
     code: {
       lang: "jsp",
       text: `<form action="..." method="post">
@@ -214,6 +216,11 @@ export default function TroubleshootPage() {
                 <h2 className="text-lg md:text-xl font-bold text-slate-900 leading-tight">
                   {t.title}
                 </h2>
+                {t.trackNote && (
+                  <div className="mt-1 text-xs text-slate-500">
+                    🌱 {t.trackNote}
+                  </div>
+                )}
                 <div className="mt-3 grid gap-3">
                   <div className="bg-rose-50 border border-rose-200 rounded-lg p-3">
                     <div className="text-xs uppercase tracking-wider text-rose-800 font-bold mb-1">

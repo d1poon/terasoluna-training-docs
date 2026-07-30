@@ -16,12 +16,12 @@ const roleTable = [
   { restaurant: "🍽 お皿・盛り付け", role: "View (JSP)", file: "webapp/WEB-INF/views/*.jsp", desc: "料理を綺麗な形にしてお客に出す (HTML 生成)" },
   { restaurant: "📝 注文票の紙", role: "Model", file: "Controller の中で作る", desc: "Controller が View に渡すデータの箱" },
   { restaurant: "🥩 料理の材料", role: "User オブジェクト", file: "domain/User.java", desc: "システムを流れる「もの」" },
-  { restaurant: "🛡 入口の警備員", role: "Spring Security", file: "config/SecurityConfig.java", desc: "認証してない客は入れない" },
+  { restaurant: "🛡 入口の警備員", role: "Spring Security", file: "config/SecurityConfig.java", desc: "認証してない客は入れない (入門トラックにはこの層はありません)" },
 ];
 
 const flowSteps = [
   { n: 1, actor: "🌐 ブラウザ", action: "URL を叩く / フォーム送信", detail: "GET /user-info をサーバに送る" },
-  { n: 2, actor: "🛡 Spring Security", action: "認証済みか確認", detail: "OK なら通す (未認証なら /login へリダイレクト)" },
+  { n: 2, actor: "🛡 Spring Security", action: "認証済みか確認", detail: "OK なら通す (未認証なら /login へリダイレクト) ※入門トラックにはこの層はありません" },
   { n: 3, actor: "🎯 DispatcherServlet", action: "どの Controller に渡す?", detail: "URL とアノテーションを見て振り分け" },
   { n: 4, actor: "🎨 Controller", action: "受け取って Service を呼ぶ", detail: "userService.findById(id) を実行" },
   { n: 5, actor: "⚙️ Service", action: "業務ロジック実行 + Mapper を呼ぶ", detail: "userMapper.findById(id) を実行" },
@@ -187,6 +187,13 @@ export default function PrefacePage() {
               なお、コード例のプロジェクト名は文脈で使い分けています。<code className="text-xs bg-slate-100 px-1 rounded">rolemgr</code> は
               Spring Boot 単一プロジェクト版の参照実装名、<code className="text-xs bg-slate-100 px-1 rounded">demo</code> は
               TERASOLUNA multi-project カリキュラム側の実装名で、この 2 つは別プロジェクトです。
+            </p>
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+              なお実装は<strong>3 つのトラック</strong>に分かれています。まずは{" "}
+              <Link href="/steps/00-modules-map" className="text-brand underline">主軸 (TERASOLUNA multi-project、Spring Security あり)</Link>{" "}
+              から進めてください。Step 06 の Spring Security で難しく感じたら、認証を後回しにできる{" "}
+              <Link href="/steps-basic/00-modules-map" className="text-brand underline">入門版 (Security なし)</Link>{" "}
+              に途中で切り替えられます。
             </p>
           </div>
 

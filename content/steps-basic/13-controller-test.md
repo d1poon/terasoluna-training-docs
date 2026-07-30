@@ -204,6 +204,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.example.demo.domain.model.User;
 import com.example.demo.domain.service.user.UserService;
 
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -253,6 +255,9 @@ class UserDetailControllerTest {
                .andExpect(status().is3xxRedirection())
                .andExpect(redirectedUrl("/users/detail?id=u001"))               // ⑦
                .andExpect(flash().attributeExists("message"));                  // ⑧
+
+        verify(userService).update(                                             // ⑨
+                argThat(u -> "u001".equals(u.getId()) && "課長".equals(u.getRole())));
     }
 }
 ```
@@ -267,6 +272,7 @@ class UserDetailControllerTest {
 - **⑥ `post("/users/edit").param("id", ...).param("role", ...)`** — `@ModelAttribute UserEditForm` にバインドされる。CSRF トークンはこのトラックに存在しないので不要
 - **⑦ `redirectedUrl("/users/detail?id=u001")`** — [Step 09](/steps-basic/09-edit) の `redirect.addAttribute("id", form.getId())` により、リダイレクト先 URL にクエリパラメータとして `id` が付与される。`/users/detail` だけでは一致しない
 - **⑧ `flash().attributeExists("message")`** — [Step 09](/steps-basic/09-edit) の `redirect.addFlashAttribute("message", ...)` を検証。Flash 属性は通常の `model()` ではなく `flash()` で確認する
+- **⑨ `verify(userService).update(argThat(...))`** — `redirectedUrl` と `flash().attributeExists` はリダイレクト先の URL とフラッシュメッセージの有無しか見ておらず、`userService.update(user)` が実際に呼ばれたかどうかは検証していない。**仮に Controller から `userService.update(user);` を消してもこのテストはそれまで通ってしまう**。`argThat` で「id はフォームの `u001` のまま、role はフォーム入力の `課長` に書き換わっている」ところまで検証することで、その抜け穴を塞ぐ
 
 ## 3 段テストの全体像
 

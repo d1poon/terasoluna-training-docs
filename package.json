@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/check-step-lists.mjs && next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check:steps": "node scripts/check-step-lists.mjs"
   },
   "dependencies": {
     "gray-matter": "4.0.3",

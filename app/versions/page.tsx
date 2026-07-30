@@ -30,8 +30,8 @@ export default function VersionsPage() {
               サイト内でバージョン表記を見かけた場合、正確な値はここを参照してください。
               <br />
               <strong className="text-slate-800">
-                主軸 (/steps/) は TERASOLUNA multi-project、補助 (/steps-boot/) は Spring Boot 単一プロジェクトで、
-                スタックが異なります。
+                主軸 (/steps/) と入門 (/steps-basic/) はどちらも TERASOLUNA multi-project (バージョンは同一)、
+                補助 (/steps-boot/) は Spring Boot 単一プロジェクトで、後者だけスタックが異なります。
               </strong>
               どちらの話をしているか、下の表のグループ名で確認してください。
             </p>

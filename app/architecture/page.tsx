@@ -95,6 +95,8 @@ export default function ArchitecturePage() {
             ⚠️ このアーキテクチャ図は Spring Boot 単一プロジェクト版で作られています。
             TERASOLUNA multi-project (5 モジュール構成) の全体像は{" "}
             <Link href="/steps/00-modules-map" className="text-brand underline">Step 00 (5 モジュールの地図)</Link> を参照。
+            なお図中の Spring Security Filter は入門トラック (/steps-basic/) には存在しません
+            (Step 02 で web.xml から filter ごと削除するため)。
           </div>
         </div>
 

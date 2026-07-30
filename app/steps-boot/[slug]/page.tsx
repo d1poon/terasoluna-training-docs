@@ -25,7 +25,9 @@ export async function generateMetadata({
 
   // Boot 版であることを title に明示し、/steps/ 側 (TERASOLUNA 版) と検索結果で区別する
   const title = `Step ${formatStepNumber(step.number)} — ${step.title} (Spring Boot 補助版)`;
-  const description = extractDescription(step.content);
+  // 本文がほぼ主軸と同じため extractDescription() の抜粋も一致してしまう。
+  // description にも補助版と分かる接頭辞を付け、重複コンテンツ扱いのリスクを下げる。
+  const description = `補助版 (Spring Boot 単一プロジェクト): ${extractDescription(step.content)}`;
 
   return {
     title,
@@ -53,7 +55,7 @@ export default async function BootStepPage({
 
   return (
     <div className="lg:flex mx-auto max-w-[80rem] xl:max-w-[88rem] 2xl:max-w-[96rem]">
-      <Sidebar steps={steps} />
+      <Sidebar steps={steps} currentSlug={slug} currentTrack="boot" />
 
       <div className="flex-1 min-w-0">
         {/* xl+ では本文と右レール目次 (InPageToc) を横並びにする。

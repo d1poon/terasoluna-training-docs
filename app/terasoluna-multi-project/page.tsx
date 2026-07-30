@@ -29,7 +29,7 @@ const MODULES: ModuleInfo[] = [
       { path: "src/main/webapp/WEB-INF/web.xml", desc: "サーブレット設定 (DispatcherServlet 起動点)" },
       { path: "src/main/webapp/WEB-INF/views/", desc: "JSP (welcome/, common/error/, layout/ など)" },
       { path: "src/main/resources/META-INF/spring/spring-mvc.xml", desc: "Spring MVC の設定 (ViewResolver など)" },
-      { path: "src/main/resources/META-INF/spring/spring-security.xml", desc: "認証・認可の設定" },
+      { path: "src/main/resources/META-INF/spring/spring-security.xml", desc: "認証・認可の設定 (入門トラックでは Step 02 で無効化)" },
       { path: "src/main/resources/META-INF/spring/application.properties", desc: "アプリレベルの設定" },
       { path: "src/main/resources/i18n/application-messages.properties", desc: "画面メッセージの i18n" },
       { path: "src/main/resources/ValidationMessages.properties", desc: "バリデーションメッセージ" },

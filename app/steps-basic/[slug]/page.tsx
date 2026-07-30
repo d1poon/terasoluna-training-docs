@@ -26,7 +26,9 @@ export async function generateMetadata({
   // 入門版であることを title に明示し、/steps/ (主軸) や /steps-boot/ (補助) 側と
   // 検索結果で区別できるようにする
   const title = `Step ${formatStepNumber(step.number)} — ${step.title} (入門版・Security なし)`;
-  const description = extractDescription(step.content);
+  // 本文がほぼ主軸と同じため extractDescription() の抜粋も一致してしまう。
+  // description にも入門版と分かる接頭辞を付け、重複コンテンツ扱いのリスクを下げる。
+  const description = `入門版 (Spring Security なし): ${extractDescription(step.content)}`;
 
   return {
     title,
@@ -54,7 +56,7 @@ export default async function BasicStepPage({
 
   return (
     <div className="lg:flex mx-auto max-w-[80rem] xl:max-w-[88rem] 2xl:max-w-[96rem]">
-      <Sidebar steps={steps} />
+      <Sidebar steps={steps} currentSlug={slug} currentTrack="basic" />
 
       <div className="flex-1 min-w-0">
         {/* xl+ では本文と右レール目次 (InPageToc) を横並びにする。

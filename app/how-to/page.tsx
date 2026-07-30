@@ -30,6 +30,7 @@ type Category = {
   emoji: string;
   name: string;
   desc: string;
+  trackNote?: string;
   recipes: Recipe[];
 };
 
@@ -397,6 +398,7 @@ public String edit(@Validated UserInfoForm form,
     emoji: "🔐",
     name: "認証まわり",
     desc: "ログインユーザ取得 / 保護",
+    trackNote: "このカテゴリ (Q12〜Q14) は主軸 / 補助トラック向けです。入門トラック (/steps-basic/) には認証が無いため、今は読み飛ばして構いません。",
     recipes: [
       {
         n: 12,
@@ -693,6 +695,11 @@ export default function HowToPage() {
                   {cat.name}
                 </h2>
                 <p className="text-sm text-slate-600 mt-1">{cat.desc}</p>
+                {cat.trackNote && (
+                  <div className="mt-2 bg-emerald-50 border-l-4 border-emerald-400 rounded-r p-2.5 text-xs text-emerald-900">
+                    🌱 {cat.trackNote}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-5">
